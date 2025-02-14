@@ -1,13 +1,13 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
-import { NavbarItemDto } from "../../dtos/navbar-item.dto";
-import { SidebarService } from "../../services/sidebar.service";
-import { AuthenticationService } from "../../../authentication/authentication.service";
-import { environment } from "../../../../../environments/environment.dev";
-import { AccountDto } from "../../../account/dtos/account.dto";
 import { AccessModeEnum } from "src/app/modules/account/enums/access-mode.enum";
 import { AccessModeService } from "src/app/modules/account/services/access-mode.service";
+import { environment } from "../../../../../environments/environment.dev";
+import { AccountDto } from "../../../account/dtos/account.dto";
+import { AuthenticationService } from "../../../authentication/authentication.service";
+import { NavbarItemDto } from "../../dtos/navbar-item.dto";
+import { SidebarService } from "../../services/sidebar.service";
 
 @Component({
   selector: "clina-sidebar",
@@ -180,7 +180,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   toggleAccessMode(mode: AccessModeEnum) {
     this.showNavbar = false;
-    this.accessModeService.setMode(mode);
+    this.accessModeService.changeMode(mode);
   }
 
   ngOnDestroy(): void {
