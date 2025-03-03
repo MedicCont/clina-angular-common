@@ -2,8 +2,8 @@
   id="sidebar"
   [ngClass]="{
     show: showNavbar,
-    hostMode: accessMode === AccessModeEnum.HOST,
-    psMode: accessMode === AccessModeEnum.HEALTH_PERSON
+    hostMode: accessMode === AccessModeEnum.host,
+    psMode: accessMode === AccessModeEnum.ps
   }"
 >
   <div class="_sidebar_brand">
@@ -29,11 +29,11 @@
       </div>
     </li>
 
-    @if (accessMode === AccessModeEnum.HEALTH_PERSON) {
+    @if (accessMode === AccessModeEnum.ps) {
     <li class="access-mode-container">
       <div
         class="d-flex access-mode-button align-items-center p-1"
-        (click)="toggleAccessMode(AccessModeEnum.HOST)"
+        (click)="toggleAccessMode(AccessModeEnum.host)"
       >
         <div class="_images_icon">
           <img src="images/sidebar/icon-toggle-mode-white.svg" />
@@ -47,7 +47,7 @@
     <li class="access-mode-container">
       <div
         class="d-flex access-mode-button align-items-center p-1"
-        (click)="toggleAccessMode(AccessModeEnum.HEALTH_PERSON)"
+        (click)="toggleAccessMode(AccessModeEnum.ps)"
       >
         <div class="_images_icon">
           <img src="images/sidebar/icon-toggle-mode-white.svg" />

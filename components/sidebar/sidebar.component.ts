@@ -15,7 +15,7 @@ import { SidebarService } from "../../services/sidebar.service";
   styleUrls: ["./sidebar.component.scss"],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  accessMode: AccessModeEnum = AccessModeEnum.HEALTH_PERSON;
+  accessMode: AccessModeEnum = AccessModeEnum.ps;
 
   account?: AccountDto;
   hostSubscription?: Subscription;
@@ -41,7 +41,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Home",
         img: "images/sidebar/icon-home-solid-white.svg",
         url:
-          "/" + this.accessMode === AccessModeEnum.HEALTH_PERSON
+          "/" + this.accessMode === AccessModeEnum.ps
             ? "ps"
             : "host",
         isActive: false,
@@ -59,28 +59,28 @@ export class SidebarComponent implements OnInit, OnDestroy {
         img: "images/sidebar/icon-purchases-solid-white.svg",
         url: "/purchase",
         isActive: false,
-        show: this.accessMode === AccessModeEnum.HEALTH_PERSON,
+        show: this.accessMode === AccessModeEnum.ps,
       },
       {
         title: "Reservas",
         img: "images/sidebar/icon-appointments-solid-white.svg",
         url: "/appointment/host",
         isActive: false,
-        show: this.accessMode === AccessModeEnum.HOST,
+        show: this.accessMode === AccessModeEnum.host,
       },
       {
         title: "Consultórios",
         img: "images/sidebar/room-icon.svg",
         url: "/room",
         isActive: false,
-        show: this.accessMode === AccessModeEnum.HOST,
+        show: this.accessMode === AccessModeEnum.host,
       },
       {
         title: "Check-In/Out",
         img: "images/sidebar/icon-checkinout.svg",
         url: "/check",
         isActive: false,
-        show: this.accessMode === AccessModeEnum.HOST,
+        show: this.accessMode === AccessModeEnum.host,
       },
       {
         title: "SaaS",
@@ -88,7 +88,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/saas",
         isActive: false,
         show:
-          this.accessMode === AccessModeEnum.HOST &&
+          this.accessMode === AccessModeEnum.host &&
           (this.account?.isActiveSaaS || false),
       },
       {
@@ -124,7 +124,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         img: "images/sidebar/icon-favorite-solid-white.svg",
         url: "/room-favorite",
         isActive: false,
-        show: this.accessMode === AccessModeEnum.HEALTH_PERSON,
+        show: this.accessMode === AccessModeEnum.ps,
       },
     ];
   }
