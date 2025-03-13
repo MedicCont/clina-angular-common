@@ -158,7 +158,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   goToPage(item: NavbarItemDto) {
+   try {
     const sidebar = document.getElementById("sidebar");
+    debugger
     this.router.navigate([item.url]);
     if (sidebar) {
       sidebar.classList.add("pe-none");
@@ -167,6 +169,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
       }, 1500);
     }
     this.hideSidebar();
+   } catch (error) {
+    console.error(error)
+   }
   }
 
   logout() {
