@@ -41,9 +41,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Home",
         img: "images/sidebar/icon-home-solid-white.svg",
         url:
-          "/" + this.accessMode === AccessModeEnum.ps
-            ? "ps"
-            : "host",
+          "/",
         isActive: false,
         show: true,
       },
