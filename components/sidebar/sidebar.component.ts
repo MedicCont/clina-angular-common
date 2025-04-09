@@ -158,7 +158,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   goToPage(item: NavbarItemDto) {
    try {
     const sidebar = document.getElementById("sidebar");
-    debugger
+    
     this.router.navigate([item.url]);
     if (sidebar) {
       sidebar.classList.add("pe-none");
