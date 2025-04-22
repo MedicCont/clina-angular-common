@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { AccessModeEnum } from "src/app/modules/account/enums/access-mode.enum";
 import { AccessModeService } from "src/app/modules/account/services/access-mode.service";
-import { environment } from "../../../../../environments/environment.dev";
+import { environment } from "../../../../../environments/environment";
 import { AccountDto } from "../../../account/dtos/account.dto";
 import { AuthenticationService } from "../../../authentication/authentication.service";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
