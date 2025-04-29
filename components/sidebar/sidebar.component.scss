@@ -30,7 +30,7 @@
 }
 
 #sidebar {
-  border: 1px solid #ddd;
+  font-weight: 100;
   border-top: none;
 
   .items-container {
@@ -39,6 +39,7 @@
 
   .item-label {
     transition: 0s;
+    font-weight: 100;
     opacity: 0;
   }
 
@@ -140,7 +141,7 @@
     align-items: center;
     text-decoration: none;
     font: normal normal 400 10px/28px Poppins;
-    color: $primary-dark;
+    color: white;
   }
 }
 

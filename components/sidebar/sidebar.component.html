@@ -1,80 +1,65 @@
 <ul
   id="sidebar"
   [ngClass]="{
-    show: showNavbar,
-    hostMode: accessMode === AccessModeEnum.host,
-    psMode: accessMode === AccessModeEnum.ps
+    show: (showNavbar$ | async) || (!isMobile&&isSidebarHovered),
+    hostMode: (accessMode$ | async) === AccessModeEnum.host,
+    psMode: (accessMode$ | async) === AccessModeEnum.ps
   }"
->
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()">
   <div class="_sidebar_brand">
     <div>
-      <img src="images/branding/logo-white.svg" (click)="goToHome()" />
+      <img src="/common-assets/images/branding/logo-white.svg" (click)="goToHome()" />
       <span class="close-sidebar" (click)="hideSidebar()">&times;</span>
     </div>
   </div>
-  <div class="items-container">
+  <div class="items-container" (click)="isMobile?hideSidebar():null">
     <li
+      *ngFor="let item of (items$ | async)"
       [style]="item.show ? 'display: block' : 'display: none'"
-      *ngFor="let item of items; let i = index"
-    >
-      <div
-        class="d-flex justify-content-between w-100 p-3"
-        [class._active]="item.isActive"
-        (click)="goToPage(item)"
-      >
+      [routerLinkActive]="'_active'" [routerLinkActiveOptions]="{exact: true}">
+      <a class="d-flex justify-content-between w-100 px-3 py-2" style="margin-left: -3px;"
+        (click)="(isMobile)?hideSidebar():null" [routerLink]="[item.url]">
         <div class="d-flex align-items-center">
-          <img [src]="item.img" />
-          <a class="ms-3 item-label">{{ item.title }}</a>
+          <img [src]="item.img" *ngIf="!item.icon" />
+          <i class="clina {{item.icon}}" *ngIf="item.icon"></i>
+          <span class="ms-3 item-label">{{ item.title }}</span>
         </div>
+      </a>
+    </li>
+
+    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) == AccessModeEnum.ps">
+      <div
+        class="d-flex access-mode-button align-items-center p-1"
+        (click)="toggleAccessMode(AccessModeEnum.host)">
+        <div class="_images_icon">
+          <img src="/common-assets/images/sidebar/icon-toggle-mode-white.svg" />
+        </div>
+        <span class="item-label d-flex justify-content-center">Modo anfitrião</span>
       </div>
     </li>
 
-    @if (accessMode === AccessModeEnum.ps) {
-    <li class="access-mode-container">
+    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) != AccessModeEnum.ps">
       <div
         class="d-flex access-mode-button align-items-center p-1"
-        (click)="toggleAccessMode(AccessModeEnum.host)"
-      >
+        (click)="toggleAccessMode(AccessModeEnum.ps)">
         <div class="_images_icon">
-          <img src="images/sidebar/icon-toggle-mode-white.svg" />
-        </div>
-        <span class="item-label d-flex justify-content-center"
-          >Modo anfitrião</span
-        >
-      </div>
-    </li>
-    } @else {
-    <li class="access-mode-container">
-      <div
-        class="d-flex access-mode-button align-items-center p-1"
-        (click)="toggleAccessMode(AccessModeEnum.ps)"
-      >
-        <div class="_images_icon">
-          <img src="images/sidebar/icon-toggle-mode-white.svg" />
+          <img src="/common-assets/images/sidebar/icon-toggle-mode-white.svg" />
         </div>
         <span
           class="item-label d-flex justify-content-center"
-          style="line-height: 15px"
-          >Modo profiss.<br />
-          da saúde</span
-        >
+          style="line-height: 15px">Modo profiss.<br />
+          da saúde</span>
       </div>
     </li>
-    }
 
-    <li class="logout-container">
+    <li class="logout-container" *ngIf="isAuthenticated">
       <div class="d-flex logout-button p-1" (click)="logout()">
         <div class="_images_icon">
-          <img src="images/sidebar/icon-logout-white.svg" />
+          <img src="/common-assets/images/sidebar/icon-logout-white.svg" />
         </div>
         <span class="item-label d-flex justify-content-center">Sair</span>
       </div>
     </li>
   </div>
 </ul>
-
-<div
-  id="sidebar-backdrop"
-  [ngClass]="{ show: showNavbar }"
-  (click)="hideSidebar()"
-></div>

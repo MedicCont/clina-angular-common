@@ -1,11 +1,12 @@
-import { Component, OnDestroy, OnInit, Renderer2 } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
 import { AccessModeEnum } from "src/app/modules/account/enums/access-mode.enum";
 import { AccessModeService } from "src/app/modules/account/services/access-mode.service";
-import { environment } from "../../../../../environments/environment";
-import { AccountDto } from "../../../account/dtos/account.dto";
-import { AuthenticationService } from "../../../authentication/authentication.service";
+import { AuthenticationService } from "src/app/modules/authentication/authentication.service";
+import { PlatformUtils } from "src/app/utils/platform.util";
+import { environment } from "src/environments/environment";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { SidebarService } from "../../services/sidebar.service";
 
@@ -15,180 +16,179 @@ import { SidebarService } from "../../services/sidebar.service";
   styleUrls: ["./sidebar.component.scss"],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  accessMode: AccessModeEnum = AccessModeEnum.ps;
+  @Input() isAuthenticated: boolean = false;
+  public AccessModeEnum = AccessModeEnum;  // Exponha o enum para o template
+  private accessModeSubject = new BehaviorSubject<AccessModeEnum>(AccessModeEnum.ps);
+  accessMode$ = this.accessModeSubject.asObservable();
+  isMobile = false;
+  showNavbar$!: Observable<boolean>;
+  items$: Observable<NavbarItemDto[]>;
 
-  account?: AccountDto;
-  hostSubscription?: Subscription;
-
-  showNavbar: boolean = false;
-  showNavbarSubscription?: Subscription;
-
+  private showNavbarSubscription?: Subscription;
+  isSidebarHovered = false; // Controla se o sidebar está com hover
   psUrl = environment.psUrl;
 
-  AccessModeEnum = AccessModeEnum;
-
   constructor(
-    private readonly authenticationService: AuthenticationService,
     private readonly sidebarService: SidebarService,
     private readonly router: Router,
+    private readonly authenticationService: AuthenticationService,
     private readonly renderer: Renderer2,
     private readonly accessModeService: AccessModeService
-  ) {}
+  ) {
+    this.items$ = this.accessMode$.pipe(
+      map(accessMode => this.getItems(accessMode))
+    );
+  }
 
-  public get items(): NavbarItemDto[] {
-    return [
+  ngOnInit(): void {
+    this.showNavbar$ = this.sidebarService.$show; // Use o observable diretamente
+
+    if (PlatformUtils.isBrowser()) {
+      this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    }
+    this.accessModeService.$accessMode.subscribe(
+      (accessMode: AccessModeEnum) => {
+        this.accessModeSubject.next(accessMode);
+      }
+    );
+  }
+
+  getItems(accessMode: AccessModeEnum): NavbarItemDto[] {
+    const items =  [
       {
         title: "Home",
-        img: "images/sidebar/icon-home-solid-white.svg",
-        url:
-          "/",
-        isActive: false,
-        show: true,
+        img: "/common-assets/images/sidebar/icon-home-solid-white.svg",
+        url: "/ps",
+        isActive: true,
+        show: accessMode === AccessModeEnum.ps,
+      },
+      {
+        title: "Home",
+        img: "/common-assets/images/sidebar/icon-home-solid-white.svg",
+        url: "/",
+        isActive: true,
+        show: accessMode === AccessModeEnum.host,
       },
       {
         title: "Minha Conta",
-        img: "images/sidebar/icon-account-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-account-solid-white.svg",
         url: "/account",
-        isActive: false,
+        isActive: true,
         show: true,
       },
       {
         title: "Compras",
-        img: "images/sidebar/icon-purchases-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-purchases-solid-white.svg",
         url: "/purchase",
-        isActive: false,
-        show: this.accessMode === AccessModeEnum.ps,
+        isActive: true,
+        show: accessMode === AccessModeEnum.ps,
+      },
+      {
+        title: "Assinaturas",
+        icon: "icon-calendar-check-2",
+        url: "/subscription/management",
+        isActive: true,
+        show: accessMode === AccessModeEnum.ps,
       },
       {
         title: "Reservas",
-        img: "images/sidebar/icon-appointments-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-appointments-solid-white.svg",
         url: "/appointment/host",
-        isActive: false,
-        show: this.accessMode === AccessModeEnum.host,
+        isActive: true,
+        show: accessMode === AccessModeEnum.host,
       },
       {
         title: "Consultórios",
-        img: "images/sidebar/room-icon.svg",
+        img: "/common-assets/images/sidebar/room-icon.svg",
         url: "/room",
-        isActive: false,
-        show: this.accessMode === AccessModeEnum.host,
+        isActive: true,
+        show: accessMode === AccessModeEnum.host,
       },
       {
         title: "Check-In/Out",
-        img: "images/sidebar/icon-checkinout.svg",
+        img: "/common-assets/images/sidebar/icon-checkinout.svg",
         url: "/check",
-        isActive: false,
-        show: this.accessMode === AccessModeEnum.host,
+        isActive: true,
+        show: accessMode === AccessModeEnum.ps,
       },
       {
         title: "SaaS",
-        img: "images/sidebar/icon-saas.svg",
+        img: "/common-assets/images/sidebar/icon-saas.svg",
         url: "/saas",
-        isActive: false,
-        show:
-          this.accessMode === AccessModeEnum.host &&
-          (this.account?.isActiveSaaS || false),
+        isActive: true,
+        show: accessMode === AccessModeEnum.host,
       },
       {
         title: "Agenda",
-        img: "images/sidebar/icon-schedule-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-schedule-solid-white.svg",
         url: "/my-schedule",
-        isActive: false,
+        isActive: true,
         show: true,
       },
       {
         title: "Notificações",
-        img: "images/sidebar/icon-bell-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-bell-solid-white.svg",
         url: "/notification",
-        isActive: false,
+        isActive: true,
         show: true,
       },
       {
         title: "Extrato Financeiro",
-        img: "images/sidebar/icon-money-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-money-solid-white.svg",
         url: "/statement",
-        isActive: false,
+        isActive: true,
         show: true,
       },
       {
         title: "Ganhe Créditos",
-        img: "images/sidebar/icon-indication-earns-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-indication-earns-solid-white.svg",
         url: "/get-member",
-        isActive: false,
+        isActive: true,
         show: true,
       },
       {
         title: "Favoritos",
-        img: "images/sidebar/icon-favorite-solid-white.svg",
+        img: "/common-assets/images/sidebar/icon-favorite-solid-white.svg",
         url: "/room-favorite",
-        isActive: false,
-        show: this.accessMode === AccessModeEnum.ps,
+        isActive: true,
+        show: accessMode === AccessModeEnum.ps,
       },
     ];
-  }
 
-  ngOnInit(): void {
-    this.accessModeService.$accessMode.subscribe(
-      (accessMode: AccessModeEnum) => {
-        this.accessMode = accessMode;
-      }
-    );
-
-    this.showNavbarSubscription = this.sidebarService.$show.subscribe(
-      (show: boolean) => {
-        this.showNavbar = show;
-        if (this.showNavbar && window.innerWidth < 992) {
-          this.renderer.addClass(document.body, "no-scroll");
-        } else {
-          this.renderer.removeClass(document.body, "no-scroll");
-        }
-      }
-    );
-    this.authenticationService.$account.subscribe(
-      (account: AccountDto | undefined) => {
-        this.account = account;
-      }
-    );
+    return items.filter(a=>a.show && a.isActive)
   }
 
   goToHome() {
     this.router.navigate(["/"]);
   }
 
-  goToPage(item: NavbarItemDto) {
-   try {
-    const sidebar = document.getElementById("sidebar");
-    
-    this.router.navigate([item.url]);
-    if (sidebar) {
-      sidebar.classList.add("pe-none");
-      setTimeout(() => {
-        sidebar.classList.remove("pe-none");
-      }, 1500);
-    }
-    this.hideSidebar();
-   } catch (error) {
-    console.error(error)
-   }
-  }
-
-  logout() {
-    this.authenticationService.signOut();
-  }
-
   hideSidebar() {
-    document.getElementById("body")?.classList.remove("overflow-hidden");
     this.sidebarService.hide();
   }
 
   toggleAccessMode(mode: AccessModeEnum) {
-    this.showNavbar = false;
-    this.accessModeService.changeMode(mode);
+    if (mode == AccessModeEnum.host && PlatformUtils.isBrowser())
+      window.location.href = environment.baseUrl;
+
+    else
+      this.accessModeService.changeMode(mode);
+    // this.accessModeService.setMode(mode);
+  }
+  onMouseEnter() {
+    this.isSidebarHovered = true;
+  }
+
+  onMouseLeave() {
+    this.isSidebarHovered = false;
   }
 
   ngOnDestroy(): void {
     this.showNavbarSubscription?.unsubscribe();
-    this.hostSubscription?.unsubscribe();
-    this.renderer.removeClass(document.body, "no-scroll");
+    if (PlatformUtils.isBrowser())
+      this.renderer.removeClass(document.body, "no-scroll");
+  }
+
+  logout() {
+    this.authenticationService.signOut();
   }
 }
