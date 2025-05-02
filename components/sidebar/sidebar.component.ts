@@ -162,7 +162,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       window.location.href = environment.hostUrl;
 
     else
-      this.accessModeService.setMode(mode);
+      this.accessModeService.changeMode(mode);
     // this.accessModeService.setMode(mode);
   }
   onMouseEnter() {
