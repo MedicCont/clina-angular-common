@@ -1,0 +1,104 @@
+@import "/src/styles/colors";
+@import "/src/styles/breakpoint";
+@import "/src/styles/mixins/breakpoints";
+
+:host {
+  max-width: 180px;
+  @include media-breakpoint-down($md) {
+    width: 100%;
+    max-width: 100%;
+  }
+  @include media-breakpoint-between($md, $lg) {
+    max-width: 165px;
+  }
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+  label {
+    font-size: 14px;
+    display: none;
+    margin-left: 10px;
+    background-color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    position: absolute;
+    color: $primary;
+    border-radius: 10px;
+    top: -8px;
+  }
+  input {
+    border: solid 1px $gray-300;
+    padding-left: 15px;
+    padding-right: 20px;
+    width: 100%;
+    height: 44px;
+    border-radius: 22px;
+    outline: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.icon-calendar {
+  cursor: pointer;
+  color: $gray-500 !important;
+  position: absolute;
+  top: 14px;
+  right: 8px;
+}
+
+.input-container.focused {
+  label {
+    display: block;
+  }
+  input {
+    border-color: $primary;
+  }
+  .icon-calendar {
+    color: $primary !important;
+  }
+}
+
+.input-container.selected:not(.focused) {
+  input {
+    border-color: $primary;
+    color: $primary;
+  }
+  .icon-calendar {
+    color: $primary !important;
+  }
+}
+
+.clear {
+  cursor: pointer;
+  position: absolute;
+  right: 2rem;
+  top: 1px;
+  font-size: 1.5rem;
+  font-weight: 100;
+  background-color: transparent;
+  border: none;
+  span {
+    padding-top: 0.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    color: $gray-500;
+    &:hover {
+      color: $gray-900;
+    }
+  }
+}
+
+::ng-deep {
+  .bs-datepicker {
+    margin-top: 5px;
+    margin-right: -7.6rem;
+    border-radius: 18px !important;
+    @include media-breakpoint-down($md) {
+      margin: 0 auto;
+    }
+  }
+}

@@ -1,0 +1,25 @@
+<div class="input-container" [ngClass]="{focused: isOpen, selected: date != undefined}">
+  <label>{{title}}</label>
+  <input
+    [attr.id]="inputId"
+    type="text"
+    [placeholder]="isOpen ? '' : title"
+    bsDatepicker
+    #dp="bsDatepicker"
+    [isOpen]="isOpen"
+    [bsConfig]="bsConfig"
+    [bsValue]="date"
+    (bsValueChange)="changeDate($event)"
+    [isDisabled]="isDisabled"
+    [disabled]="isDisabled"
+    [readonly]="true"
+    [ngClass]="{ 'is-invalid': isNotValid }"
+    [ngClass]="{ 'is-valid': isValid }"
+    (onShown)="isOpen=true"
+    (onHidden)="isOpen=false"
+  />
+  <button type="button" class="close clear" aria-label="Close" (click)="clear()" [hidden]="date == undefined">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <i class="clina icon-calendar text-primary" (click)="toggle()"></i>
+</div>

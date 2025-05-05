@@ -5,7 +5,7 @@
 >
   <div *ngIf="room.packagesOfHours.length > 0" class="tag-discount">
     <a [routerLink]="routeToRoom" [queryParams]="{ scroll: 'discount' }">
-      <img src="images/discount/discount.svg" alt="logo clina care" />
+      <img src="/common-assets/images/discount/discount.svg" alt="logo clina care" />
     </a>
     <div class="popover-discount">
       <div class="texto">
@@ -39,7 +39,7 @@
   <div *ngIf="room?.advance && room.advance <= 240" class="tag-fast-booking">
     <a [routerLink]="routeToRoom" [queryParams]="{ scroll: 'discount' }">
       <img
-        src="images/discount/fast-booking.png"
+        src="/common-assets/images/discount/fast-booking.png"
         alt="Este consultório permite reservas de última hora"
       />
     </a>
@@ -69,15 +69,15 @@
     <div class="d-flex">
       <div class="btn-share" (click)="openSuccessModal()">
         <img
-          src="images/icons/icon-share.png"
-          class="icon-share"
+          src="/common-assets/images/icons/icon-share.png"
+          class="clina icon-share"
           alt="ícone indicativo do botão de compartilhamento"
           width="12"
           height="12"
         />
         <img
-          src="images/icons/icon-share-filled.png"
-          class="icon-share-filled"
+          src="/common-assets/images/icons/icon-share-filled.png"
+          class="clina icon-share-filled"
           alt="ícone indicando que a sala foi compartilhada"
           width="12"
           height="12"
@@ -98,7 +98,7 @@
         height="235"
         role="button"
         class="card-img clickable"
-        onerror="this.src='images/room/not-found.png'"
+        onerror="this.src='/common-assets/images/room/not-found.png'"
       />
     </a>
     <a [routerLink]="routeToRoom" class="carousel-card-link">

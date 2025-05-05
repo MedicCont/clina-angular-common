@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
+import { RoomDto } from "app/modules/common/dtos/room.dto";
 import { BehaviorSubject } from "rxjs";
-import { RoomDto } from "src/app/modules/common/dtos/room.dto";
 
 @Injectable({ providedIn: "root" })
 export class RoomCardService {

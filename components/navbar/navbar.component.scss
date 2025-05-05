@@ -7,7 +7,38 @@
   @include media-breakpoint-up($lg) {
     position: fixed;
     width: 100vw;
-    z-index: 3;
+    z-index: 101;
+  }
+}
+
+.link-login{
+  width: 3em;
+  height: 3em;
+  background-color: #9A6DF6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i{
+    font-size: 1.5em;
+  }
+}
+
+.link-login:hover{
+  opacity: 70%;
+}
+
+.link-login-mobile{
+  color: #fff;
+  width: 2em;
+  height: 2em;
+  background-color: #9A6DF6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i{
+    font-size: 1em;
   }
 }
 
@@ -83,10 +114,10 @@
     cursor: pointer;
     div {
       background-color: white;
-      width: 32px;
-      height: 5px;
+      width: 26px;
+      height: 3px;
       border-radius: 2px;
-      margin: 5px 0;
+      margin: 6px 0;
       transition: width 500ms, margin-left 500ms;
     }
     &:hover {
@@ -109,4 +140,23 @@
   .brand {
     background: $secondary;
   }
+}
+
+.maleta-cart{
+  position: relative;
+}
+
+.badge-maleta-count{
+  position: absolute;
+  padding: 8px;
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+  background-color: $warning;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 10px;
+  top: -5px;
+  right: -5px;
 }
