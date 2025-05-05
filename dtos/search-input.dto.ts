@@ -5,7 +5,7 @@ export interface SearchInput {
   take?: number;
   begin: string;
   end: string;
-  neighborhood: string;
+  neighborhood?: string;
   lat: number;
   lng: number;
   radius?: number;
