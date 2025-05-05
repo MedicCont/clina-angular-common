@@ -1,8 +1,8 @@
 <nav
   id="navbar"
   [ngClass]="{
-    hostMode: accessMode === AccessModeEnum.host,
-    psMode: AccessModeEnum.ps
+    hostMode: accessMode === AccessModeEnum.HOST,
+    psMode: AccessModeEnum.HEALTH_PERSON
   }"
 >
   <div class="brand-container" (click)="goToHome()">
@@ -16,7 +16,7 @@
 
   <div class="d-flex align-items-center search-bar-container">
     <clina-navbar-search
-      *ngIf="accessMode === AccessModeEnum.ps"
+      *ngIf="accessMode === AccessModeEnum.HEALTH_PERSON"
     ></clina-navbar-search>
   </div>
 

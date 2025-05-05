@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
-  accessMode: AccessModeEnum = AccessModeEnum.ps;
+  accessMode: AccessModeEnum = AccessModeEnum.HEALTH_PERSON;
 
   homeUrl = environment.baseUrl;
   psUrl = environment.psUrl;

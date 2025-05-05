@@ -19,7 +19,7 @@ import { SidebarService } from "../../services/sidebar.service";
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
-  accessMode: AccessModeEnum = AccessModeEnum.ps;
+  accessMode: AccessModeEnum = AccessModeEnum.HEALTH_PERSON;
   psUrl = environment.psUrl;
   whatsappNumber = environment.whatsappNumber;
   pageTitle?: PageTitleDto;
