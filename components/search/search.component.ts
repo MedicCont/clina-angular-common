@@ -29,7 +29,7 @@ export class NavbarSearchComponent implements OnInit {
   searchInput?: SearchInput;
 
   cities: PlaceDto[] = [];
-  districts: PlaceDto[] = [];
+  neighborhoods: PlaceDto[] = [];
   googlePlaces: PlaceDto[] = [];
   ceps: PlaceDto[] = [];
   locationsList: PlaceDto[] = [];
@@ -80,11 +80,11 @@ export class NavbarSearchComponent implements OnInit {
             radius: 50000,
           });
 
-          value.districts.forEach((district: any) => {
-            this.districts.push({
+          value.neighborhoods.forEach((neighborhood: any) => {
+            this.neighborhoods.push({
               type: PlaceTypeEnum.NEIBHBORHOOD,
-              label: district + ' - ' + key + ' - ' + value.state,
-              neighborhood: district,
+              label: neighborhood + ' - ' + key + ' - ' + value.state,
+              neighborhood: neighborhood,
               city: key,
               state: value.state,
               radius: 20000,
@@ -113,12 +113,12 @@ export class NavbarSearchComponent implements OnInit {
       (city) => city.city && city.city.toLowerCase().indexOf(keyword.toLowerCase()) > -1,
     );
 
-    const districts = this.districts.filter(
-      (district) => district.neighborhood && district.neighborhood.toLowerCase().indexOf(keyword.toLowerCase()) > -1,
+    const neighborhoods = this.neighborhoods.filter(
+      (neighborhood) => neighborhood.neighborhood && neighborhood.neighborhood.toLowerCase().indexOf(keyword.toLowerCase()) > -1,
     );
 
-    if (cities.length || districts.length) {
-      this.locationsList = districts.concat(cities);
+    if (cities.length || neighborhoods.length) {
+      this.locationsList = neighborhoods.concat(cities);
       return;
     }
 
@@ -362,7 +362,7 @@ export class NavbarSearchComponent implements OnInit {
         this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
           ? this.locationSelected.state
           : undefined,
-      district:
+      neighborhood:
         this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
           ? this.locationSelected.neighborhood
           : undefined,

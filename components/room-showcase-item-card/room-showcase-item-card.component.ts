@@ -25,7 +25,7 @@ export class RoomShowcaseItemCardComponent implements OnInit {
   @Input() end?: string;
   @Input() period?: string;
   @Input() plan?: string;
-  @Input() district?: string;
+  @Input() neighborhood?: string;
   @Input() searchInput?: SearchInput;
   @Input() showMap: boolean = false;
   @Output() reloadAction = new EventEmitter<void>();
