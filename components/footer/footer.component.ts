@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AccessModeEnum } from 'src/app/modules/account/enums/access-mode.enum';
-import { AccessModeService } from 'src/app/modules/account/services/access-mode.service';
-import { environment } from 'src/environments/environment';
+import { AccessModeEnum } from 'app/modules/account/enums/access-mode.enum';
+import { AccessModeService } from 'app/modules/account/services/access-mode.service';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'clina-footer',
@@ -9,11 +9,11 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
-  accessMode: AccessModeEnum = AccessModeEnum.ps;
+  accessMode: AccessModeEnum = AccessModeEnum.HEALTH_PERSON;
 
   homeUrl = environment.baseUrl;
   psUrl = environment.psUrl;
-  hostUrl = 'environment.hostUrl';
+  hostUrl = environment.hostUrl;
   whatsappNumber = environment.whatsappNumber;
 
   AccessModeEnum = AccessModeEnum;

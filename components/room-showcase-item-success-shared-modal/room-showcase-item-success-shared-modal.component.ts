@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { environment } from "src/environments/environment";
-import { AnalyticsService } from "src/app/modules/analytics/analytics.service";
-import { EventAnalyticsEnum } from "src/app/modules/analytics/enums/ecommerce.enum";
-import { NotifyType } from "src/app/modules/notify/enums/notify-type.enum";
-import { NotifyService } from "src/app/modules/notify/notify.service";
+import { AnalyticsService } from "app/modules/analytics/analytics.service";
+import { EventAnalyticsEnum } from "app/modules/analytics/enums/ecommerce.enum";
+import { RoomDto } from "app/modules/common/dtos/room.dto";
+import { NotifyType } from "app/modules/notify/enums/notify-type.enum";
+import { NotifyService } from "app/modules/notify/notify.service";
+import { environment } from "environments/environment";
 import { BsModalRef } from "ngx-bootstrap/modal";
-import { RoomDto } from "src/app/modules/common/dtos/room.dto";
 import { RoomCardService } from "../../services/room-card.service";
 
 @Component({

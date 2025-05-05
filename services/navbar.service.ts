@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { environment } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -8,9 +8,9 @@ import { environment } from 'src/environments/environment';
 export class NavbarService {
   constructor(private http: HttpClient) {}
 
-  getCoordinates(city: string, state: string, district?: string) {
+  getCoordinates(city: string, state: string, neighborhood?: string) {
     return this.http.get<any>(
-      `${environment.restUrl}/maps/coordinates?address=${district}&city=${city}&state=${state}`
+      `${environment.restUrl}/maps/coordinates?address=${neighborhood}&city=${city}&state=${state}`
     );
   }
 

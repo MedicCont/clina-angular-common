@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { ApolloQueryResult } from "@apollo/client/core";
 import { Apollo } from "apollo-angular";
-import { AuthenticationService } from "src/app/modules/authentication/authentication.service";
+import { AuthenticationService } from "app/modules/authentication/authentication.service";
 import { BehaviorSubject, Observable, map } from "rxjs";
-import { ROOMS_FAVORITE_CREATE_MUTATION } from "../mutations/favorite-rooms-create.mutation";
-import { ROOMS_FAVORITE_REMOVE_MUTATION } from "../mutations/favorite-rooms-remove.mutation";
-import { ROOMS_FAVORITE_QUERY } from "../queries/favorite-rooms.query";
 import { RoomFavoriteDto } from "../dtos/room-favorite.dto";
 import { RoomFavoriteCreateInput } from "../inputs/room-favorite-create.input";
 import { RoomFavoriteRemoveInput } from "../inputs/room-favorite-remove.input";
+import { ROOMS_FAVORITE_CREATE_MUTATION } from "../mutations/favorite-rooms-create.mutation";
+import { ROOMS_FAVORITE_REMOVE_MUTATION } from "../mutations/favorite-rooms-remove.mutation";
+import { ROOMS_FAVORITE_QUERY } from "../queries/favorite-rooms.query";
 
 @Injectable({
   providedIn: "root",

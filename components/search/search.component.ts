@@ -6,15 +6,15 @@ import {
   Renderer2,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NavbarService } from 'app/modules/navbar/navbar.service';
+import { PlatformUtils } from 'app/utils/platform.util';
 import moment from 'moment-timezone';
 import { CoordinatesDto } from '../../dtos/coordinates.dto';
 import { PlaceDto } from '../../dtos/place.dto';
 import { SearchInput } from '../../dtos/search-input.dto';
 import { PlaceTypeEnum } from '../../enums/place-type.enum';
-import { DropdownItem } from '../location-dropdown/location-dropdown.component';
-import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
-import { NavbarService } from '../../services/navbar.service';
 import { ClinicLocationsGetService } from '../../services/clinic-locations-get.service';
+import { DropdownItem } from '../location-dropdown/location-dropdown.component';
 
 @Component({
   selector: 'clina-navbar-search',
@@ -41,13 +41,8 @@ export class NavbarSearchComponent implements OnInit {
   loadingCoordinates: boolean = false;
 
   date?: Date;
+  neighborhood: string = '';
 
-  public get dropdownList(): DropdownItem[] {
-    return this.locationsList.map((l) => ({
-      label: l.label,
-      value: l.label,
-    }));
-  }
 
   public get locationSelectedToDrop(): DropdownItem {
     return {
@@ -62,7 +57,7 @@ export class NavbarSearchComponent implements OnInit {
     private readonly clinicLocationsGetService: ClinicLocationsGetService,
     private readonly route: ActivatedRoute,
     private readonly router: Router
-  ) {}
+  ) { }
 
   @HostListener('document:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -72,28 +67,27 @@ export class NavbarSearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.clinicLocationsGetService.handle().subscribe({
-      next: (locations: ClinicLocationDto[]) => {
-        locations.forEach((location) => {
-          location.cities.forEach((city) => {
-            this.cities.push({
-              type: PlaceTypeEnum.CITY,
-              label: city.city + ' - ' + location.state,
-              city: city.city,
-              state: location.state,
-              radius: 50,
-            });
+    this.navbarService
+      .getLocations()
+      .toPromise()
+      .then((response: any) => {
+        Object.entries(response).forEach(([key, value]: [string, any]) => {
+          this.cities.push({
+            type: PlaceTypeEnum.CITY,
+            label: key + ' - ' + value.state,
+            city: key,
+            state: value.state,
+            radius: 50000,
+          });
 
-            city.neighborhoods.forEach((neighborhood: string) => {
-              this.neighborhoods.push({
-                type: PlaceTypeEnum.NEIBHBORHOOD,
-                label:
-                  neighborhood + ' - ' + city.city + ' - ' + location.state,
-                neighborhood: neighborhood,
-                city: city.city,
-                state: location.state,
-                radius: 20,
-              });
+          value.neighborhoods.forEach((neighborhood: any) => {
+            this.neighborhoods.push({
+              type: PlaceTypeEnum.NEIBHBORHOOD,
+              label: neighborhood + ' - ' + key + ' - ' + value.state,
+              neighborhood: neighborhood,
+              city: key,
+              state: value.state,
+              radius: 20000,
             });
           });
         });
@@ -101,11 +95,7 @@ export class NavbarSearchComponent implements OnInit {
         this.locationsList = this.cities;
 
         this.setupFilter();
-      },
-      error: (error: any) => {
-        console.error('locations error: ', error.toString());
-      },
-    });
+      });
   }
 
   changeLocationKeyword(event: any): void {
@@ -120,15 +110,11 @@ export class NavbarSearchComponent implements OnInit {
     }
 
     const cities = this.cities.filter(
-      (city) =>
-        city.city && city.city.toLowerCase().indexOf(keyword.toLowerCase()) > -1
+      (city) => city.city && city.city.toLowerCase().indexOf(keyword.toLowerCase()) > -1,
     );
 
     const neighborhoods = this.neighborhoods.filter(
-      (neighborhood) =>
-        neighborhood.neighborhood &&
-        neighborhood.neighborhood.toLowerCase().indexOf(keyword.toLowerCase()) >
-          -1
+      (neighborhood) => neighborhood.neighborhood && neighborhood.neighborhood.toLowerCase().indexOf(keyword.toLowerCase()) > -1,
     );
 
     if (cities.length || neighborhoods.length) {
@@ -157,12 +143,10 @@ export class NavbarSearchComponent implements OnInit {
     if (!event) {
       this.locationSelected = undefined;
       this.changeLocationKeyword('');
-      this.openLocalization();
       return;
     }
 
     this.locationSelected = event;
-
     await this.getCoordinates();
   }
 
@@ -204,98 +188,100 @@ export class NavbarSearchComponent implements OnInit {
   }
 
   setupFilter() {
-    // Função para verificar se os filtros no localStorage estão expirados
-    const isFilterExpired = () => {
-      const savedFilterDate = localStorage.getItem('filterDate');
-      if (!savedFilterDate) return true; // Se não houver data salva, considera expirado
-      const savedDate = new Date(savedFilterDate);
-      const currentDate = new Date();
-      return savedDate.getDate() !== currentDate.getDate(); // Verifica se é o mesmo dia
-    };
+    if (PlatformUtils.isBrowser()) {
+      // Função para verificar se os filtros no localStorage estão expirados
+      const isFilterExpired = () => {
+        const savedFilterDate = localStorage.getItem('filterDate');
+        if (!savedFilterDate) return true; // Se não houver data salva, considera expirado
+        const savedDate = new Date(savedFilterDate);
+        const currentDate = new Date();
+        return savedDate.getDate() !== currentDate.getDate(); // Verifica se é o mesmo dia
+      };
 
-    // Função para atualizar os filtros no localStorage
-    const updateLocalStorageFilters = (filters: SearchInput) => {
-      localStorage.setItem('filterDate', new Date().toISOString());
-      localStorage.setItem('savedFilters', JSON.stringify(filters));
-    };
+      // Função para atualizar os filtros no localStorage
+      const updateLocalStorageFilters = (filters: SearchInput) => {
+        localStorage.setItem('filterDate', new Date().toISOString());
+        localStorage.setItem('savedFilters', JSON.stringify(filters));
+      };
 
-    // Função para obter os filtros salvos no localStorage
-    const getSavedFilters = (): SearchInput | null => {
-      const savedFiltersStr = localStorage.getItem('savedFilters');
-      return savedFiltersStr ? JSON.parse(savedFiltersStr) : null;
-    };
 
-    this.route.queryParams.subscribe({
-      next: (paramsList) => {
-        const savedFilters = getSavedFilters();
-        const hasLocalization =
-          paramsList?.['lat'] && paramsList?.['lng'] && paramsList?.['radius'];
+      // Função para obter os filtros salvos no localStorage
+      const getSavedFilters = (): SearchInput | null => {
+        const savedFiltersStr = localStorage.getItem('savedFilters');
+        return savedFiltersStr ? JSON.parse(savedFiltersStr) : null;
+      };
 
-        if (paramsList && Object.keys(paramsList).length > 0) {
-          // Filtros da URL
-          this.searchInput = {
-            begin: paramsList?.['begin'] ?? moment().startOf('day').format(),
-            end: paramsList?.['end'] ?? moment().add(6, 'days').format(),
-            city: paramsList?.['city'],
-            neighborhood: paramsList?.['neighborhood'],
-            state: paramsList?.['state'],
-            radius: Number(hasLocalization ? paramsList?.['radius'] : 0),
-            lat: parseFloat(hasLocalization ? paramsList?.['lat'] : 0),
-            lng: parseFloat(hasLocalization ? paramsList?.['lng'] : 0),
-            page: Number(paramsList?.['page'] ?? 1),
-            take: Number(paramsList?.['take'] ?? 12),
-            roomTypes: paramsList?.['roomTypes'] ?? [],
-            roomAmenities: paramsList?.['roomAmenities'] ?? [],
-            clinicAmenities: paramsList?.['clinicAmenities'] ?? [],
-            equipments: paramsList?.['equipments'] ?? [],
-            maxValue: Number(paramsList?.['maxValue']),
-            hasDiscount: paramsList?.['hasDiscount'] === 'true',
-          };
-          updateLocalStorageFilters(this.searchInput);
-        } else if (savedFilters && !isFilterExpired()) {
-          // Filtros salvos no localStorage se não houver filtros na URL
-          this.searchInput = savedFilters;
-        } else {
-          // Valores padrão se não houver filtros na URL e os salvos no localStorage estão expirados
-          this.searchInput = {
-            begin: moment().format(),
-            end: moment().add(6, 'days').format(),
-            city: undefined,
-            neighborhood: '',
-            state: undefined,
-            radius: 0,
-            lat: 0,
-            lng: 0,
-            page: 1,
-            take: 12,
-            roomTypes: [],
-            roomAmenities: [],
-            clinicAmenities: [],
-            equipments: [],
-            maxValue: undefined,
-            hasDiscount: false,
-          };
-          updateLocalStorageFilters(this.searchInput);
-        }
+      this.route.queryParams.subscribe({
+        next: (paramsList) => {
+          const savedFilters = getSavedFilters();
+          const hasLocalization =
+            paramsList?.['lat'] && paramsList?.['lng'] && paramsList?.['radius'];
+          if (paramsList && Object.keys(paramsList).length > 0) {
+            // Filtros da URL
+            this.searchInput = {
+              begin: paramsList?.['begin'] ?? moment().startOf('day').format(),
+              end: paramsList?.['end'] ?? moment().add(6, 'days').format(),
+              city: paramsList?.['city'],
+              neighborhood: paramsList?.['neighborhood'],
+              state: paramsList?.['state'],
+              radius: Number(hasLocalization ? paramsList?.['radius'] : 0),
+              lat: parseFloat(hasLocalization ? paramsList?.['lat'] : 0),
+              lng: parseFloat(hasLocalization ? paramsList?.['lng'] : 0),
+              page: Number(paramsList?.['page'] ?? 1),
+              take: Number(paramsList?.['take'] ?? 12),
+              roomTypes: paramsList?.['roomTypes'] ?? [],
+              roomAmenities: paramsList?.['roomAmenities'] ?? [],
+              clinicAmenities: paramsList?.['clinicAmenities'] ?? [],
+              equipments: paramsList?.['equipments'] ?? [],
+              maxValue: Number(paramsList?.['maxValue']),
+              hasDiscount: paramsList?.['hasDiscount'] === 'true',
+            };
+            updateLocalStorageFilters(this.searchInput);
+          } else if (savedFilters && !isFilterExpired()) {
+            // Filtros salvos no localStorage se não houver filtros na URL
+            this.searchInput = savedFilters;
+          } else {
+            // Valores padrão se não houver filtros na URL e os salvos no localStorage estão expirados
+            this.searchInput = {
+              begin: moment().format(),
+              end: moment().add(6, 'days').format(),
+              city: undefined,
+              neighborhood: '',
+              state: undefined,
+              radius: 0,
+              lat: 0,
+              lng: 0,
+              page: 1,
+              take: 12,
+              roomTypes: [],
+              roomAmenities: [],
+              clinicAmenities: [],
+              equipments: [],
+              maxValue: undefined,
+              hasDiscount: false,
+            };
+            updateLocalStorageFilters(this.searchInput);
+          }
 
-        // Verifica se os parâmetros da URL são diferentes dos filtros atuais e, se forem, atualiza os filtros
-        const queryParamsKeys = Object.keys(paramsList);
-        const filterKeys = Object.keys(this.searchInput);
-        // if (
-        //   queryParamsKeys.some(
-        //     (key) =>
-        //       filterKeys.includes(key) &&
-        //       this.searchInput[key as keyof SearchInput] !== paramsList[key]
-        //   )
-        // ) {
-        //   updateLocalStorageFilters(this.searchInput);
-        // }
+          // Verifica se os parâmetros da URL são diferentes dos filtros atuais e, se forem, atualiza os filtros
+          const queryParamsKeys = Object.keys(paramsList);
+          const filterKeys = Object.keys(this.searchInput);
+          // if (
+          //   queryParamsKeys.some(
+          //     (key) =>
+          //       filterKeys.includes(key) &&
+          //       this.searchInput[key as keyof SearchInput] !== paramsList[key]
+          //   )
+          // ) {
+          //   updateLocalStorageFilters(this.searchInput);
+          // }
 
-        // Atualize a interface com os filtros
-        this.clearFilters();
-        this.configFilter(this.searchInput);
-      },
-    });
+          // Atualize a interface com os filtros
+          this.clearFilters();
+          this.configFilter(this.searchInput);
+        },
+      });
+    }
   }
 
   clearFilters() {
@@ -358,43 +344,30 @@ export class NavbarSearchComponent implements OnInit {
     this.showSearch = false;
   }
 
+
   async makeSearch() {
-    if (
-      this.locationsList.length &&
-      !this.locationSelected &&
-      this.keyword.length > 2
-    ) {
+    if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
       await this.selectLocation(this.locationsList[0]);
     }
 
+    debugger;
     const searchInput = Object.assign(this.searchInput as SearchInput, {
-      begin: this.date
-        ? moment(this.date).format()
-        : moment().startOf('day').format(),
-      end: moment(this.date).startOf('day').add(6, 'days').format(),
+      begin: this.date || moment(),
+      end: moment(this.date).add(7, 'days').toDate(),
       city:
-        this.locationSelected &&
-        [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(
-          this.locationSelected.type
-        )
+        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
           ? this.locationSelected.city
           : undefined,
       state:
-        this.locationSelected &&
-        [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(
-          this.locationSelected.type
-        )
+        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
           ? this.locationSelected.state
           : undefined,
       neighborhood:
-        this.locationSelected &&
-        this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
+        this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
           ? this.locationSelected.neighborhood
           : undefined,
       googlePlace:
-        this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES
-          ? this.locationSelected.label
-          : undefined,
+        this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
       lat: this.locationSelected?.lat,
       lng: this.locationSelected?.lng,
       radius: this.locationSelected?.radius,
@@ -404,7 +377,7 @@ export class NavbarSearchComponent implements OnInit {
     });
 
     this.router.navigate(['/room/list'], { queryParams: searchInput });
-
-    setTimeout(() => this.close(), 200);
+    this.close();
   }
+
 }

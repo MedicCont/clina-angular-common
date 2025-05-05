@@ -9,7 +9,6 @@
     (ngModelChange)="change()"
     (click)="open()"
     (focus)="open()"
-    (blur)="close()"
   />
 
   <button type="button" class="close clear" aria-label="Close" (click)="clear()" [hidden]="!selected">
@@ -22,7 +21,7 @@
     class="list-item"
     [ngClass]="{ 'bg-primary text-white': selected?.value && item.value === selected?.value }"
     *ngFor="let item of list"
-    (click)="select(item)"
+    (mousedown)="select(item)"
   >
     {{ item.label }}
   </div>

@@ -1,12 +1,11 @@
 import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import { Router } from "@angular/router";
-import { BehaviorSubject, Observable, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
-import { AccessModeEnum } from "src/app/modules/account/enums/access-mode.enum";
-import { AccessModeService } from "src/app/modules/account/services/access-mode.service";
-import { AuthenticationService } from "src/app/modules/authentication/authentication.service";
-import { PlatformUtils } from "src/app/utils/platform.util";
-import { environment } from "src/environments/environment";
+import { environment } from "@environments/environment";
+import { AccessModeEnum } from "app/modules/account/enums/access-mode.enum";
+import { AccessModeService } from "app/modules/account/services/access-mode.service";
+import { AuthenticationService } from "app/modules/authentication/authentication.service";
+import { PlatformUtils } from "app/utils/platform.util";
+import { BehaviorSubject, Observable, Subscription, map } from "rxjs";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { SidebarService } from "../../services/sidebar.service";
 
@@ -18,7 +17,7 @@ import { SidebarService } from "../../services/sidebar.service";
 export class SidebarComponent implements OnInit, OnDestroy {
   @Input() isAuthenticated: boolean = false;
   public AccessModeEnum = AccessModeEnum;  // Exponha o enum para o template
-  private accessModeSubject = new BehaviorSubject<AccessModeEnum>(AccessModeEnum.ps);
+  private accessModeSubject = new BehaviorSubject<AccessModeEnum>(AccessModeEnum.HEALTH_PERSON);
   accessMode$ = this.accessModeSubject.asObservable();
   isMobile = false;
   showNavbar$!: Observable<boolean>;
@@ -60,14 +59,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
         img: "/common-assets/images/sidebar/icon-home-solid-white.svg",
         url: "/ps",
         isActive: true,
-        show: accessMode === AccessModeEnum.ps,
+        show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
         title: "Home",
         img: "/common-assets/images/sidebar/icon-home-solid-white.svg",
         url: "/",
         isActive: true,
-        show: accessMode === AccessModeEnum.host,
+        show: accessMode === AccessModeEnum.HOST,
       },
       {
         title: "Minha Conta",
@@ -81,42 +80,42 @@ export class SidebarComponent implements OnInit, OnDestroy {
         img: "/common-assets/images/sidebar/icon-purchases-solid-white.svg",
         url: "/purchase",
         isActive: true,
-        show: accessMode === AccessModeEnum.ps,
+        show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
         title: "Assinaturas",
         icon: "icon-calendar-check-2",
         url: "/subscription/management",
-        isActive: true,
-        show: accessMode === AccessModeEnum.ps,
+        isActive: false,
+        show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
         title: "Reservas",
         img: "/common-assets/images/sidebar/icon-appointments-solid-white.svg",
         url: "/appointment/host",
-        isActive: true,
-        show: accessMode === AccessModeEnum.host,
+        isActive: false,
+        show: accessMode === AccessModeEnum.HOST,
       },
       {
         title: "Consultórios",
         img: "/common-assets/images/sidebar/room-icon.svg",
         url: "/room",
-        isActive: true,
-        show: accessMode === AccessModeEnum.host,
+        isActive: false,
+        show: accessMode === AccessModeEnum.HOST,
       },
       {
         title: "Check-In/Out",
         img: "/common-assets/images/sidebar/icon-checkinout.svg",
         url: "/check",
-        isActive: true,
-        show: accessMode === AccessModeEnum.ps,
+        isActive: false,
+        show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
         title: "SaaS",
         img: "/common-assets/images/sidebar/icon-saas.svg",
         url: "/saas",
-        isActive: true,
-        show: accessMode === AccessModeEnum.host,
+        isActive: false,
+        show: accessMode === AccessModeEnum.HOST,
       },
       {
         title: "Agenda",
@@ -150,8 +149,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Favoritos",
         img: "/common-assets/images/sidebar/icon-favorite-solid-white.svg",
         url: "/room-favorite",
-        isActive: true,
-        show: accessMode === AccessModeEnum.ps,
+        isActive: false,
+        show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
     ];
 
@@ -167,8 +166,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toggleAccessMode(mode: AccessModeEnum) {
-    if (mode == AccessModeEnum.host && PlatformUtils.isBrowser())
-      window.location.href = environment.baseUrl;
+    if (mode == AccessModeEnum.HOST && PlatformUtils.isBrowser())
+      window.location.href = environment.hostUrl;
 
     else
       this.accessModeService.changeMode(mode);

@@ -2,8 +2,8 @@
   id="sidebar"
   [ngClass]="{
     show: (showNavbar$ | async) || (!isMobile&&isSidebarHovered),
-    hostMode: (accessMode$ | async) === AccessModeEnum.host,
-    psMode: (accessMode$ | async) === AccessModeEnum.ps
+    hostMode: (accessMode$ | async) === AccessModeEnum.HOST,
+    psMode: (accessMode$ | async) === AccessModeEnum.HEALTH_PERSON
   }"
   (mouseenter)="onMouseEnter()"
   (mouseleave)="onMouseLeave()">
@@ -28,10 +28,10 @@
       </a>
     </li>
 
-    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) == AccessModeEnum.ps">
+    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON">
       <div
         class="d-flex access-mode-button align-items-center p-1"
-        (click)="toggleAccessMode(AccessModeEnum.host)">
+        (click)="toggleAccessMode(AccessModeEnum.HOST)">
         <div class="_images_icon">
           <img src="/common-assets/images/sidebar/icon-toggle-mode-white.svg" />
         </div>
@@ -39,10 +39,10 @@
       </div>
     </li>
 
-    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) != AccessModeEnum.ps">
+    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) != AccessModeEnum.HEALTH_PERSON">
       <div
         class="d-flex access-mode-button align-items-center p-1"
-        (click)="toggleAccessMode(AccessModeEnum.ps)">
+        (click)="toggleAccessMode(AccessModeEnum.HEALTH_PERSON)">
         <div class="_images_icon">
           <img src="/common-assets/images/sidebar/icon-toggle-mode-white.svg" />
         </div>

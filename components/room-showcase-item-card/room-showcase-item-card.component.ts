@@ -1,17 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { environment } from "src/environments/environment";
-import { UnleashService } from "@snowfrog/ngx-unleash-proxy-client";
-import { HourAvailable } from "src/app/modules/common/dtos/hour-available.dto";
+import { HourAvailable } from "app/modules/common/dtos/hour-available.dto";
 import {
-  PackageOfHourDto,
-  RoomPackageOfHoursTypeEnum,
-} from "src/app/modules/common/dtos/package-of-hour.dto";
+    PackageOfHourDto,
+    RoomPackageOfHoursTypeEnum,
+} from "app/modules/common/dtos/package-of-hour.dto";
+import { RoomFavoriteDto } from "app/modules/common/dtos/room-favorite.dto";
+import { RoomDto } from "app/modules/common/dtos/room.dto";
+import { FavoriteButtonService } from "app/modules/common/services/favorite-button.service";
+import { UnleashService } from "app/services/unleash.service";
+import { environment } from "environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
-import { RoomFavoriteDto } from "src/app/modules/common/dtos/room-favorite.dto";
-import { RoomCardService } from "../../services/room-card.service";
-import { FavoriteButtonService } from "src/app/modules/common/services/favorite-button.service";
-import { RoomDto } from "src/app/modules/common/dtos/room.dto";
 import { SearchInput } from "../../dtos/search-input.dto";
+import { RoomCardService } from "../../services/room-card.service";
 import { RoomShowcaseItemSuccessSharedModalComponent } from "../room-showcase-item-success-shared-modal/room-showcase-item-success-shared-modal.component";
 
 @Component({
@@ -25,7 +25,7 @@ export class RoomShowcaseItemCardComponent implements OnInit {
   @Input() end?: string;
   @Input() period?: string;
   @Input() plan?: string;
-  @Input() district?: string;
+  @Input() neighborhood?: string;
   @Input() searchInput?: SearchInput;
   @Input() showMap: boolean = false;
   @Output() reloadAction = new EventEmitter<void>();
@@ -40,12 +40,12 @@ export class RoomShowcaseItemCardComponent implements OnInit {
   };
 
   imageRoomType: any = {
-    TRADITIONAL: "images/layout-images/traditional-small.svg",
-    DENTAL: "images/layout-images/odonto-small.svg",
-    PHYSICAL_EXAM: "images/layout-images/physical-small.svg",
-    DIVAN: "images/layout-images/diva-small.svg",
-    FIT: "images/layout-images/typeroom-fit-small.svg",
-    OTHERS: "images/layout-images/typeroom-others-small.svg",
+    TRADITIONAL: "/common-assets/images/layout-images/traditional-small.svg",
+    DENTAL: "/common-assets/images/layout-images/odonto-small.svg",
+    PHYSICAL_EXAM: "/common-assets/images/layout-images/physical-small.svg",
+    DIVAN: "/common-assets/images/layout-images/diva-small.svg",
+    FIT: "/common-assets/images/layout-images/typeroom-fit-small.svg",
+    OTHERS: "/common-assets/images/layout-images/typeroom-others-small.svg",
   };
 
   chosenPlan?: string;
