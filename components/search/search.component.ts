@@ -6,15 +6,15 @@ import {
   Renderer2,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavbarService } from 'app/modules/navbar/navbar.service';
-import { PlatformUtils } from 'app/utils/platform.util';
 import moment from 'moment-timezone';
 import { CoordinatesDto } from '../../dtos/coordinates.dto';
 import { PlaceDto } from '../../dtos/place.dto';
 import { SearchInput } from '../../dtos/search-input.dto';
 import { PlaceTypeEnum } from '../../enums/place-type.enum';
 import { ClinicLocationsGetService } from '../../services/clinic-locations-get.service';
+import { PlatformUtils } from '../../services/platform.util';
 import { DropdownItem } from '../location-dropdown/location-dropdown.component';
+import { NavbarService } from '../../services/navbar.service';
 
 @Component({
   selector: 'clina-navbar-search',

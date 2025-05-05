@@ -1,11 +1,11 @@
 import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import { Router } from "@angular/router";
 
+import { AccessModeEnum } from "app/modules/account/enums/access-mode.enum";
+import { AccessModeService } from "app/modules/account/services/access-mode.service";
+import { AuthenticationService } from "app/modules/authentication/authentication.service";
+import { environment } from "environments/environment";
 import { BehaviorSubject, Observable, Subscription, map } from "rxjs";
-import { AccessModeEnum } from "src/app/modules/account/enums/access-mode.enum";
-import { AccessModeService } from "src/app/modules/account/services/access-mode.service";
-import { AuthenticationService } from "src/app/modules/authentication/authentication.service";
-import { environment } from "src/environments/environment";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
