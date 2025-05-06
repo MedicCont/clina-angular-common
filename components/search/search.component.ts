@@ -80,7 +80,7 @@ export class NavbarSearchComponent implements OnInit {
             radius: 50000,
           });
 
-          value.neighborhoods.forEach((neighborhood: any) => {
+          value.neighborhoods?.forEach((neighborhood: any) => {
             this.neighborhoods.push({
               type: PlaceTypeEnum.NEIBHBORHOOD,
               label: neighborhood + ' - ' + key + ' - ' + value.state,
