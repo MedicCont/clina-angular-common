@@ -3,7 +3,6 @@
 import { Component, HostListener, Input, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { AccessModeEnum } from "app/modules/account/enums/access-mode.enum";
 import { AccessModeService } from "app/modules/account/services/access-mode.service";
 import { MaletaService } from "app/modules/maleta/maleta.service";
 import { UnleashService } from "app/services/unleash.service";
@@ -12,6 +11,7 @@ import { environment } from "../../../../../environments/environment";
 import { AuthenticationService } from "../../../authentication/authentication.service";
 import { NotificationService } from "../../../notification/notification.service";
 import { PageTitleDto } from "../../dtos/page-title.dto";
+import { AccessModeEnum } from "../../enums/access-mode.enum";
 import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
 
