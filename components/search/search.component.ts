@@ -12,9 +12,9 @@ import { PlaceDto } from '../../dtos/place.dto';
 import { SearchInput } from '../../dtos/search-input.dto';
 import { PlaceTypeEnum } from '../../enums/place-type.enum';
 import { ClinicLocationsGetService } from '../../services/clinic-locations-get.service';
+import { NavbarService } from '../../services/navbar.service';
 import { PlatformUtils } from '../../services/platform.util';
 import { DropdownItem } from '../location-dropdown/location-dropdown.component';
-import { NavbarService } from '../../services/navbar.service';
 
 @Component({
   selector: 'clina-navbar-search',
@@ -32,7 +32,7 @@ export class NavbarSearchComponent implements OnInit {
   neighborhoods: PlaceDto[] = [];
   googlePlaces: PlaceDto[] = [];
   ceps: PlaceDto[] = [];
-  locationsList: PlaceDto[] = [];
+  locationsList: any[] = [];
   locationSelected?: PlaceDto;
   loadingGooglePlaces = false;
   googlePlacesTimeout: any;

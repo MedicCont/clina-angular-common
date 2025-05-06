@@ -34,9 +34,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   faBell = faBell;
   isNotificationEnabled = this.unleashService.isEnabled("ps-notification");
   AccessModeEnum = AccessModeEnum;
-  pageTitleSubscription: Subscription;
+  pageTitleSubscription: Subscription | undefined=undefined;
 
-  private subs:Subscription[];
+  private subs:Subscription[]=[];
   public schedulesCount:number=0;
 
   constructor(
