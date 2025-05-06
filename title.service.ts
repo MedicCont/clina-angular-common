@@ -8,5 +8,3 @@ import { PageTitleDto } from './dtos/page-title.dto';
 export class TitleService {
   public $title = new BehaviorSubject<PageTitleDto | undefined>(undefined);
 }
-
-
