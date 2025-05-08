@@ -14,4 +14,13 @@ export class SidebarService {
   hide() {
     this.$show.next(false);
   }
+
+  toggle() {
+    const currentState = this.$show.getValue();
+    this.$show.next(!currentState);
+  }
+
+  isSidebarVisible(): boolean {
+    return this.$show.getValue();
+  }
 }

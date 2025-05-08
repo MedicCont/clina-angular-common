@@ -1,32 +1,34 @@
 <ul
   id="sidebar"
   [ngClass]="{
-    show: showNavbar,
-    hostMode: accessMode === AccessModeEnum.HOST,
-    psMode: accessMode === AccessModeEnum.HEALTH_PERSON
-  }">
+    show: (showNavbar$ | async) || (!isMobile&&isSidebarHovered),
+    hostMode: (accessMode$ | async) === AccessModeEnum.HOST,
+    psMode: (accessMode$ | async) === AccessModeEnum.HEALTH_PERSON
+  }"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()">
   <div class="_sidebar_brand">
     <div>
       <img src="/common-assets/images/branding/logo-white.svg" (click)="goToHome()" />
       <span class="close-sidebar" (click)="hideSidebar()">&times;</span>
     </div>
   </div>
-  <div class="items-container">
+  <div class="items-container" (click)="isMobile?hideSidebar():null">
     <li
+      *ngFor="let item of (items$ | async)"
       [style]="item.show ? 'display: block' : 'display: none'"
-      *ngFor="let item of items; let i = index">
-      <div
-        class="d-flex justify-content-between w-100 p-3"
-        [class._active]="item.isActive"
-        (click)="goToPage(item)">
+      [routerLinkActive]="'_active'" [routerLinkActiveOptions]="{exact: true}">
+      <a class="d-flex justify-content-between w-100 px-3 py-2" style="margin-left: -3px;"
+        (click)="(isMobile)?hideSidebar():null" [routerLink]="[item.url]">
         <div class="d-flex align-items-center">
-          <img [src]="item.img" />
-          <a class="ms-3 item-label">{{ item.title }}</a>
+          <img [src]="item.img" *ngIf="!item.icon" />
+          <i class="clina {{item.icon}}" *ngIf="item.icon"></i>
+          <span class="ms-3 item-label">{{ item.title }}</span>
         </div>
-      </div>
+      </a>
     </li>
 
-    <li class="access-mode-container" *ngIf="isAuthenticated && accessMode === AccessModeEnum.HEALTH_PERSON">
+    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON">
       <div
         class="d-flex access-mode-button align-items-center p-1"
         (click)="toggleAccessMode(AccessModeEnum.HOST)">
@@ -37,7 +39,7 @@
       </div>
     </li>
 
-    <li class="access-mode-container" *ngIf="isAuthenticated && accessMode !== AccessModeEnum.HEALTH_PERSON">
+    <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) != AccessModeEnum.HEALTH_PERSON">
       <div
         class="d-flex access-mode-button align-items-center p-1"
         (click)="toggleAccessMode(AccessModeEnum.HEALTH_PERSON)">
@@ -61,4 +63,3 @@
     </li>
   </div>
 </ul>
-

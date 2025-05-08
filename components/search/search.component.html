@@ -1,17 +1,13 @@
 <div
   class="ms-md-auto d-flex align-items-center fake-container"
   *ngIf="!showSearch"
-  [ngClass]="{ isRunningInSaaS }"
->
+  [ngClass]="{ isRunningInSaaS }">
   <span
     role="button"
     (click)="openLocalization()"
     class="fake-local nowrap"
-    [ngClass]="{ isRunningInSaaS }"
-  >
-    <ng-container *ngIf="locationSelected">{{
-      locationSelected.label
-    }}</ng-container>
+    [ngClass]="{ isRunningInSaaS }">
+    <ng-container *ngIf="locationSelected">{{ locationSelected.label }}</ng-container>
     <ng-container *ngIf="!locationSelected">Localização</ng-container>
   </span>
   <div class="fake-separator"></div>
@@ -19,11 +15,8 @@
   <span
     role="button"
     class="button-datepicker nowrap d-flex align-items-center"
-    (click)="openDatepicker()"
-  >
-    <span *ngIf="date" class="date-value">{{
-      date | date : "dd/MM/YYYY"
-    }}</span>
+    (click)="openDatepicker()">
+    <span *ngIf="date" class="date-value">{{ date | date : 'dd/MM/YYYY' }}</span>
     <span *ngIf="!date">A partir de:</span>
     <i class="clina icon-calendar ms-2"></i>
   </span>
@@ -33,52 +26,44 @@
     class="btn btn-primary search-button"
     (click)="makeSearch()"
     [disabled]="loadingCoordinates"
-    [ngClass]="{ isRunningInSaaS }"
-  >
+    [ngClass]="{ isRunningInSaaS }">
     Buscar
   </button>
 </div>
 
 <div
   class="d-flex justify-content-md-center align-items-center search-header"
-  *ngIf="showSearch"
->
+  *ngIf="showSearch">
   Encontre o seu&nbsp;<span>consultório ideal</span>
 </div>
 
-<div
-  class="search-container-backdrop"
-  *ngIf="showSearch"
-  (click)="close()"
-></div>
+<div class="search-container-backdrop" *ngIf="showSearch" (click)="close()"></div>
 
 <div class="search-container" [ngClass]="{ visible: showSearch }">
   <div class="container">
     <form autocomplete="off" class="d-flex align-items-center search-content">
       <clina-navbar-location-dropdown
         label="Digite cidade, bairro, cep ou local"
-        [list]="dropdownList"
+        [list]="locationsList"
         [selected]="locationSelectedToDrop"
         [loading]="loadingGooglePlaces"
         inputId="location"
         (handleChange)="changeLocationKeyword($event)"
-        (handleSelect)="selectLocation($event)"
-      ></clina-navbar-location-dropdown>
+        (handleSelect)="selectLocation($event)">
+      </clina-navbar-location-dropdown>
 
       <clina-ds-date-picker
         title="A partir de"
         [date]="date"
         inputId="date"
-        (action)="getStartDate($event)"
-      ></clina-ds-date-picker>
+        (action)="getStartDate($event)"></clina-ds-date-picker>
 
       <div class="search-button-container">
         <button
           type="button"
           class="btn btn-primary search-button"
           (click)="makeSearch()"
-          [disabled]="loadingCoordinates"
-        >
+          [disabled]="loadingCoordinates">
           Buscar
         </button>
       </div>

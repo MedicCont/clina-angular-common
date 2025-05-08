@@ -3,7 +3,13 @@
 @import "/src/styles/mixins/breakpoints";
 
 a {
-  color: white;
+  cursor: pointer;
+}
+
+.psMode {
+  a {
+    color: white;
+  }
 }
 
 .footer {
@@ -43,7 +49,9 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   &:hover {
     background-color: white;
   }
@@ -82,7 +90,7 @@ a {
 }
 
 .footer.psMode {
-  background-color: #9a6df6;
+  background-color: $primary;
   .social-media:hover {
     i {
       color: $primary;
@@ -106,4 +114,14 @@ a {
   &.hostMode {
     background-color: $secondary;
   }
+}
+
+
+table {
+  table-layout: auto; /* As colunas ajustam-se automaticamente */
+  width: 100%; /* A tabela ocupa 100% da largura do container */
+}
+th, td {
+  white-space: nowrap; /* Evita quebras de linha dentro das células */
+  text-align: left; /* Alinha o conteúdo das colunas à esquerda */
 }
