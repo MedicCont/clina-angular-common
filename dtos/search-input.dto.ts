@@ -1,4 +1,4 @@
-import { RoomTypeDto } from './room-type.dto';
+import { RoomTypeEnum } from '../enums/room-type.enum';
 
 export interface SearchInput {
   //Room available filter input
@@ -10,7 +10,7 @@ export interface SearchInput {
   lat: number;
   lng: number;
   radius?: number;
-  roomTypes: RoomTypeDto[];
+  roomTypes: RoomTypeEnum[];
   roomAmenities: string[];
   clinicAmenities: string[];
   equipments: string[];
