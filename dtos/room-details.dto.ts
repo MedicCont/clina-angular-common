@@ -1,20 +1,18 @@
 import { RoomTypeEnum } from "../enums/room-type.enum";
 import { PackageOfHourDto } from "./package-of-hour.dto";
 
-export interface RoomDto {
+export class RoomDetailsDto {
+
   roomId: string;
-  ownerAccountId: string;
-  code: string;
   name: string;
   description: string;
+  code: string;
   advance: number;
+  types: RoomTypeEnum[];
   images: string[];
   minPrice: number;
-  appointmentStepMinutes: number;
-  appointmentMinimumMinutes: number;
-  opensAt: string;
-  closesAt: string;
-  ratingScore?: number | null;
+
+  // Clinic
   clinicId: string;
   clinicName: string;
   zipcode: string;
@@ -24,12 +22,9 @@ export interface RoomDto {
   neighborhood: string;
   city: string;
   state: string;
-  lat?: number | null;
-  lng?: number | null;
-  gmaps?: string | null;
-  clinicAmenities: string[];
-  sellingPeriodsList: any;
-  isRoomOpen?: boolean;
+  lat: number | null;
+  lng: number | null;
+
+  // Relations
   packagesOfHours: PackageOfHourDto[];
-  types: RoomTypeEnum;
 }

@@ -65,7 +65,7 @@ export class FavoriteButtonComponent implements OnInit {
       next: (favoriteList: RoomFavoriteDto[]) => {
         favoriteList.map((room: RoomFavoriteDto) => {
           if (room.roomId === this.room?.roomId) {
-            this.favoriteId = room.roomFavoriteId;
+            this.favoriteId = room.favoriteId;
             this.isFavorite = true;
           }
           return room;
