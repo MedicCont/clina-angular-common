@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import moment from 'moment-timezone';
+import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
 import { CoordinatesDto } from '../../dtos/coordinates.dto';
 import { PlaceDto } from '../../dtos/place.dto';
 import { SearchInput } from '../../dtos/search-input.dto';
@@ -15,7 +16,6 @@ import { ClinicLocationsGetService } from '../../services/clinic-locations-get.s
 import { NavbarService } from '../../services/navbar.service';
 import { PlatformUtils } from '../../services/platform.util';
 import { DropdownItem } from '../location-dropdown/location-dropdown.component';
-import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
 
 @Component({
   selector: 'clina-navbar-search',
@@ -71,34 +71,35 @@ export class NavbarSearchComponent implements OnInit {
     this.navbarService
     .getLocations()
     .toPromise()
-    .then((response: ClinicLocationDto[]) => {
-      response.forEach(clinicLocationDto=>{
-        clinicLocationDto.cities.forEach(clinicLocationCityDto=>{
-          this.cities.push({
-            type: PlaceTypeEnum.CITY,
-            label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
-            city: clinicLocationCityDto.city,
-            state: clinicLocationDto.state,
-            radius: 50000,
-          });
-          clinicLocationCityDto.neighborhoods.forEach(neighborhood=>{
-            this.neighborhoods.push({
-              type: PlaceTypeEnum.NEIBHBORHOOD,
-              label: neighborhood + ' - ' + clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
-              neighborhood: neighborhood,
+    .then((response: ClinicLocationDto[] | undefined) => {
+      if (response) {  
+        response.forEach(clinicLocationDto => {
+          clinicLocationDto.cities.forEach(clinicLocationCityDto => {
+            this.cities.push({
+              type: PlaceTypeEnum.CITY,
+              label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
               city: clinicLocationCityDto.city,
               state: clinicLocationDto.state,
-              radius: 20000,
+              radius: 50000,
             });
-          });
-        })
-      })
-  
-      this.locationsList = this.cities;
-
-      this.setupFilter();
+            clinicLocationCityDto.neighborhoods.forEach(neighborhood => {
+              this.neighborhoods.push({
+                type: PlaceTypeEnum.NEIBHBORHOOD,
+                label: neighborhood + ' - ' + clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
+                neighborhood: neighborhood,
+                city: clinicLocationCityDto.city,
+                state: clinicLocationDto.state,
+                radius: 20000,
+              });
+            });
+          })
+        });
+    
+        this.locationsList = this.cities;
+        this.setupFilter();
+      }
     });
-  }
+}
 
   changeLocationKeyword(event: any): void {
     clearTimeout(this.googlePlacesTimeout);

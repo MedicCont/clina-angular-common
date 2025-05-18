@@ -32,7 +32,7 @@
      </div>
    </a>
     </li>
-
+    <div hidden>
     <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON">
       <div
         class="d-flex access-mode-button align-items-center p-1"
@@ -57,6 +57,7 @@
           da saúde</span>
       </div>
     </li>
+  </div>
 
     <li class="logout-container" *ngIf="isAuthenticated">
       <div class="d-flex logout-button p-1" (click)="logout()">
