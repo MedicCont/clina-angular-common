@@ -3,7 +3,7 @@ import { gql } from 'apollo-angular';
 export const ROOMS_FAVORITE_QUERY = gql`
   {
     roomsFavorite {
-      favoriteId
+      roomFavoriteId
       ownerAccountId
       roomId
       room {

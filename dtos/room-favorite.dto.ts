@@ -1,9 +1,9 @@
-import { RoomDetailsDto } from './room-details.dto';
+import { RoomDto } from '../../common/dtos/room.dto';
 
 export interface RoomFavoriteDto {
-  favoriteId: string;
+  roomFavoriteId: string;
   ownerAccountId: string;
   roomOwnerAccountId: string;
   roomId: string;
-  room: RoomDetailsDto;
+  room: RoomDto;
 }

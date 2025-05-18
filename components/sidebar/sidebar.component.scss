@@ -350,3 +350,30 @@
     background: $secondary-medium;
   }
 }
+
+
+.psMode {
+    // Modo PS (Profissional de Saúde)
+    i {
+      color: $primary; // Cor normal para ícones de fonte
+    }
+    
+    .clina {
+      &::before {
+        color: $primary;
+      }
+    }
+  }
+
+  .hostMode {
+    // Modo Host
+    i {
+      color: white; // Ícones brancos
+    }
+    
+    .clina {
+      &::before {
+        color: white;
+      }
+    }
+  }

@@ -4,9 +4,9 @@ import { PackageOfHourDto } from "./package-of-hour.dto";
 export interface RoomDto {
   roomId: string;
   ownerAccountId: string;
-  code: string;
   name: string;
   description: string;
+  code: string;
   advance: number;
   images: string[];
   minPrice: number;
