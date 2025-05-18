@@ -1,25 +1,26 @@
-import { RoomTypeDto } from './room-type.dto';
+import { RoomTypeEnum } from '../enums/room-type.enum';
 
 export interface SearchInput {
-  page?: number;
-  take?: number;
-  begin: string;
+  //Room available filter input
+  start: string;
   end: string;
   neighborhood?: string;
+  city?: string;
+  state?: string;
   lat: number;
   lng: number;
   radius?: number;
-  period?: string | null;
-  plan?: string;
-  roomTypes: RoomTypeDto[];
+  roomTypes: RoomTypeEnum[];
   roomAmenities: string[];
   clinicAmenities: string[];
   equipments: string[];
-  city?: string;
-  state?: string;
-  googlePlace?: string;
-  hasDiscount?: boolean;
   maxValue?: number;
+  hasDiscount?: boolean;
   cancelAdvance?: number;
+
+  page?: number;
+  take?: number;
+  period?: string | null;
   order?: string;
+  googlePlace?: string;
 }

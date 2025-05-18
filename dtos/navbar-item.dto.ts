@@ -3,6 +3,7 @@ export interface NavbarItemDto {
   img?: string;
   url: string;
   icon?: string;
+  imgWhite?: string;
   isActive: boolean;
   show: boolean;
 }
