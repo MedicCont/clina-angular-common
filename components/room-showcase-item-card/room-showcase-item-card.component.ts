@@ -13,6 +13,7 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { SearchInput } from "../../dtos/search-input.dto";
 import { RoomCardService } from "../../services/room-card.service";
 import { RoomShowcaseItemSuccessSharedModalComponent } from "../room-showcase-item-success-shared-modal/room-showcase-item-success-shared-modal.component";
+import { RoomShowcaseDto } from "../../dtos/room-showcase.dto";
 
 @Component({
   selector: "clina-room-showcase-item-card",
@@ -20,7 +21,7 @@ import { RoomShowcaseItemSuccessSharedModalComponent } from "../room-showcase-it
   styleUrls: ["./room-showcase-item-card.component.scss"],
 })
 export class RoomShowcaseItemCardComponent implements OnInit {
-  @Input() room?: RoomDto;
+  @Input() room?: RoomShowcaseDto;
   @Input() start?: string;
   @Input() end?: string;
   @Input() period?: string;
@@ -133,7 +134,8 @@ export class RoomShowcaseItemCardComponent implements OnInit {
 
   openSuccessModal() {
     if (this.room) {
-      this.roomCardService.setRoom(this.room);
+      var roomSet = Object.assign(<RoomDto>{}, this.room);
+      this.roomCardService.setRoom(roomSet);
       this.modalRef = this.modalService.show(
         RoomShowcaseItemSuccessSharedModalComponent,
         {
