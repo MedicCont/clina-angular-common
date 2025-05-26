@@ -128,8 +128,11 @@
                 class="small-text d-block align-self-center align-self-md-start"
                 >A partir de</span
               >
-              <span class="card-price d-block">
+              <span class="card-price d-block" *ngIf="room.minPrice">
                 R$ {{ room.minPrice }} / <span>h</span>
+              </span>
+              <span class="card-price d-block" *ngIf="!room.minPrice">
+                Em definição
               </span>
             </div>
           </div>
