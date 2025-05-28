@@ -1,24 +1,26 @@
-import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { AccessModeService } from "app/modules/account/services/access-mode.service";
-import { AuthenticationService } from "app/modules/authentication/authentication.service";
-import { environment } from "environments/environment";
-import { BehaviorSubject, Observable, Subscription, map } from "rxjs";
-import { NavbarItemDto } from "../../dtos/navbar-item.dto";
-import { AccessModeEnum } from "../../enums/access-mode.enum";
-import { PlatformUtils } from "../../services/platform.util";
-import { SidebarService } from "../../services/sidebar.service";
+import { AccessModeService } from 'app/modules/account/services/access-mode.service';
+import { AuthenticationService } from 'app/modules/authentication/authentication.service';
+import { environment } from 'environments/environment';
+import { BehaviorSubject, Observable, Subscription, map } from 'rxjs';
+import { NavbarItemDto } from '../../dtos/navbar-item.dto';
+import { AccessModeEnum } from '../../enums/access-mode.enum';
+import { PlatformUtils } from '../../services/platform.util';
+import { SidebarService } from '../../services/sidebar.service';
 
 @Component({
-  selector: "clina-sidebar",
-  templateUrl: "./sidebar.component.html",
-  styleUrls: ["./sidebar.component.scss"],
+  selector: 'clina-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   @Input() isAuthenticated: boolean = false;
-  public AccessModeEnum = AccessModeEnum;  // Exponha o enum para o template
-  private accessModeSubject = new BehaviorSubject<AccessModeEnum>(AccessModeEnum.HEALTH_PERSON);
+  public AccessModeEnum = AccessModeEnum; // Exponha o enum para o template
+  private accessModeSubject = new BehaviorSubject<AccessModeEnum>(
+    AccessModeEnum.HEALTH_PERSON,
+  );
   accessMode$ = this.accessModeSubject.asObservable();
   isMobile = false;
   showNavbar$!: Observable<boolean>;
@@ -33,10 +35,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly authenticationService: AuthenticationService,
     private readonly renderer: Renderer2,
-    private readonly accessModeService: AccessModeService
+    private readonly accessModeService: AccessModeService,
   ) {
     this.items$ = this.accessMode$.pipe(
-      map(accessMode => this.getItems(accessMode))
+      map((accessMode) => this.getItems(accessMode)),
     );
   }
 
@@ -44,135 +46,144 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.showNavbar$ = this.sidebarService.$show; // Use o observable diretamente
 
     if (PlatformUtils.isBrowser()) {
-      this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      this.isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent,
+        );
     }
     this.accessModeService.$accessMode.subscribe(
       (accessMode: AccessModeEnum) => {
         this.accessModeSubject.next(accessMode);
-      }
+      },
     );
   }
 
   getItems(accessMode: AccessModeEnum): NavbarItemDto[] {
-    const items =  [
+    const items = [
       {
-        title: "Home",
-        img: "/common-assets/images/sidebar/icon-home-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
-        url: "/ps",
+        title: 'Home',
+        img: '/common-assets/images/sidebar/icon-home-solid.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-home-solid.svg',
+        url: '/ps',
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
-        title: "Home",
-        img: "/common-assets/images/sidebar/icon-home-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
-        url: "/",
+        title: 'Home',
+        img: '/common-assets/images/sidebar/icon-home-solid.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-home-solid.svg',
+        url: '/',
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
       },
       {
-        title: "Minha Conta",
-        img: "/common-assets/images/sidebar/icon-account-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-account-solid.svg",
-        url: "/account",
+        title: 'Minha Conta',
+        img: '/common-assets/images/sidebar/icon-account-solid.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-account-solid.svg',
+        url: '/account',
         isActive: true,
         show: true,
       },
       {
-        title: "Compras",
-        img: "/common-assets/images/sidebar/icon-purchases-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-purchases-solid.svg",
-        url: "/purchase",
+        title: 'Compras',
+        img: '/common-assets/images/sidebar/icon-purchases-solid.svg',
+        imgWhite:
+          '/common-assets/images/sidebar/white/icon-purchases-solid.svg',
+        url: '/purchase',
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
-        title: "Assinaturas",
-        icon: "icon-calendar-check-2",
-        url: "/subscription/management",
+        title: 'Assinaturas',
+        icon: 'icon-calendar-check-2',
+        url: '/subscription/management',
         isActive: false,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
-        title: "Reservas",
-        img: "/common-assets/images/sidebar/icon-appointments-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-appointments-solid.svg",
-        url: "/appointment/host",
+        title: 'Reservas',
+        img: '/common-assets/images/sidebar/icon-appointments-solid.svg',
+        imgWhite:
+          '/common-assets/images/sidebar/white/icon-appointments-solid.svg',
+        url: '/appointment/host',
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
       },
       {
-        title: "Consultórios",
-        img: "/common-assets/images/sidebar/room-icon.svg",
-        imgWhite: "/common-assets/images/sidebar/white/room-icon.svg",
-        url: "/room",
+        title: 'Consultórios',
+        img: '/common-assets/images/sidebar/room-icon.svg',
+        imgWhite: '/common-assets/images/sidebar/white/room-icon.svg',
+        url: '/room',
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
       },
       {
-        title: "Check-In/Out",
-        img: "/common-assets/images/sidebar/icon-checkinout.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-checkinout.svg",
-        url: "/check",
+        title: 'Check-In/Out',
+        img: '/common-assets/images/sidebar/icon-checkinout.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-checkinout.svg',
+        url: '/check',
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
       {
-        title: "SaaS",
-        img: "/common-assets/images/sidebar/icon-saas.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-saas.svg",
-        url: "/saas",
+        title: 'SaaS',
+        img: '/common-assets/images/sidebar/icon-saas.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-saas.svg',
+        url: '/saas',
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
       },
       {
-        title: "Agenda",
-        img: "/common-assets/images/sidebar/icon-schedule-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-schedule-solid.svg",
-        url: "/my-schedule",
+        title: 'Agenda',
+        img: '/common-assets/images/sidebar/icon-schedule-solid.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-schedule-solid.svg',
+        url: '/my-schedule',
         isActive: true,
         show: true,
       },
       {
-        title: "Notificações",
-        img: "/common-assets/images/sidebar/icon-bell-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-bell-solid.svg",
-        url: "/notification",
+        title: 'Notificações',
+        img: '/common-assets/images/sidebar/icon-bell-solid.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-bell-solid.svg',
+        url: '/notification',
         isActive: true,
         show: true,
       },
       {
-        title: "Extrato Financeiro",
-        img: "/common-assets/images/sidebar/icon-money-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-money-solid.svg",
-        url: "/statement",
+        title: 'Extrato Financeiro',
+        img: '/common-assets/images/sidebar/icon-money-solid.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-money-solid.svg',
+        url:
+          window.location.hostname === 'newdashboard.maleta.rocks'
+            ? '/statement'
+            : 'https://newdashboard.maleta.rocks/dashboard/statement',
         isActive: true,
         show: true,
       },
       {
-        title: "Ganhe Créditos",
-        img: "/common-assets/images/sidebar/icon-indication-earns-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-indication-earns-solid.svg",
-        url: "/get-member",
+        title: 'Ganhe Créditos',
+        img: '/common-assets/images/sidebar/icon-indication-earns-solid.svg',
+        imgWhite:
+          '/common-assets/images/sidebar/white/icon-indication-earns-solid.svg',
+        url: '/get-member',
         isActive: true,
         show: true,
       },
       {
-        title: "Favoritos",
-        img: "/common-assets/images/sidebar/icon-favorite-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-favorite-solid.svg",
-        url: "/room-favorite",
+        title: 'Favoritos',
+        img: '/common-assets/images/sidebar/icon-favorite-solid.svg',
+        imgWhite: '/common-assets/images/sidebar/white/icon-favorite-solid.svg',
+        url: '/room-favorite',
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
       },
     ];
 
-    return items.filter(a=>a.show && a.isActive)
+    return items.filter((a) => a.show && a.isActive);
   }
 
   goToHome() {
-    this.router.navigate(["/"]);
+    this.router.navigate(['/']);
   }
 
   hideSidebar() {
@@ -182,9 +193,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toggleAccessMode(mode: AccessModeEnum) {
     if (mode == AccessModeEnum.HOST && PlatformUtils.isBrowser())
       window.location.href = environment.baseUrl;
-
-    else
-      this.accessModeService.changeMode(mode);
+    else this.accessModeService.changeMode(mode);
     // this.accessModeService.setMode(mode);
   }
   onMouseEnter() {
@@ -198,7 +207,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.showNavbarSubscription?.unsubscribe();
     if (PlatformUtils.isBrowser())
-      this.renderer.removeClass(document.body, "no-scroll");
+      this.renderer.removeClass(document.body, 'no-scroll');
   }
 
   logout() {
