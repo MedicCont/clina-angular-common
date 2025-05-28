@@ -347,14 +347,32 @@ export class NavbarSearchComponent implements OnInit {
     this.showSearch = false;
   }
 
-
   async makeSearch() {
     if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
       await this.selectLocation(this.locationsList[0]);
     }
-
-    debugger;
-    const searchInput = Object.assign(this.searchInput as SearchInput, {
+  
+    // Garantir que searchInput não seja undefined
+    const currentSearchInput = this.searchInput || {
+      start: moment().format(),
+      end: moment().add(6, 'days').format(),
+      city: undefined,
+      neighborhood: '',
+      state: undefined,
+      radius: 0,
+      lat: 0,
+      lng: 0,
+      page: 1,
+      take: 12,
+      roomTypes: [],
+      roomAmenities: [],
+      clinicAmenities: [],
+      equipments: [],
+      maxValue: undefined,
+      hasDiscount: false,
+    };
+  
+    const searchInput = Object.assign({}, currentSearchInput, {
       begin: this.date || moment(),
       end: moment(this.date).add(7, 'days').toDate(),
       city:
@@ -378,7 +396,7 @@ export class NavbarSearchComponent implements OnInit {
       page: 1,
       take: 12,
     });
-
+  
     this.router.navigate(['/room/list'], { queryParams: searchInput });
     this.close();
   }
