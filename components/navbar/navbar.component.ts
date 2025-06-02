@@ -3,16 +3,16 @@
 import { Component, HostListener, Input, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { AccessModeEnum } from "app/modules/account/enums/access-mode.enum";
 import { AccessModeService } from "app/modules/account/services/access-mode.service";
 import { MaletaService } from "app/modules/maleta/maleta.service";
 import { UnleashService } from "app/services/unleash.service";
-import { PlatformUtils } from "app/utils/platform.util";
 import { filter, Subscription } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { AuthenticationService } from "../../../authentication/authentication.service";
 import { NotificationService } from "../../../notification/notification.service";
 import { PageTitleDto } from "../../dtos/page-title.dto";
+import { AccessModeEnum } from "../../enums/access-mode.enum";
+import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
 
 @Component({
@@ -34,9 +34,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   faBell = faBell;
   isNotificationEnabled = this.unleashService.isEnabled("ps-notification");
   AccessModeEnum = AccessModeEnum;
-  pageTitleSubscription: Subscription;
+  pageTitleSubscription: Subscription | undefined=undefined;
 
-  private subs:Subscription[];
+  private subs:Subscription[]=[];
   public schedulesCount:number=0;
 
   constructor(

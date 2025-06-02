@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HourAvailable } from "app/modules/common/dtos/hour-available.dto";
 import {
-    PackageOfHourDto,
-    RoomPackageOfHoursTypeEnum,
+  PackageOfHourDto,
+  RoomPackageOfHoursTypeEnum,
 } from "app/modules/common/dtos/package-of-hour.dto";
 import { RoomFavoriteDto } from "app/modules/common/dtos/room-favorite.dto";
 import { RoomDto } from "app/modules/common/dtos/room.dto";

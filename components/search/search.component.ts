@@ -6,7 +6,6 @@ import {
   Renderer2,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PlatformUtils } from 'app/utils/platform.util';
 import moment from 'moment-timezone';
 import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
 import { CoordinatesDto } from '../../dtos/coordinates.dto';
@@ -15,6 +14,7 @@ import { SearchInput } from '../../dtos/search-input.dto';
 import { PlaceTypeEnum } from '../../enums/place-type.enum';
 import { ClinicLocationsGetService } from '../../services/clinic-locations-get.service';
 import { NavbarService } from '../../services/navbar.service';
+import { PlatformUtils } from '../../services/platform.util';
 import { DropdownItem } from '../location-dropdown/location-dropdown.component';
 
 @Component({
@@ -80,7 +80,7 @@ export class NavbarSearchComponent implements OnInit {
               label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
               city: clinicLocationCityDto.city,
               state: clinicLocationDto.state,
-              //radius: 5000,
+              radius: 50000,
             });
             clinicLocationCityDto.neighborhoods.forEach(neighborhood => {
               this.neighborhoods.push({
@@ -89,7 +89,7 @@ export class NavbarSearchComponent implements OnInit {
                 neighborhood: neighborhood,
                 city: clinicLocationCityDto.city,
                 state: clinicLocationDto.state,
-                //radius: 20000,
+                radius: 20000,
               });
             });
           })
@@ -135,7 +135,7 @@ export class NavbarSearchComponent implements OnInit {
             type: PlaceTypeEnum.GOOGLE_PLACES,
             label: 'Próximo a ' + prediction.description,
             placeId: prediction.place_id,
-           // radius: 20000,
+            radius: 20000,
           }));
         },
       });
@@ -347,63 +347,14 @@ export class NavbarSearchComponent implements OnInit {
     this.showSearch = false;
   }
 
+
   async makeSearch() {
     if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
       await this.selectLocation(this.locationsList[0]);
     }
-  
-    // Aguardar as coordenadas serem carregadas se necessário
-    if (this.locationSelected && !this.locationSelected.lat && !this.locationSelected.lng) {
-      await this.getCoordinates();
-    }
-  
-    // Garantir que searchInput não seja undefined
-    const currentSearchInput = this.searchInput || {
-      start: moment().format(),
-      end: moment().add(6, 'days').format(),
-      city: undefined,
-      neighborhood: '',
-      state: undefined,
-      radius: 0,
-      lat: 0,
-      lng: 0,
-      page: 1,
-      take: 12,
-      roomTypes: [],
-      roomAmenities: [],
-      clinicAmenities: [],
-      equipments: [],
-      maxValue: undefined,
-      hasDiscount: false,
-    };
-  
-    // Determinar coordenadas e raio baseado no tipo de localização
-    let searchLat = 0;
-    let searchLng = 0;
-    let searchRadius = 0;
-  
-    if (this.locationSelected) {
-      searchLat = this.locationSelected.lat || 0;
-      searchLng = this.locationSelected.lng || 0;
-      
-      // Definir raio baseado no tipo de localização
-      switch (this.locationSelected.type) {
-        case PlaceTypeEnum.GOOGLE_PLACES:
-          searchRadius = 20; // 20km para Google Places
-          break;
-        case PlaceTypeEnum.CITY:
-          searchRadius = 50; // 50km para cidades
-          break;
-        case PlaceTypeEnum.NEIBHBORHOOD:
-          searchRadius = 10; // 10km para bairros
-          break;
-        default:
-          searchRadius = 0;
-      }
-    }
-  
-    const searchInput = {
-      ...currentSearchInput,
+
+    debugger;
+    const searchInput = Object.assign(this.searchInput as SearchInput, {
       begin: this.date || moment(),
       end: moment(this.date).add(7, 'days').toDate(),
       city:
@@ -420,16 +371,14 @@ export class NavbarSearchComponent implements OnInit {
           : undefined,
       googlePlace:
         this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
-      lat: searchLat,
-      lng: searchLng,
-      radius: searchRadius,
+      lat: this.locationSelected?.lat,
+      lng: this.locationSelected?.lng,
+      radius: this.locationSelected?.radius,
       plan: '-1',
       page: 1,
       take: 12,
-    };
-  
-    console.log('Search input being sent:', searchInput); // Para debug
-  
+    });
+
     this.router.navigate(['/room/list'], { queryParams: searchInput });
     this.close();
   }
