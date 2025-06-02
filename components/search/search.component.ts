@@ -6,6 +6,7 @@ import {
   Renderer2,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PlatformUtils } from 'app/utils/platform.util';
 import moment from 'moment-timezone';
 import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
 import { CoordinatesDto } from '../../dtos/coordinates.dto';
@@ -14,7 +15,6 @@ import { SearchInput } from '../../dtos/search-input.dto';
 import { PlaceTypeEnum } from '../../enums/place-type.enum';
 import { ClinicLocationsGetService } from '../../services/clinic-locations-get.service';
 import { NavbarService } from '../../services/navbar.service';
-import { PlatformUtils } from '../../services/platform.util';
 import { DropdownItem } from '../location-dropdown/location-dropdown.component';
 
 @Component({
