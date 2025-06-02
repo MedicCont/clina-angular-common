@@ -29,7 +29,7 @@ export class NavbarSearchComponent implements OnInit {
   searchInput?: SearchInput;
 
   cities: PlaceDto[] = [];
-  neighborhoods: PlaceDto[] = [];
+  districts: PlaceDto[] = [];
   googlePlaces: PlaceDto[] = [];
   ceps: PlaceDto[] = [];
   locationsList: PlaceDto[] = [];
@@ -80,8 +80,8 @@ export class NavbarSearchComponent implements OnInit {
             radius: 50000,
           });
 
-          value.neighborhoods.forEach((neighborhood: any) => {
-            this.neighborhoods.push({
+          value.districts.forEach((neighborhood: any) => {
+            this.districts.push({
               type: PlaceTypeEnum.NEIBHBORHOOD,
               label: neighborhood + ' - ' + key + ' - ' + value.state,
               neighborhood: neighborhood,
@@ -113,12 +113,12 @@ export class NavbarSearchComponent implements OnInit {
       (city) => city.city && city.city.toLowerCase().indexOf(keyword.toLowerCase()) > -1,
     );
 
-    const neighborhoods = this.neighborhoods.filter(
+    const districts = this.districts.filter(
       (neighborhood) => neighborhood.neighborhood && neighborhood.neighborhood.toLowerCase().indexOf(keyword.toLowerCase()) > -1,
     );
 
-    if (cities.length || neighborhoods.length) {
-      this.locationsList = neighborhoods.concat(cities);
+    if (cities.length || districts.length) {
+      this.locationsList = districts.concat(cities);
       return;
     }
 
