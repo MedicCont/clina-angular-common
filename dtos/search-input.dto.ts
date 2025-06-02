@@ -3,9 +3,9 @@ import { RoomTypeDto } from './room-type.dto';
 export interface SearchInput {
   page?: number;
   take?: number;
-  begin: string;
+  start: string;
   end: string;
-  neighborhood: string;
+  neighborhood?: string;
   lat: number;
   lng: number;
   radius?: number;

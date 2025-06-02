@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
+import { ClinicLocationDto } from '../dtos/clinic-locations.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -25,4 +26,11 @@ export class NavbarService {
       `${environment.restUrl}/maps/coordinates?placeId=${placeId}`
     );
   }
+
+
+  getLocations() {
+    return this.http.get<ClinicLocationDto[]>(`${environment.restUrl}/clinic/locations`);
+  }
+
+  
 }
