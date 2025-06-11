@@ -353,7 +353,6 @@ export class NavbarSearchComponent implements OnInit {
       await this.selectLocation(this.locationsList[0]);
     }
 
-    debugger;
     const searchInput = Object.assign(this.searchInput as SearchInput, {
       begin: this.date || moment(),
       end: moment(this.date).add(7, 'days').toDate(),

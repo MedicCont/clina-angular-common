@@ -32,7 +32,8 @@
      </div>
    </a>
     </li>
-    <div hidden>
+{{isAuthenticated}}
+
     <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON">
       <div
         class="d-flex access-mode-button align-items-center p-1"
@@ -43,7 +44,6 @@
         <span class="item-label d-flex justify-content-center">Modo anfitrião</span>
       </div>
     </li>
-
     <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) != AccessModeEnum.HEALTH_PERSON">
       <div
         class="d-flex access-mode-button align-items-center p-1"
@@ -67,5 +67,4 @@
         <span class="item-label d-flex justify-content-center">Sair</span>
       </div>
     </li>
-  </div>
 </ul>

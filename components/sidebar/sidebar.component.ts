@@ -16,7 +16,7 @@ import { SidebarService } from "../../services/sidebar.service";
   styleUrls: ["./sidebar.component.scss"],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  @Input() isAuthenticated: boolean = false;
+  @Input() isAuthenticated: boolean= false; 
   public AccessModeEnum = AccessModeEnum;  // Exponha o enum para o template
   private accessModeSubject = new BehaviorSubject<AccessModeEnum>(AccessModeEnum.HEALTH_PERSON);
   accessMode$ = this.accessModeSubject.asObservable();
