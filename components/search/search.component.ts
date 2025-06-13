@@ -352,31 +352,30 @@ export class NavbarSearchComponent implements OnInit {
     if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
       await this.selectLocation(this.locationsList[0]);
     }
-
-    const searchInput = Object.assign(this.searchInput as SearchInput, {
-      begin: this.date || moment(),
-      end: moment(this.date).add(7, 'days').toDate(),
-      city:
-        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
-          ? this.locationSelected.city
-          : undefined,
-      state:
-        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
-          ? this.locationSelected.state
-          : undefined,
-      neighborhood:
-        this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
-          ? this.locationSelected.neighborhood
-          : undefined,
-      googlePlace:
-        this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
-      lat: this.locationSelected?.lat,
-      lng: this.locationSelected?.lng,
-      radius: this.locationSelected?.radius,
-      plan: '-1',
-      page: 1,
-      take: 12,
-    });
+    const searchInput = Object.assign({}, this.searchInput || {}, {
+  begin: this.date || moment(),
+  end: moment(this.date).add(7, 'days').toDate(),
+  city:
+    this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
+      ? this.locationSelected.city
+      : undefined,
+  state:
+    this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
+      ? this.locationSelected.state
+      : undefined,
+  neighborhood:
+    this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
+      ? this.locationSelected.neighborhood
+      : undefined,
+  googlePlace:
+    this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
+  lat: this.locationSelected?.lat,
+  lng: this.locationSelected?.lng,
+  radius: this.locationSelected?.radius,
+  plan: '-1',
+  page: 1,
+  take: 12,
+});
 
     this.router.navigate(['/room/list'], { queryParams: searchInput });
     this.close();
