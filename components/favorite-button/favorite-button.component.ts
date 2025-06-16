@@ -1,14 +1,15 @@
 import {
-    Component,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-    TemplateRef,
-    ViewChild,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
+import { AccountDto } from "app/modules/authentication/dtos/account.dto";
 import { RoomFavoriteDto } from "app/modules/common/dtos/room-favorite.dto";
 import { RoomFavoriteCreateInput } from "app/modules/common/inputs/room-favorite-create.input";
 import { RoomFavoriteRemoveInput } from "app/modules/common/inputs/room-favorite-remove.input";
@@ -28,7 +29,7 @@ export class FavoriteButtonComponent implements OnInit {
   @ViewChild("loginModal") loginModal?: TemplateRef<any>;
   isAuthenticated: boolean = true;
   isFavoriting = false;
-  favoriteId?: string;
+  roomFavoriteId?: string;
   modalRef?: BsModalRef;
 
   isFavorite?: boolean;
@@ -45,11 +46,11 @@ export class FavoriteButtonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.authenticationService.$account.subscribe(
-    //   (account: AccountDto | undefined) => {
-    //     this.hasAccountData = account ? true : false;
-    //   }
-    // );
+     this.authenticationService.$account.subscribe(
+       (account: AccountDto | undefined) => {
+         this.hasAccountData = account ? true : false;
+       }
+     );
     this.authenticationService.$authenticated.subscribe(
       (isAutenticated: boolean) => {
         this.isAuthenticated = isAutenticated;
@@ -65,7 +66,7 @@ export class FavoriteButtonComponent implements OnInit {
       next: (favoriteList: RoomFavoriteDto[]) => {
         favoriteList.map((room: RoomFavoriteDto) => {
           if (room.roomId === this.room?.roomId) {
-            this.favoriteId = room.roomFavoriteId;
+            this.roomFavoriteId = room.roomFavoriteId;
             this.isFavorite = true;
           }
           return room;
@@ -101,11 +102,11 @@ export class FavoriteButtonComponent implements OnInit {
   }
 
   removeFavoriteRoom() {
-    if (!this.favoriteId) return;
+    if (!this.roomFavoriteId) return;
     this.isFavorite = false;
     this.isFavoriting = true;
     const removeInput: RoomFavoriteRemoveInput = {
-      roomFavoriteId: this.favoriteId,
+      roomFavoriteId: this.roomFavoriteId,
     };
     this.favoriteService.removeFavoriteRoom(removeInput).subscribe({
       complete: () => {
