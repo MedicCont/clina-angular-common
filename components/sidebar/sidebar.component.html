@@ -17,20 +17,46 @@
     <li
       *ngFor="let item of (items$ | async)"
       [style]="item.show ? 'display: block' : 'display: none'"
-      [routerLinkActive]="'_active'" [routerLinkActiveOptions]="{exact: true}">
-      <a class="d-flex justify-content-between w-100 px-3 py-2" 
-      style="margin-left: -3px;"
-      (click)="(isMobile)?hideSidebar():null" 
-      [routerLink]="[item.url]">
-     <div class="d-flex align-items-center">
-       <ng-container *ngIf="!item.icon">
-         <img [src]="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON ? item.img : item.imgWhite" 
-              *ngIf="item.img" />
-       </ng-container>
-       <i class="clina {{item.icon}}" *ngIf="item.icon"></i>
-       <span class="ms-3 item-label">{{ item.title }}</span>
-     </div>
-   </a>
+      [routerLinkActive]="item.dashboard ? '' : '_active'" 
+      [routerLinkActiveOptions]="{exact: true}">
+      
+      <!-- Link externo -->
+      <a
+        *ngIf="item.dashboard; else internalLink"
+        class="d-flex justify-content-between w-100 px-3 py-2"
+        style="margin-left: -3px;"
+        (click)="(isMobile)?hideSidebar():null"
+        [href]="getItemUrl(item)"
+        rel="noopener noreferrer"
+      >
+        <div class="d-flex align-items-center">
+          <ng-container *ngIf="!item.icon">
+            <img [src]="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON ? item.img : item.imgWhite" 
+                 *ngIf="item.img" />
+          </ng-container>
+          <i class="clina {{item.icon}}" *ngIf="item.icon"></i>
+          <span class="ms-3 item-label">{{ item.title }}</span>
+        </div>
+      </a>
+      
+      <!-- Link interno -->
+      <ng-template #internalLink>
+        <a
+          class="d-flex justify-content-between w-100 px-3 py-2"
+          style="margin-left: -3px;"
+          (click)="(isMobile)?hideSidebar():null"
+          [routerLink]="[getItemUrl(item)]"
+        >
+          <div class="d-flex align-items-center">
+            <ng-container *ngIf="!item.icon">
+              <img [src]="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON ? item.img : item.imgWhite" 
+                   *ngIf="item.img" />
+            </ng-container>
+            <i class="clina {{item.icon}}" *ngIf="item.icon"></i>
+            <span class="ms-3 item-label">{{ item.title }}</span>
+          </div>
+        </a>
+      </ng-template>
     </li>
 
     <li class="access-mode-container" *ngIf="isAuthenticated && (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON">
@@ -58,12 +84,12 @@
     </li>
   </div>
 
-    <li class="logout-container" *ngIf="isAuthenticated">
-      <div class="d-flex logout-button p-1" (click)="logout()">
-        <div class="_images_icon">
-          <img src="/common-assets/images/sidebar/white/icon-logout.svg" />
-        </div>
-        <span class="item-label d-flex justify-content-center exitButton">Sair</span>
+  <li class="logout-container" *ngIf="isAuthenticated">
+    <div class="d-flex logout-button p-1" (click)="logout()">
+      <div class="_images_icon">
+        <img src="/common-assets/images/sidebar/white/icon-logout.svg" />
       </div>
-    </li>
+      <span class="item-label d-flex justify-content-center exitButton">Sair</span>
+    </div>
+  </li>
 </ul>

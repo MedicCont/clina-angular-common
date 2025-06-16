@@ -16,10 +16,11 @@ import { SidebarService } from "../../services/sidebar.service";
   styleUrls: ["./sidebar.component.scss"],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  @Input() isAuthenticated: boolean= false; 
+  @Input() isAuthenticated: boolean = false; 
   public AccessModeEnum = AccessModeEnum;  // Exponha o enum para o template
   private accessModeSubject = new BehaviorSubject<AccessModeEnum>(AccessModeEnum.HEALTH_PERSON);
   accessMode$ = this.accessModeSubject.asObservable();
+  dashboardUrl = environment.dashboardUrl;
   isMobile = false;
   showNavbar$!: Observable<boolean>;
   items$: Observable<NavbarItemDto[]>;
@@ -54,7 +55,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   getItems(accessMode: AccessModeEnum): NavbarItemDto[] {
-    const items =  [
+    const items = [
       {
         title: "Home",
         img: "/common-assets/images/sidebar/icon-home-solid.svg",
@@ -62,6 +63,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/ps",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
+        dashboard: false,
       },
       {
         title: "Home",
@@ -70,6 +72,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
+        dashboard: true, // Home do host vai para dashboard externo
       },
       {
         title: "Minha Conta",
@@ -78,6 +81,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/account",
         isActive: true,
         show: true,
+        dashboard: true, // Externo
       },
       {
         title: "Compras",
@@ -86,6 +90,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/purchase",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
+        dashboard: true, // Externo
       },
       {
         title: "Assinaturas",
@@ -93,6 +98,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/subscription/management",
         isActive: false,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
+        dashboard: true, // Externo
       },
       {
         title: "Reservas",
@@ -101,6 +107,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/appointment/host",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
+        dashboard: true, // Externo
       },
       {
         title: "Consultórios",
@@ -109,6 +116,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/room",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
+        dashboard: true, // Externo
       },
       {
         title: "Check-In/Out",
@@ -117,6 +125,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/check",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
+        dashboard: false, // Interno
       },
       {
         title: "SaaS",
@@ -125,6 +134,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/saas",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
+        dashboard: true, // Externo
       },
       {
         title: "Agenda",
@@ -133,6 +143,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/my-schedule",
         isActive: true,
         show: true,
+        dashboard: false, // Interno
       },
       {
         title: "Notificações",
@@ -141,6 +152,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/notification",
         isActive: true,
         show: true,
+        dashboard: false, // Interno
       },
       {
         title: "Extrato Financeiro",
@@ -149,6 +161,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/statement",
         isActive: true,
         show: true,
+        dashboard: true, // Externo
       },
       {
         title: "Ganhe Créditos",
@@ -157,6 +170,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/get-member",
         isActive: true,
         show: true,
+        dashboard: false, // Interno
       },
       {
         title: "Favoritos",
@@ -165,10 +179,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/room-favorite",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
+        dashboard: false, // Interno
       },
     ];
 
-    return items.filter(a=>a.show && a.isActive)
+    return items.filter(a => a.show && a.isActive)
+  }
+
+  getItemUrl(item: NavbarItemDto): string {
+    if (item.dashboard) {
+      const baseUrl = this.dashboardUrl.endsWith('/') ? this.dashboardUrl : this.dashboardUrl + '/';
+      const itemUrl = item.url.startsWith('/') ? item.url.substring(1) : item.url;
+      return baseUrl + itemUrl;
+    }
+    return item.url;
   }
 
   goToHome() {
@@ -182,11 +206,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toggleAccessMode(mode: AccessModeEnum) {
     if (mode == AccessModeEnum.HOST && PlatformUtils.isBrowser())
       window.location.href = environment.baseUrl;
-
     else
       this.accessModeService.changeMode(mode);
-    // this.accessModeService.setMode(mode);
   }
+
   onMouseEnter() {
     this.isSidebarHovered = true;
   }
