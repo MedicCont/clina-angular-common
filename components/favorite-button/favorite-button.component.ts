@@ -8,14 +8,14 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
+import { AccountDto } from "app/modules/account/dtos/account.dto";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
-import { AccountDto } from "app/modules/authentication/dtos/account.dto";
 import { RoomFavoriteDto } from "app/modules/common/dtos/room-favorite.dto";
 import { RoomFavoriteCreateInput } from "app/modules/common/inputs/room-favorite-create.input";
 import { RoomFavoriteRemoveInput } from "app/modules/common/inputs/room-favorite-remove.input";
 import { environment } from "environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
-import { RoomDto } from "../../dtos/room.dto";
+import { RoomShowcaseDto } from "../../dtos/room-showcase.dto";
 import { FavoriteButtonService } from "../../services/favorite-button.service";
 
 @Component({
@@ -24,7 +24,7 @@ import { FavoriteButtonService } from "../../services/favorite-button.service";
   styleUrls: ["./favorite-button.component.scss"],
 })
 export class FavoriteButtonComponent implements OnInit {
-  @Input() room?: RoomDto;
+  @Input() room?: RoomShowcaseDto;
   @Output() reloadAction = new EventEmitter<boolean>(false);
   @ViewChild("loginModal") loginModal?: TemplateRef<any>;
   isAuthenticated: boolean = true;

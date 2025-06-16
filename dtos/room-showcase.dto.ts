@@ -9,10 +9,10 @@ export class RoomShowcaseDto{
     description: string;
     images?: string[];
     types?: string[];
-    ratingScore?: number;
+  ratingScore?: number | null;
     advance?: number;
     minPrice?:number;
-    status: RoomStatusEnum;
+    status?: RoomStatusEnum;
     packagesOfHours:PackageOfHourDto[];
 
     //Clinic

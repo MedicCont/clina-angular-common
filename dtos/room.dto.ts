@@ -1,4 +1,3 @@
-import { RoomTypeEnum } from "../enums/room-type.enum";
 import { PackageOfHourDto } from "./package-of-hour.dto";
 
 export interface RoomDto {
@@ -31,5 +30,5 @@ export interface RoomDto {
   sellingPeriodsList: any;
   isRoomOpen?: boolean;
   packagesOfHours: PackageOfHourDto[];
-  types: RoomTypeEnum;
+  types?: string[];
 }

@@ -60,7 +60,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Home",
         img: "/common-assets/images/sidebar/icon-home-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
-        url: "/ps",
+        url: "/",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
         dashboard: false,
@@ -81,7 +81,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/account",
         isActive: true,
         show: true,
-        dashboard: true, // Externo
+        dashboard: true,
       },
       {
         title: "Compras",
@@ -90,7 +90,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/purchase",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
-        dashboard: true, // Externo
+        dashboard: true,
       },
       {
         title: "Assinaturas",
@@ -98,7 +98,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/subscription/management",
         isActive: false,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
-        dashboard: true, // Externo
+        dashboard: true,
       },
       {
         title: "Reservas",
@@ -107,7 +107,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/appointment/host",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
-        dashboard: true, // Externo
+        dashboard: true,
       },
       {
         title: "Consultórios",
@@ -116,7 +116,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/room",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
-        dashboard: true, // Externo
+        dashboard: true,
       },
       {
         title: "Check-In/Out",
@@ -125,7 +125,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/check",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
-        dashboard: false, // Interno
+        dashboard: false, 
       },
       {
         title: "SaaS",
@@ -134,7 +134,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/saas",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
-        dashboard: true, // Externo
+        dashboard: true,
       },
       {
         title: "Agenda",
@@ -143,7 +143,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/my-schedule",
         isActive: true,
         show: true,
-        dashboard: false, // Interno
+        dashboard: false, 
       },
       {
         title: "Notificações",
@@ -152,7 +152,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/notification",
         isActive: true,
         show: true,
-        dashboard: false, // Interno
+        dashboard: false, 
       },
       {
         title: "Extrato Financeiro",
@@ -161,7 +161,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/statement",
         isActive: true,
         show: true,
-        dashboard: true, // Externo
+        dashboard: true,
       },
       {
         title: "Ganhe Créditos",
@@ -170,7 +170,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/get-member",
         isActive: true,
         show: true,
-        dashboard: false, // Interno
+        dashboard: true,
       },
       {
         title: "Favoritos",
@@ -179,7 +179,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/room-favorite",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
-        dashboard: false, // Interno
+        dashboard: false, 
       },
     ];
 
