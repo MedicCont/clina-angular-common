@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  <div *ngIf="room?.advance && room.advance <= 240" class="tag-fast-booking">
+  <div *ngIf="room?.advance && room.advance! <= 240" class="tag-fast-booking">
     <a [routerLink]="routeToRoom" [queryParams]="{ scroll: 'discount' }">
       <img
         src="/common-assets/images/discount/fast-booking.png"
@@ -47,7 +47,7 @@
       <div class="texto">
         <ng-container>
           <span class="d-block">Reserva instantânea!</span>
-          <span *ngIf="room.advance < 60">
+          <span *ngIf="room.advance! < 60">
             Este consultório pode ser reservado com apenas
             {{ room.advance }} minutos de antecedência. Aproveite!
           </span>
@@ -55,9 +55,9 @@
             Este consultório pode ser reservado com apenas 1 hora de
             antecedência. Aproveite!
           </span>
-          <span *ngIf="room.advance > 60">
+          <span *ngIf="room.advance! > 60">
             Este consultório pode ser reservado com apenas
-            {{ room.advance / 60 }} horas de antecedência. Aproveite!
+            {{ room.advance! / 60 }} horas de antecedência. Aproveite!
           </span>
         </ng-container>
       </div>
@@ -92,7 +92,7 @@
     </div>
     <a [routerLink]="routeToRoom" class="card-img-link">
       <img
-        [src]="s3name + 'room_photo/thumb/' + room.images[0]"
+        [src]="s3name + 'room_photo/thumb/' + room?.images![0]"
         alt="logo clina care"
         width="360"
         height="235"
@@ -128,8 +128,11 @@
                 class="small-text d-block align-self-center align-self-md-start"
                 >A partir de</span
               >
-              <span class="card-price d-block">
+              <span class="card-price d-block" *ngIf="room.minPrice">
                 R$ {{ room.minPrice }} / <span>h</span>
+              </span>
+              <span class="card-price d-block" *ngIf="!room.minPrice">
+                Em definição
               </span>
             </div>
           </div>

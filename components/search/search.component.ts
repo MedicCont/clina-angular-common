@@ -6,16 +6,16 @@ import {
   Renderer2,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PlatformUtils } from 'app/utils/platform.util';
 import moment from 'moment-timezone';
+import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
 import { CoordinatesDto } from '../../dtos/coordinates.dto';
 import { PlaceDto } from '../../dtos/place.dto';
 import { SearchInput } from '../../dtos/search-input.dto';
 import { PlaceTypeEnum } from '../../enums/place-type.enum';
 import { ClinicLocationsGetService } from '../../services/clinic-locations-get.service';
 import { NavbarService } from '../../services/navbar.service';
-import { PlatformUtils } from '../../services/platform.util';
 import { DropdownItem } from '../location-dropdown/location-dropdown.component';
-import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
 
 @Component({
   selector: 'clina-navbar-search',
@@ -71,34 +71,35 @@ export class NavbarSearchComponent implements OnInit {
     this.navbarService
     .getLocations()
     .toPromise()
-    .then((response: ClinicLocationDto[]) => {
-      response.forEach(clinicLocationDto=>{
-        clinicLocationDto.cities.forEach(clinicLocationCityDto=>{
-          this.cities.push({
-            type: PlaceTypeEnum.CITY,
-            label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
-            city: clinicLocationCityDto.city,
-            state: clinicLocationDto.state,
-            radius: 50000,
-          });
-          clinicLocationCityDto.neighborhoods.forEach(neighborhood=>{
-            this.neighborhoods.push({
-              type: PlaceTypeEnum.NEIBHBORHOOD,
-              label: neighborhood + ' - ' + clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
-              neighborhood: neighborhood,
+    .then((response: ClinicLocationDto[] | undefined) => {
+      if (response) {  
+        response.forEach(clinicLocationDto => {
+          clinicLocationDto.cities.forEach(clinicLocationCityDto => {
+            this.cities.push({
+              type: PlaceTypeEnum.CITY,
+              label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
               city: clinicLocationCityDto.city,
               state: clinicLocationDto.state,
-              radius: 20000,
+              //radius: 5000,
             });
-          });
-        })
-      })
-  
-      this.locationsList = this.cities;
-
-      this.setupFilter();
+            clinicLocationCityDto.neighborhoods.forEach(neighborhood => {
+              this.neighborhoods.push({
+                type: PlaceTypeEnum.NEIBHBORHOOD,
+                label: neighborhood + ' - ' + clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
+                neighborhood: neighborhood,
+                city: clinicLocationCityDto.city,
+                state: clinicLocationDto.state,
+                //radius: 20000,
+              });
+            });
+          })
+        });
+    
+        this.locationsList = this.cities;
+        this.setupFilter();
+      }
     });
-  }
+}
 
   changeLocationKeyword(event: any): void {
     clearTimeout(this.googlePlacesTimeout);
@@ -351,32 +352,30 @@ export class NavbarSearchComponent implements OnInit {
     if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
       await this.selectLocation(this.locationsList[0]);
     }
-
-    debugger;
-    const searchInput = Object.assign(this.searchInput as SearchInput, {
-      begin: this.date || moment(),
-      end: moment(this.date).add(7, 'days').toDate(),
-      city:
-        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
-          ? this.locationSelected.city
-          : undefined,
-      state:
-        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
-          ? this.locationSelected.state
-          : undefined,
-      neighborhood:
-        this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
-          ? this.locationSelected.neighborhood
-          : undefined,
-      googlePlace:
-        this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
-      lat: this.locationSelected?.lat,
-      lng: this.locationSelected?.lng,
-      radius: this.locationSelected?.radius,
-      plan: '-1',
-      page: 1,
-      take: 12,
-    });
+    const searchInput = Object.assign({}, this.searchInput || {}, {
+  begin: this.date || moment(),
+  end: moment(this.date).add(7, 'days').toDate(),
+  city:
+    this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
+      ? this.locationSelected.city
+      : undefined,
+  state:
+    this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
+      ? this.locationSelected.state
+      : undefined,
+  neighborhood:
+    this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
+      ? this.locationSelected.neighborhood
+      : undefined,
+  googlePlace:
+    this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
+  lat: this.locationSelected?.lat,
+  lng: this.locationSelected?.lng,
+  radius: this.locationSelected?.radius,
+  plan: '-1',
+  page: 1,
+  take: 12,
+});
 
     this.router.navigate(['/room/list'], { queryParams: searchInput });
     this.close();

@@ -32,7 +32,7 @@ export class FavoriteButtonService {
 
   getFavoriteRooms(): Observable<RoomFavoriteDto[]> {
     return this.apollo
-      .use("v2")
+      //.use("v2")
       .query({
         query: ROOMS_FAVORITE_QUERY,
       })
@@ -43,7 +43,6 @@ export class FavoriteButtonService {
     roomFavoriteCreateInput: RoomFavoriteCreateInput
   ): Observable<ApolloQueryResult<Boolean>> {
     return this.apollo
-      .use("v2")
       .mutate({
         mutation: ROOMS_FAVORITE_CREATE_MUTATION,
         variables: { roomFavoriteCreateInput },
@@ -55,7 +54,7 @@ export class FavoriteButtonService {
     roomFavoriteRemoveInput: RoomFavoriteRemoveInput
   ): Observable<ApolloQueryResult<Boolean>> {
     return this.apollo
-      .use("v2")
+      //.use("v2")
       .query({
         query: ROOMS_FAVORITE_REMOVE_MUTATION,
         variables: { roomFavoriteRemoveInput },
