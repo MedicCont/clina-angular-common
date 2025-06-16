@@ -6,4 +6,5 @@ export interface NavbarItemDto {
   imgWhite?: string;
   isActive: boolean;
   show: boolean;
+  dashboard?: boolean;
 }

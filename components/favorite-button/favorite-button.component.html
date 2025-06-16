@@ -1,3 +1,4 @@
+
 <div *ngIf="hasAccountData && isAuthenticated">
   <div
     role="button"
@@ -21,7 +22,7 @@
   </div>
   <div
     role="button"
-    *ngIf="isFavorite && favoriteId !== undefined"
+    *ngIf="isFavorite"
     class="btn-favorite"
     (click)="removeFavoriteRoom()"
   >
