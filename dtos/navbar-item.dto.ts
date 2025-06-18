@@ -5,6 +5,6 @@ export interface NavbarItemDto {
   icon?: string;
   imgWhite?: string;
   isActive: boolean;
-  show: boolean;
+  mode?: 'HOST' | 'PS' | 'BOTH';
   dashboard?: boolean;
 }

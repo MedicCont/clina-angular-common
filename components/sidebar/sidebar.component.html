@@ -16,7 +16,6 @@
   <div class="items-container" (click)="isMobile?hideSidebar():null">
     <li
       *ngFor="let item of (items$ | async)"
-      [style]="item.show ? 'display: block' : 'display: none'"
       [routerLinkActive]="item.dashboard ? '' : '_active'" 
       [routerLinkActiveOptions]="{exact: true}">
       
