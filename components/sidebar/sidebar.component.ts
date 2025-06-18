@@ -212,7 +212,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   getItemUrl(item: NavbarItemDto): string {
     // Se for um item que vai para o dashboard externo
-    if (item.dashboard && item.mode===ItemModeEnum.PS) {
+    if (item.dashboard && (item.mode===ItemModeEnum.PS || item.mode===ItemModeEnum.BOTH)) {
       const baseUrl = this.dashboardUrl.endsWith("/")
         ? this.dashboardUrl
         : this.dashboardUrl + "/";
