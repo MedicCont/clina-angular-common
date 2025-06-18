@@ -8,8 +8,8 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
+import { AccountDto } from "app/modules/account/dtos/account.dto";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
-import { AccountDto } from "app/modules/authentication/dtos/account.dto";
 import { RoomFavoriteDto } from "app/modules/common/dtos/room-favorite.dto";
 import { RoomFavoriteCreateInput } from "app/modules/common/inputs/room-favorite-create.input";
 import { RoomFavoriteRemoveInput } from "app/modules/common/inputs/room-favorite-remove.input";
