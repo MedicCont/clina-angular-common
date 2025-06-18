@@ -16,9 +16,11 @@ import { SidebarService } from "../../services/sidebar.service";
   styleUrls: ["./sidebar.component.scss"],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  @Input() isAuthenticated: boolean = false; 
-  public AccessModeEnum = AccessModeEnum;  // Exponha o enum para o template
-  private accessModeSubject = new BehaviorSubject<AccessModeEnum>(AccessModeEnum.HEALTH_PERSON);
+  @Input() isAuthenticated: boolean = false;
+  public AccessModeEnum = AccessModeEnum; // Exponha o enum para o template
+  private accessModeSubject = new BehaviorSubject<AccessModeEnum>(
+    AccessModeEnum.HEALTH_PERSON
+  );
   accessMode$ = this.accessModeSubject.asObservable();
   dashboardUrl = environment.dashboardUrl;
   isMobile = false;
@@ -37,7 +39,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private readonly accessModeService: AccessModeService
   ) {
     this.items$ = this.accessMode$.pipe(
-      map(accessMode => this.getItems(accessMode))
+      map((accessMode) => this.getItems(accessMode))
     );
   }
 
@@ -45,7 +47,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.showNavbar$ = this.sidebarService.$show; // Use o observable diretamente
 
     if (PlatformUtils.isBrowser()) {
-      this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      this.isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
     }
     this.accessModeService.$accessMode.subscribe(
       (accessMode: AccessModeEnum) => {
@@ -86,7 +91,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         title: "Compras",
         img: "/common-assets/images/sidebar/icon-purchases-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-purchases-solid.svg",
+        imgWhite:
+          "/common-assets/images/sidebar/white/icon-purchases-solid.svg",
         url: "/purchase",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
@@ -103,7 +109,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         title: "Reservas",
         img: "/common-assets/images/sidebar/icon-appointments-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-appointments-solid.svg",
+        imgWhite:
+          "/common-assets/images/sidebar/white/icon-appointments-solid.svg",
         url: "/appointment/host",
         isActive: true,
         show: accessMode === AccessModeEnum.HOST,
@@ -125,7 +132,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/check",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
-        dashboard: false, 
+        dashboard: false,
       },
       {
         title: "SaaS",
@@ -143,7 +150,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/my-schedule",
         isActive: true,
         show: true,
-        dashboard: false, 
+        dashboard: false,
       },
       {
         title: "Notificações",
@@ -152,7 +159,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/notification",
         isActive: true,
         show: true,
-        dashboard: false, 
+        dashboard: false,
       },
       {
         title: "Extrato Financeiro",
@@ -166,7 +173,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
       {
         title: "Ganhe Créditos",
         img: "/common-assets/images/sidebar/icon-indication-earns-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-indication-earns-solid.svg",
+        imgWhite:
+          "/common-assets/images/sidebar/white/icon-indication-earns-solid.svg",
         url: "/get-member",
         isActive: true,
         show: true,
@@ -179,20 +187,39 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url: "/room-favorite",
         isActive: true,
         show: accessMode === AccessModeEnum.HEALTH_PERSON,
-        dashboard: false, 
+        dashboard: false,
       },
     ];
 
-    return items.filter(a => a.show && a.isActive)
+    return items.filter((a) => a.show && a.isActive);
   }
 
   getItemUrl(item: NavbarItemDto): string {
+    // Se for um item que vai para o dashboard externo
     if (item.dashboard) {
-      const baseUrl = this.dashboardUrl.endsWith('/') ? this.dashboardUrl : this.dashboardUrl + '/';
-      const itemUrl = item.url.startsWith('/') ? item.url.substring(1) : item.url;
+      const baseUrl = this.dashboardUrl.endsWith("/")
+        ? this.dashboardUrl
+        : this.dashboardUrl + "/";
+      const itemUrl = item.url.startsWith("/")
+        ? item.url.substring(1)
+        : item.url;
       return baseUrl + itemUrl;
     }
-    return item.url;
+
+    // Se for um item de navegação interna
+    const currentMode = this.accessModeSubject.getValue();
+
+    // Limpa a URL do item removendo a barra inicial se existir
+    const cleanUrl = item.url.startsWith("/")
+      ? item.url.substring(1)
+      : item.url;
+
+    // Constrói a URL com base no modo atual
+    if (currentMode === AccessModeEnum.HOST) {
+      return `/host/${cleanUrl}`;
+    } else {
+      return `/${cleanUrl}`;
+    }
   }
 
   goToHome() {
@@ -204,10 +231,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toggleAccessMode(mode: AccessModeEnum) {
-    if (mode == AccessModeEnum.HOST && PlatformUtils.isBrowser())
-      window.location.href = environment.baseUrl;
-    else
-      this.accessModeService.changeMode(mode);
+    this.accessModeService.changeMode(mode);
   }
 
   onMouseEnter() {
