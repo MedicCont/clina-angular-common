@@ -230,13 +230,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
       ? item.url.substring(1)
       : item.url;
 
+      let url = cleanUrl;
     // Constrói a URL com base no modo atual
     if (currentMode === AccessModeEnum.HOST) {
-    debugger
-      return `/host/${cleanUrl}`;
+      url= `/host/${cleanUrl}`;
     } else {
-      return `/${cleanUrl}`;
+      url= `/${cleanUrl}`;
     }
+   
+    return url;
   }
 
   goToHome() {
