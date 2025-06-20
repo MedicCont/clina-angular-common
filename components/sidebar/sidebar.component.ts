@@ -72,7 +72,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Home",
         img: "/common-assets/images/sidebar/icon-home-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
-        url: "/",
+        url: "/ps",
         isActive: true,
         mode: ItemModeEnum.PS,
         dashboard: false,
