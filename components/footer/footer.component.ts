@@ -11,7 +11,6 @@ import { AccessModeEnum } from '../../enums/access-mode.enum';
 export class FooterComponent implements OnInit {
   accessMode: AccessModeEnum = AccessModeEnum.HEALTH_PERSON;
 
-  homeUrl = environment.baseUrl;
   psUrl = environment.psUrl;
   dashboardUrl = environment.dashboardUrl;
   whatsappNumber = environment.whatsappNumber;

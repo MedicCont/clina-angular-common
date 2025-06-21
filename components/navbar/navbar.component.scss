@@ -69,7 +69,8 @@
   }
   img {
     font-size: 2rem;
-    min-width: 3rem;
+    margin-inline: .5em;
+    min-width: 2rem;
     height: 2.1rem;
     cursor: pointer;
     @include media-breakpoint-down($lg) {
