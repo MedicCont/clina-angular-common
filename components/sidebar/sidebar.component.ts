@@ -211,34 +211,43 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   getItemUrl(item: NavbarItemDto): string {
-    // Se for um item que vai para o dashboard externo
-    if (item.dashboard && (item.mode===ItemModeEnum.PS || item.mode===ItemModeEnum.BOTH)) {
-      const baseUrl = this.dashboardUrl.endsWith("/")
-        ? this.dashboardUrl
-        : this.dashboardUrl + "/";
-      const itemUrl = item.url.startsWith("/")
-        ? item.url.substring(1)
-        : item.url;
-      return baseUrl + itemUrl;
-    }
 
     // Se for um item de navegação interna
     const currentMode = this.accessModeSubject.getValue();
+
+    // Se for um item que vai para o dashboard externo
+    if (item.dashboard && (item.mode===ItemModeEnum.PS || item.mode===ItemModeEnum.BOTH)) {
+      var baseUrl = this.dashboardUrl.endsWith("/")
+        ? this.dashboardUrl
+        : this.dashboardUrl + "/";
+
+        if (currentMode === AccessModeEnum.HOST) {
+          baseUrl += 'host/';
+        }
+
+      const itemUrl = item.url.startsWith("/")
+        ? item.url.substring(1)
+        : item.url;
+        
+      return baseUrl + itemUrl;
+    }
 
     // Limpa a URL do item removendo a barra inicial se existir
     const cleanUrl = item.url.startsWith("/")
       ? item.url.substring(1)
       : item.url;
 
-      let url = cleanUrl;
+    let url = cleanUrl;
+
     // Constrói a URL com base no modo atual
     if (currentMode === AccessModeEnum.HOST) {
       url= `/host/${cleanUrl}`;
     } else {
       url= `/${cleanUrl}`;
     }
-   
+       
     return url;
+    
   }
 
   goToHome() {
