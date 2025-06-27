@@ -6,6 +6,7 @@ import {
   Renderer2,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '@environments/environment';
 import { PlatformUtils } from 'app/utils/platform.util';
 import moment from 'moment-timezone';
 import { ClinicLocationDto } from '../../dtos/clinic-locations.dto';
@@ -377,7 +378,7 @@ export class NavbarSearchComponent implements OnInit {
   take: 12,
 });
 
-    this.router.navigate(['/room/list'], { queryParams: searchInput });
+    this.router.navigate([environment.psUrl+'/room/list'], { queryParams: searchInput });
     this.close();
   }
 
