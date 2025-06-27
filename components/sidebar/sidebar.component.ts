@@ -138,7 +138,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         imgWhite: "/common-assets/images/sidebar/white/icon-checkinout.svg",
         url: "/check",
         isActive: true,
-        mode: ItemModeEnum.PS,
+        mode: ItemModeEnum.HOST,
         dashboard: false,
       },
       {
