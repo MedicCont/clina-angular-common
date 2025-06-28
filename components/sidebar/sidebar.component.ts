@@ -268,8 +268,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     });
 
-    console.log(items);
-
     return items;
   }
 
