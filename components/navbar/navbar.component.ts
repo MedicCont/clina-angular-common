@@ -100,7 +100,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   goToHome() {
-    this.router.navigate(["/"]);
+         window.open(environment.psUrl, '_blank').focus();
   }
 
   toggleSidebar() {
