@@ -1,15 +1,15 @@
 import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { AccessModeService } from "app/modules/common/services/access-mode.service";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
+import { AccessModeService } from "app/modules/common/services/access-mode.service";
 import { environment } from "environments/environment";
 import { BehaviorSubject, Observable, Subscription, map } from "rxjs";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
+import { SystemEnum } from "../../enums/system.enum";
 import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
-import { SystemEnum } from "../../enums/system.enum";
 
 // Enum para definir em quais modos um item deve aparecer
 enum ItemModeEnum {
@@ -168,7 +168,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         imgWhite: "/common-assets/images/sidebar/white/icon-schedule-solid.svg",
         menuUrl: "/my-schedule",
         isActive: true,
-        mode: ItemModeEnum.BOTH,
+        mode: ItemModeEnum.PS,
         system: SystemEnum.MARKETPLACE,
         url:""
       },
