@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AccessModeService } from 'app/modules/account/services/access-mode.service';
+import { AccessModeService } from 'app/modules/common/services/access-mode.service';
 import { environment } from 'environments/environment';
 import { AccessModeEnum } from '../../enums/access-mode.enum';
 

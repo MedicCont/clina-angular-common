@@ -16,16 +16,17 @@
   <div class="items-container" (click)="isMobile?hideSidebar():null">
     <li
       *ngFor="let item of (items$ | async)"
-      [routerLinkActive]="item.dashboard ? '' : '_active'" 
+      [routerLinkActive]="item.system==SystemEnum.DASHBOARD ? '' : '_active'" 
       [routerLinkActiveOptions]="{exact: true}">
       
       <!-- Link externo -->
       <a
-        *ngIf="item.dashboard && (item.mode==='PS' || item.mode==='BOTH'); else internalLink"
+        *ngIf="((sourceSystem==SystemEnum.DASHBOARD && item.system==SystemEnum.MARKETPLACE) || 
+          (sourceSystem==SystemEnum.MARKETPLACE && item.system==SystemEnum.DASHBOARD)) else internalLink"
         class="d-flex justify-content-between w-100 px-3 py-2"
         style="margin-left: -3px;"
         (click)="(isMobile)?hideSidebar():null"
-        [href]="getItemUrl(item)"
+        [href]="item.url"
         rel="noopener noreferrer"
       >
         <div class="d-flex align-items-center">
@@ -44,7 +45,7 @@
           class="d-flex justify-content-between w-100 px-3 py-2"
           style="margin-left: -3px;"
           (click)="(isMobile)?hideSidebar():null"
-          [routerLink]="[getItemUrl(item)]"
+          [routerLink]="[item.url]"
         >
           <div class="d-flex align-items-center">
             <ng-container *ngIf="!item.icon">

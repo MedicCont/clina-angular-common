@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { AccessModeService } from "app/modules/account/services/access-mode.service";
+import { AccessModeService } from "app/modules/common/services/access-mode.service";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
 import { environment } from "environments/environment";
 import { BehaviorSubject, Observable, Subscription, map } from "rxjs";
@@ -9,6 +9,7 @@ import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
 import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
+import { SystemEnum } from "../../enums/system.enum";
 
 // Enum para definir em quais modos um item deve aparecer
 enum ItemModeEnum {
@@ -28,15 +29,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private accessModeSubject = new BehaviorSubject<AccessModeEnum>(
     AccessModeEnum.HEALTH_PERSON
   );
-  accessMode$ = this.accessModeSubject.asObservable();
-  dashboardUrl = environment.dashboardUrl;
-  isMobile = false;
-  showNavbar$!: Observable<boolean>;
-  items$: Observable<NavbarItemDto[]>;
+  public accessMode$ = this.accessModeSubject.asObservable();
+  public dashboardUrl = environment.dashboardUrl;
+  public isMobile = false;
+  public showNavbar$!: Observable<boolean>;
+  public items$: Observable<NavbarItemDto[]>;
 
   private showNavbarSubscription?: Subscription;
-  isSidebarHovered = false; // Controla se o sidebar está com hover
-  psUrl = environment.psUrl;
+  public isSidebarHovered = false; // Controla se o sidebar está com hover
+  public psUrl = environment.psUrl;
+  public SystemEnum = SystemEnum;
+  public sourceSystem = environment.systemName;
 
   constructor(
     private readonly sidebarService: SidebarService,
@@ -67,139 +70,153 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   getItems(accessMode: AccessModeEnum): NavbarItemDto[] {
-    const items = [
+    var items = [
       {
         title: "Home",
         img: "/common-assets/images/sidebar/icon-home-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
-        url: "/ps",
+        menuUrl: "/ps",
         isActive: true,
         mode: ItemModeEnum.PS,
-        dashboard: false,
+        system: SystemEnum.MARKETPLACE,
+        url:""
       },
       {
         title: "Home",
         img: "/common-assets/images/sidebar/icon-home-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
-        url: "/",
+        menuUrl: "/",
         isActive: true,
         mode: ItemModeEnum.HOST,
-        dashboard: true, // Home do host vai para dashboard externo
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Minha Conta",
         img: "/common-assets/images/sidebar/icon-account-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-account-solid.svg",
-        url: "/account",
+        menuUrl: "/account",
         isActive: true,
         mode: ItemModeEnum.BOTH,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Compras",
         img: "/common-assets/images/sidebar/icon-purchases-solid.svg",
         imgWhite:
           "/common-assets/images/sidebar/white/icon-purchases-solid.svg",
-        url: "/purchase",
+        menuUrl: "/purchase",
         isActive: true,
         mode: ItemModeEnum.PS,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Assinaturas",
         icon: "icon-calendar-check-2",
-        url: "/subscription/management",
+        menuUrl: "/subscription/management",
         isActive: true,
         mode: ItemModeEnum.PS,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Reservas",
         img: "/common-assets/images/sidebar/icon-appointments-solid.svg",
         imgWhite:
           "/common-assets/images/sidebar/white/icon-appointments-solid.svg",
-        url: "/appointment/host",
+        menuUrl: "/appointment/host",
         isActive: true,
         mode: ItemModeEnum.HOST,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Consultórios",
         img: "/common-assets/images/sidebar/room-icon.svg",
         imgWhite: "/common-assets/images/sidebar/white/room-icon.svg",
-        url: "/room",
+        menuUrl: "/room",
         isActive: true,
         mode: ItemModeEnum.HOST,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Check-In/Out",
         img: "/common-assets/images/sidebar/icon-checkinout.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-checkinout.svg",
-        url: "/check",
+        menuUrl: "/check",
         isActive: true,
         mode: ItemModeEnum.HOST,
-        dashboard: false,
+        system: SystemEnum.MARKETPLACE,
+        url:""
       },
       {
         title: "SaaS",
         img: "/common-assets/images/sidebar/icon-saas.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-saas.svg",
-        url: "/saas",
+        menuUrl: "/saas",
         isActive: true,
         mode: ItemModeEnum.HOST,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Agenda",
         img: "/common-assets/images/sidebar/icon-schedule-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-schedule-solid.svg",
-        url: "/my-schedule",
+        menuUrl: "/my-schedule",
         isActive: true,
         mode: ItemModeEnum.BOTH,
-        dashboard: false,
+        system: SystemEnum.MARKETPLACE,
+        url:""
       },
       {
         title: "Notificações",
         img: "/common-assets/images/sidebar/icon-bell-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-bell-solid.svg",
-        url: "/notification",
+        menuUrl: "/notification",
         isActive: true,
         mode: ItemModeEnum.BOTH,
-        dashboard: false,
+        system: SystemEnum.MARKETPLACE,
+        url:""
       },
       {
         title: "Extrato Financeiro",
         img: "/common-assets/images/sidebar/icon-money-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-money-solid.svg",
-        url: "/statement",
+        menuUrl: "/statement",
         isActive: true,
         mode: ItemModeEnum.BOTH,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Ganhe Créditos",
         img: "/common-assets/images/sidebar/icon-indication-earns-solid.svg",
         imgWhite:
           "/common-assets/images/sidebar/white/icon-indication-earns-solid.svg",
-        url: "/get-member",
+        menuUrl: "/get-member",
         isActive: true,
         mode: ItemModeEnum.BOTH,
-        dashboard: true,
+        system: SystemEnum.DASHBOARD,
+        url:""
       },
       {
         title: "Favoritos",
         img: "/common-assets/images/sidebar/icon-favorite-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-favorite-solid.svg",
-        url: "/room-favorite",
+        menuUrl: "/room-favorite",
         isActive: true,
         mode: ItemModeEnum.PS,
-        dashboard: false,
+        system: SystemEnum.MARKETPLACE,
+        url:""
       },
     ];
 
     // Filtra os itens com base no modo atual
-    return items.filter((item) => {
+    items = items.filter((item) => {
       if (!item.isActive) return false;
       
       if (item.mode === ItemModeEnum.BOTH) return true;
@@ -208,46 +225,52 @@ export class SidebarComponent implements OnInit, OnDestroy {
       
       return false;
     });
-  }
 
-  getItemUrl(item: NavbarItemDto): string {
+    //identificar o source system
 
     // Se for um item de navegação interna
     const currentMode = this.accessModeSubject.getValue();
 
-    // Se for um item que vai para o dashboard externo
-    if (item.dashboard && (item.mode===ItemModeEnum.PS || item.mode===ItemModeEnum.BOTH)) {
-      var baseUrl = this.dashboardUrl.endsWith("/")
-        ? this.dashboardUrl
-        : this.dashboardUrl + "/";
+    items = items.map(item=>{
 
+      var menuUrl = item.menuUrl.startsWith("/")
+      ? item.menuUrl.substring(1)
+      : item.menuUrl;
+  
+      var baseUrl = "";
+
+      if(this.sourceSystem==SystemEnum.DASHBOARD){//Para o dashboard marketplace é externo
+        if(item.system===SystemEnum.MARKETPLACE){ //link externo clina marketplace
+          baseUrl = this.psUrl.endsWith("/")
+          ? this.psUrl
+          : this.psUrl + "/";
+        }
+    
         if (currentMode === AccessModeEnum.HOST) {
           baseUrl += 'host/';
         }
+      }
 
-      const itemUrl = item.url.startsWith("/")
-        ? item.url.substring(1)
-        : item.url;
-        
-      return baseUrl + itemUrl;
-    }
+      if(this.sourceSystem==SystemEnum.MARKETPLACE){//Para o marketplace dashboard é externo
+        if(item.system===SystemEnum.DASHBOARD){ //link externo clina marketplace
+          baseUrl = this.dashboardUrl.endsWith("/")
+          ? this.dashboardUrl
+          : this.dashboardUrl + "/";
+          if (currentMode === AccessModeEnum.HOST) {
+            baseUrl += 'host/';
+          }
+        }
+      }
 
-    // Limpa a URL do item removendo a barra inicial se existir
-    const cleanUrl = item.url.startsWith("/")
-      ? item.url.substring(1)
-      : item.url;
+      item.url = baseUrl + menuUrl;
 
-    let url = cleanUrl;
+      return item;
 
-    // Constrói a URL com base no modo atual
-    if (currentMode === AccessModeEnum.HOST) {
-      url= `/host/${cleanUrl}`;
-    } else {
-      url= `/${cleanUrl}`;
-    }
-       
-    return url;
-    
+    });
+
+    console.log(items);
+
+    return items;
   }
 
   goToHome() {

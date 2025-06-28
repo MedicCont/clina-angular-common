@@ -3,7 +3,7 @@
 import { Component, HostListener, Input, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { AccessModeService } from "app/modules/account/services/access-mode.service";
+import { AccessModeService } from "app/modules/common/services/access-mode.service";
 import { MaletaService } from "app/modules/maleta/maleta.service";
 import { UnleashService } from "app/services/unleash.service";
 import { filter, Subscription } from "rxjs";
