@@ -73,8 +73,6 @@ export class NavbarSearchComponent implements OnInit {
     .getLocations()
     .toPromise()
     .then((response: ClinicLocationDto[] | undefined) => {
-      console.log('Clinic locations');
-      console.log(response);
       if (response) {  
         response.forEach(clinicLocationDto => {
           clinicLocationDto.cities.forEach(clinicLocationCityDto => {
@@ -353,7 +351,7 @@ export class NavbarSearchComponent implements OnInit {
 
 
   async makeSearch() {
-    try{
+
       if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
         await this.selectLocation(this.locationsList[0]);
       }
@@ -383,9 +381,6 @@ export class NavbarSearchComponent implements OnInit {
         page: 1,
         take: 12,
       });
-  
-      console.log('Location selected');
-      console.log(searchInput);
 
       var savedSearchInput = this.getSavedFilters();
       if(savedSearchInput){
@@ -403,9 +398,6 @@ export class NavbarSearchComponent implements OnInit {
   
       this.router.navigate(['/room/list'], {queryParams: searchInput });
       this.close();
-    }catch(err){
-      console.log(err);
-    }
   }
 
 }
