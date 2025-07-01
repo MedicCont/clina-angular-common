@@ -149,7 +149,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         menuUrl: "/check",
         isActive: true,
         mode: ItemModeEnum.HOST,
-        system: SystemEnum.MARKETPLACE,
+        system: SystemEnum.DASHBOARD,
         url:""
       },
       {
