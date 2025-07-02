@@ -285,28 +285,44 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toggleAccessMode(mode: AccessModeEnum) {
-    if (mode === this.accessModeSubject.getValue()) {
-      return; // Se já estiver no modo desejado, não faz nada
-    }
+  if (mode === this.accessModeSubject.getValue()) {
+    return; // Se já estiver no modo desejado, não faz nada
+  }
 
-    // Extrai o caminho atual sem o prefixo de modo
-    let currentPath = this.router.url;
-    if (currentPath.startsWith("/host/")) {
+  const currentUrl = this.router.url;
+  const isInDashboard = currentUrl.includes('/dashboard/');
+  const isInMarketplace = !isInDashboard;
+
+  if (mode === AccessModeEnum.HOST) {
+    if (isInMarketplace) {
+      // Redireciona para dashboardUrl/host
+      window.location.href = this.dashboardUrl.endsWith('/')
+        ? `${this.dashboardUrl}host`
+        : `${this.dashboardUrl}/host`;
+    } else {
+      // Mantém navegação interna no dashboard
+      let currentPath = currentUrl;
+      if (currentPath.startsWith('/host/')) {
+        currentPath = currentPath.substring(6); // Remove '/host/'
+      } else if (currentPath.startsWith('/')) {
+        currentPath = currentPath.substring(1); // Remove '/'
+      }
+      this.router.navigate([`/host/${currentPath}`]);
+    }
+  } else {
+    // Modo HEALTH_PERSON
+    let currentPath = currentUrl;
+    if (currentPath.startsWith('/host/')) {
       currentPath = currentPath.substring(6); // Remove '/host/'
-    } else if (currentPath.startsWith("/")) {
+    } else if (currentPath.startsWith('/')) {
       currentPath = currentPath.substring(1); // Remove '/'
     }
-
-    // Navega para o mesmo caminho, mas com o prefixo do novo modo
-    if (mode === AccessModeEnum.HOST) {
-      this.router.navigate([`/host/${currentPath}`]);
-    } else {
-      this.router.navigate([`/${currentPath}`]);
-    }
-
-    // Atualiza o modo no serviço
-    this.accessModeService.load(mode);
+    this.router.navigate([`/${currentPath}`]);
   }
+
+  // Atualiza o modo no serviço
+  this.accessModeService.load(mode);
+}
 
   onMouseEnter() {
     this.isSidebarHovered = true;
