@@ -246,6 +246,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
           : this.psUrl + "/";
         }
     
+        if (currentMode === AccessModeEnum.HOST) {
+         // baseUrl += 'host/';
+        }
       }
 
       if(this.sourceSystem==SystemEnum.MARKETPLACE){//Para o marketplace dashboard é externo
