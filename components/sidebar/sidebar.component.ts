@@ -116,7 +116,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Assinaturas",
         icon: "icon-calendar-check-2",
         menuUrl: "/subscription/management",
-        isActive: true,
+        isActive: false,
         mode: ItemModeEnum.PS,
         system: SystemEnum.DASHBOARD,
         url:""
