@@ -42,7 +42,7 @@ export class NavbarSearchComponent implements OnInit {
 
   loadingCoordinates: boolean = false;
 
-  date?: Date;
+  date?: Date=new Date();
   neighborhood: string = '';
 
 
@@ -70,37 +70,37 @@ export class NavbarSearchComponent implements OnInit {
 
   ngOnInit() {
     this.navbarService
-    .getLocations()
-    .toPromise()
-    .then((response: ClinicLocationDto[] | undefined) => {
-      if (response) {  
-        response.forEach(clinicLocationDto => {
-          clinicLocationDto.cities.forEach(clinicLocationCityDto => {
-            this.cities.push({
-              type: PlaceTypeEnum.CITY,
-              label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
-              city: clinicLocationCityDto.city,
-              state: clinicLocationDto.state,
-              //radius: 5000,
-            });
-            clinicLocationCityDto.neighborhoods.forEach(neighborhood => {
-              this.neighborhoods.push({
-                type: PlaceTypeEnum.NEIBHBORHOOD,
-                label: neighborhood + ' - ' + clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
-                neighborhood: neighborhood,
+      .getLocations()
+      .toPromise()
+      .then((response: ClinicLocationDto[] | undefined) => {
+        if (response) {
+          response.forEach(clinicLocationDto => {
+            clinicLocationDto.cities.forEach(clinicLocationCityDto => {
+              this.cities.push({
+                type: PlaceTypeEnum.CITY,
+                label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
                 city: clinicLocationCityDto.city,
                 state: clinicLocationDto.state,
-                //radius: 20000,
+                //radius: 5000,
               });
-            });
-          })
-        });
-    
-        this.locationsList = this.cities;
-        this.setupFilter();
-      }
-    });
-}
+              clinicLocationCityDto.neighborhoods.forEach(neighborhood => {
+                this.neighborhoods.push({
+                  type: PlaceTypeEnum.NEIBHBORHOOD,
+                  label: neighborhood + ' - ' + clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
+                  neighborhood: neighborhood,
+                  city: clinicLocationCityDto.city,
+                  state: clinicLocationDto.state,
+                  //radius: 20000,
+                });
+              });
+            })
+          });
+
+          this.locationsList = this.cities;
+          this.setupFilter();
+        }
+      });
+  }
 
   changeLocationKeyword(event: any): void {
     clearTimeout(this.googlePlacesTimeout);
@@ -192,7 +192,7 @@ export class NavbarSearchComponent implements OnInit {
   }
 
   // Função para verificar se os filtros no localStorage estão expirados
-  isFilterExpired(){
+  isFilterExpired() {
     var savedFilterDate = localStorage.getItem('filterDate');
     if (!savedFilterDate) {
       return true;
@@ -203,14 +203,14 @@ export class NavbarSearchComponent implements OnInit {
   };
 
   // Função para atualizar os filtros no localStorage
-  updateLocalStorageFilters(filters: SearchInput){
+  updateLocalStorageFilters(filters: SearchInput) {
     localStorage.setItem('filterDate', new Date().toISOString());
     localStorage.setItem('savedFilters', JSON.stringify(filters));
   };
 
 
   // Função para obter os filtros salvos no localStorage
-  getSavedFilters():SearchInput | null{
+  getSavedFilters(): SearchInput | null {
     const savedFiltersStr = localStorage.getItem('savedFilters');
     return savedFiltersStr ? JSON.parse(savedFiltersStr) : null;
   };
@@ -352,52 +352,67 @@ export class NavbarSearchComponent implements OnInit {
 
   async makeSearch() {
 
-      if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
-        await this.selectLocation(this.locationsList[0]);
-      }
-  
-     
-      const searchInput = Object.assign({}, this.searchInput || {}, {
-        start: moment(this.date).toDate().toISOString(),
-        end: moment(this.date).add(7, 'days').toISOString(),
-        city:
-          this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
-            ? this.locationSelected.city
-            : undefined,
-        state:
-          this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
-            ? this.locationSelected.state
-            : undefined,
-        neighborhood:
-          this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
-            ? this.locationSelected.neighborhood
-            : undefined,
-        googlePlace:
-          this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
-        lat: this.locationSelected?.lat,
-        lng: this.locationSelected?.lng,
-        radius: this.locationSelected?.radius,
-        plan: '-1',
-        page: 1,
-        take: 12,
-      });
+    if (this.locationsList.length && !this.locationSelected && this.keyword.length > 2) {
+      await this.selectLocation(this.locationsList[0]);
+    }
 
-      var savedSearchInput = this.getSavedFilters();
-      if(savedSearchInput){
-        savedSearchInput.start = searchInput.start;
-        savedSearchInput.end = searchInput.end;
-        savedSearchInput.city = searchInput.city;
-        savedSearchInput.state = searchInput.state;
-        savedSearchInput.neighborhood = searchInput.neighborhood;
-        savedSearchInput.lat = searchInput.lat;
-        savedSearchInput.lng = searchInput.lng;
-        savedSearchInput.radius = searchInput.radius;
-        this.updateLocalStorageFilters(savedSearchInput);
 
+    const searchInput = Object.assign({}, this.searchInput || {}, {
+      start: moment(this.date).toDate().toISOString(),
+      end: moment(this.date).add(7, 'days').toISOString(),
+      city:
+        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
+          ? this.locationSelected.city
+          : undefined,
+      state:
+        this.locationSelected && [PlaceTypeEnum.CITY, PlaceTypeEnum.NEIBHBORHOOD].includes(this.locationSelected.type)
+          ? this.locationSelected.state
+          : undefined,
+      neighborhood:
+        this.locationSelected && this.locationSelected.type === PlaceTypeEnum.NEIBHBORHOOD
+          ? this.locationSelected.neighborhood
+          : undefined,
+      googlePlace:
+        this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
+      lat: this.locationSelected?.lat,
+      lng: this.locationSelected?.lng,
+      radius: this.locationSelected?.radius,
+      plan: '-1',
+      page: 1,
+      take: 12,
+    });
+
+    var savedSearchInput = this.getSavedFilters();
+    if (savedSearchInput) {
+      savedSearchInput.start = searchInput.start;
+      savedSearchInput.end = searchInput.end;
+      savedSearchInput.city = searchInput.city;
+      savedSearchInput.state = searchInput.state;
+      savedSearchInput.neighborhood = searchInput.neighborhood;
+      savedSearchInput.lat = searchInput.lat;
+      savedSearchInput.lng = searchInput.lng;
+      savedSearchInput.radius = searchInput.radius;
+      this.updateLocalStorageFilters(savedSearchInput);
+
+    }
+
+    // Construir a URL com os parâmetros
+    const baseUrl = environment.psUrl + '/room/list';
+    const params = new URLSearchParams();
+
+
+    (Object.keys(searchInput) as Array<keyof typeof searchInput>).forEach(key => {
+      const value = searchInput[key];
+      if (value !== undefined && value !== null) {
+        params.append(key, value.toString());
       }
-  
-      this.router.navigate(['/room/list'], {queryParams: searchInput });
-      this.close();
+    });
+
+    const fullUrl = `${baseUrl}?${params.toString()}`;
+
+    // Redirecionar para URL externa
+    window.location.href = fullUrl;
+    this.close();
   }
 
 }
