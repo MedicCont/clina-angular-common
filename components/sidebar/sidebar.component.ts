@@ -245,9 +245,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
           ? this.psUrl
           : this.psUrl + "/";
         }
-    
+
         if (currentMode === AccessModeEnum.HOST) {
-         // baseUrl += 'host/';
+          baseUrl += 'host/';
         }
       }
 
