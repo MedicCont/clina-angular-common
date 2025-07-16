@@ -226,8 +226,8 @@ export class NavbarSearchComponent implements OnInit {
           if (paramsList && Object.keys(paramsList).length > 0) {
             // Filtros da URL
             this.searchInput = {
-              start: paramsList?.['begin'] ?? moment().startOf('day').format(),
-              end: paramsList?.['end'] ?? moment().add(6, 'days').format(),
+              start: paramsList?.['start'] ?? moment().startOf('day').format(),
+              end: paramsList?.['end'] ?? moment().add(7, 'days').format(),
               city: paramsList?.['city'],
               neighborhood: paramsList?.['neighborhood'],
               state: paramsList?.['state'],
@@ -250,7 +250,7 @@ export class NavbarSearchComponent implements OnInit {
             // Valores padrão se não houver filtros na URL e os salvos no localStorage estão expirados
             this.searchInput = {
               start: moment().format(),
-              end: moment().add(6, 'days').format(),
+              end: moment().add(7, 'days').format(),
               city: undefined,
               neighborhood: '',
               state: undefined,
@@ -393,7 +393,6 @@ export class NavbarSearchComponent implements OnInit {
       savedSearchInput.lng = searchInput.lng;
       savedSearchInput.radius = searchInput.radius;
       this.updateLocalStorageFilters(savedSearchInput);
-
     }
 
     // Construir a URL com os parâmetros
