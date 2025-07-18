@@ -124,6 +124,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  roomListRedirect(){
+    window.location.href = environment.psUrl + '/room/list';
+  }
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
     if (this.router.url !== '/') return;
