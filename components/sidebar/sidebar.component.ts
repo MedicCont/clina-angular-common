@@ -169,7 +169,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         menuUrl: "/my-schedule",
         isActive: true,
         mode: ItemModeEnum.PS,
-        system: SystemEnum.MARKETPLACE,
+        system: SystemEnum.DASHBOARD,
         url:""
       },
       {
