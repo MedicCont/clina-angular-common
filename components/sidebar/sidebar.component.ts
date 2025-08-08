@@ -78,7 +78,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         menuUrl: "/ps",
         isActive: true,
         mode: ItemModeEnum.PS,
-        system: SystemEnum.MARKETPLACE,
+        system: SystemEnum.DASHBOARD,
         url:""
       },
       {
