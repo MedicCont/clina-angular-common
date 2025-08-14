@@ -46,7 +46,7 @@
       </span>
     </a>
 
-    <a *ngIf="!isAuthenticated" [routerLink]="['/auth/sign-in']" class="link-login">
+    <a *ngIf="!isAuthenticated" routerLink="/auth/sign-in" class="link-login">
       <i class="fas fa-user"></i>
     </a>
     <div></div>
@@ -58,7 +58,7 @@
       <div></div>
       <div></div>
     </div>
-    <a *ngIf="!isAuthenticated" [routerLink]="['/auth/sign-in']" class="link-login-mobile">
+    <a *ngIf="!isAuthenticated" routerLink="/auth/sign-in" class="link-login-mobile">
       <i class="fas fa-user"></i>
     </a>
   </div>

@@ -42,7 +42,7 @@ export class NavbarSearchComponent implements OnInit {
 
   loadingCoordinates: boolean = false;
 
-  date?: Date=new Date();
+  date?:Date;
   neighborhood: string = '';
 
 
