@@ -42,7 +42,7 @@ export class NavbarSearchComponent implements OnInit {
 
   loadingCoordinates: boolean = false;
 
-  date?:Date;
+  date?: Date=new Date();
   neighborhood: string = '';
 
 
@@ -327,7 +327,7 @@ export class NavbarSearchComponent implements OnInit {
     this.date = data?.start ? new Date(data?.start) : new Date();
   }
 
-  getStartDate(event: any) {
+  getStartDate(event: Date) {
     this.date = event;
   }
 
