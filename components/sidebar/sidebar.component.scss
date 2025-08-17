@@ -1,6 +1,6 @@
-@import "/src/styles/colors";
-@import "/src/styles/breakpoint";
-@import "/src/styles/mixins/breakpoints";
+@import "/src/assets/styles/colors";
+@import "/src/assets/styles/breakpoint";
+@import "/src/assets/styles/mixins/breakpoints";
 
 :host {
   position: fixed;
@@ -50,7 +50,6 @@
 
   .item-label {
     transition: 0s;
-    font-weight: 100;
     opacity: 0;
   }
 
