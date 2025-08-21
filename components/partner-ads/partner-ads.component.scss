@@ -1,0 +1,81 @@
+.homeps-row-ad {
+  background-size: contain; /* Mantém a proporção das imagens */
+  background-repeat: no-repeat;
+  background-position: center;
+  height: auto; /* Permite que a altura seja automática */
+  min-height: 150px;
+  max-height: 230px;
+  flex-grow: 1;
+  max-width: 12%;
+  flex-basis: 20%;
+  margin: 0 1%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 750px) {
+    min-height: 80px;
+    max-height: 90px;
+    flex-basis: 33%; /* Aumenta o espaço ocupado em telas menores */
+  }
+}
+
+.homeps-row-ad-1,
+.homeps-row-ad-2,
+.homeps-row-ad-3,
+.homeps-row-ad-4,
+.homeps-row-ad-5,
+.homeps-row-ad-6 {
+  background-size: contain; /* Garante que as imagens não sejam cortadas */
+}
+
+.homeps-row-ad-6{
+  min-height: 130px;
+  max-height: 210px;
+  @media (max-width: 750px) {
+    min-height: 100px;
+    max-height: 110px;
+    flex-basis: 33%; /* Aumenta o espaço ocupado em telas menores */
+  }
+}
+
+.homeps-row-ad-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5em;
+  gap: 5%; /* Espaçamento uniforme entre os itens */
+  width: 100%;
+}
+
+.ad-title-row {
+  text-align: center;
+  margin-bottom: 0.5em;
+}
+
+.ad-title-row p {
+  background-color: #7a34fe;
+  border-radius: 10px;
+  color: #fff;
+  width: fit-content;
+  margin: auto;
+  font-weight: 100;
+  padding: 0.25em 1em;
+}
+
+.font-responsive {
+  font-size: 1.4vw;
+  @media (max-width: 1200px) {
+    font-size: 1.8vw;
+  }
+  @media (max-width: 1000px) {
+    font-size: 2.8vw;
+  }
+  @media (max-width: 600px) {
+    font-size: 3.8vw;
+  }
+}
+
+.homeps-row-ad:hover {
+  cursor: pointer;
+}
