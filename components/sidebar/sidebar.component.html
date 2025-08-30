@@ -1,7 +1,13 @@
+<div
+  class="sidebar-backdrop"
+  *ngIf="(isVisible$ | async) && isMobile"
+  (click)="hideSidebar()">
+</div>
+
 <ul
   id="sidebar"
   [ngClass]="{
-    show: (showNavbar$ | async) || (!isMobile&&isSidebarHovered),
+    show: (isVisible$ | async) || (!isMobile&&isSidebarHovered),
     hostMode: (accessMode$ | async) === AccessModeEnum.HOST,
     psMode: (accessMode$ | async) === AccessModeEnum.HEALTH_PERSON
   }"
@@ -16,12 +22,11 @@
   <div class="items-container" (click)="isMobile?hideSidebar():null">
     <li
       *ngFor="let item of (items$ | async)"
-      [routerLinkActive]="item.system==SystemEnum.DASHBOARD ? '' : '_active'" 
+      [routerLinkActive]="item.system==SystemEnum.DASHBOARD ? '' : '_active'"
       [routerLinkActiveOptions]="{exact: true}">
-      
-      <!-- Link externo -->
+
       <a
-        *ngIf="((sourceSystem==SystemEnum.DASHBOARD && item.system==SystemEnum.MARKETPLACE) || 
+        *ngIf="((sourceSystem==SystemEnum.DASHBOARD && item.system==SystemEnum.MARKETPLACE) ||
           (sourceSystem==SystemEnum.MARKETPLACE && item.system==SystemEnum.DASHBOARD)) else internalLink"
         class="d-flex justify-content-between w-100 px-3 py-2"
         style="margin-left: -3px;"
@@ -31,15 +36,14 @@
       >
         <div class="d-flex align-items-center">
           <ng-container *ngIf="!item.icon">
-            <img [src]="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON ? item.img : item.imgWhite" 
+            <img [src]="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON ? item.img : item.imgWhite"
                  *ngIf="item.img" />
           </ng-container>
           <i class="clina {{item.icon}}" *ngIf="item.icon"></i>
           <span class="ms-3 item-label">{{ item.title }}</span>
         </div>
       </a>
-      
-      <!-- Link interno -->
+
       <ng-template #internalLink>
         <a
           class="d-flex justify-content-between w-100 px-3 py-2"
@@ -49,7 +53,7 @@
         >
           <div class="d-flex align-items-center">
             <ng-container *ngIf="!item.icon">
-              <img [src]="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON ? item.img : item.imgWhite" 
+              <img [src]="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON ? item.img : item.imgWhite"
                    *ngIf="item.img" />
             </ng-container>
             <i class="clina {{item.icon}}" *ngIf="item.icon"></i>

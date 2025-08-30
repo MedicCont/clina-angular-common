@@ -1,17 +1,17 @@
 import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
-import { Router } from "@angular/router";
-
+import { NavigationEnd, Router } from "@angular/router";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
 import { AccessModeService } from "app/modules/common/services/access-mode.service";
 import { environment } from "environments/environment";
 import { BehaviorSubject, Observable, Subscription, map } from "rxjs";
+import { filter } from "rxjs/operators";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
 import { SystemEnum } from "../../enums/system.enum";
 import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
 
-// Enum para definir em quais modos um item deve aparecer
+// Enum
 enum ItemModeEnum {
   HOST = 'HOST',
   PS = 'PS',
@@ -25,18 +25,22 @@ enum ItemModeEnum {
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   @Input() isAuthenticated: boolean = false;
-  public AccessModeEnum = AccessModeEnum; // Exponha o enum para o template
+  public AccessModeEnum = AccessModeEnum;
   private accessModeSubject = new BehaviorSubject<AccessModeEnum>(
     AccessModeEnum.HEALTH_PERSON
   );
   public accessMode$ = this.accessModeSubject.asObservable();
   public dashboardUrl = environment.dashboardUrl;
   public isMobile = false;
-  public showNavbar$!: Observable<boolean>;
   public items$: Observable<NavbarItemDto[]>;
 
-  private showNavbarSubscription?: Subscription;
-  public isSidebarHovered = false; // Controla se o sidebar está com hover
+  // 💡 1. Criamos um BehaviorSubject local para controlar a visibilidade
+  private isVisibleSubject = new BehaviorSubject<boolean>(false);
+  public isVisible$ = this.isVisibleSubject.asObservable();
+
+  private routerSubscription?: Subscription;
+  private serviceShowSubscription?: Subscription; // Para ouvir o serviço
+  public isSidebarHovered = false;
   public psUrl = environment.psUrl;
   public SystemEnum = SystemEnum;
   public sourceSystem = environment.systemName;
@@ -54,7 +58,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.showNavbar$ = this.sidebarService.$show; // Use o observable diretamente
+    // 💡 2. Ouvimos o serviço apenas para ABRIR o sidebar
+    this.serviceShowSubscription = this.sidebarService.$show.subscribe(shouldShow => {
+      if (shouldShow) {
+        this.isVisibleSubject.next(true);
+      }
+      // Ignoramos o comando de fechar do serviço, pois faremos isso localmente
+    });
 
     if (PlatformUtils.isBrowser()) {
       this.isMobile =
@@ -62,13 +72,36 @@ export class SidebarComponent implements OnInit, OnDestroy {
           navigator.userAgent
         );
     }
+
     this.accessModeService.$accessMode.subscribe(
       (accessMode: AccessModeEnum) => {
         this.accessModeSubject.next(accessMode);
       }
     );
+
+    // A lógica de fechar ao navegar continua a mesma
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      if (this.isMobile) {
+        this.hideSidebar();
+      }
+    });
   }
 
+  // 💡 3. O método hideSidebar agora atualiza DIRETAMENTE o nosso subject local
+  hideSidebar() {
+    this.isVisibleSubject.next(false);
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription?.unsubscribe();
+    this.serviceShowSubscription?.unsubscribe(); // Limpa a inscrição do serviço
+    if (PlatformUtils.isBrowser())
+      this.renderer.removeClass(document.body, "no-scroll");
+  }
+
+  // --- O RESTANTE DO CÓDIGO PERMANECE IGUAL ---
   getItems(accessMode: AccessModeEnum): NavbarItemDto[] {
     var items = [
       {
@@ -215,59 +248,39 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
     ];
 
-    // Filtra os itens com base no modo atual
     items = items.filter((item) => {
       if (!item.isActive) return false;
-      
       if (item.mode === ItemModeEnum.BOTH) return true;
       if (item.mode === ItemModeEnum.HOST && accessMode === AccessModeEnum.HOST) return true;
       if (item.mode === ItemModeEnum.PS && accessMode === AccessModeEnum.HEALTH_PERSON) return true;
-      
       return false;
     });
 
-    //identificar o source system
-
-    // Se for um item de navegação interna
     const currentMode = this.accessModeSubject.getValue();
-
     items = items.map(item=>{
-
-      var menuUrl = item.menuUrl.startsWith("/")
-      ? item.menuUrl.substring(1)
-      : item.menuUrl;
-  
+      var menuUrl = item.menuUrl.startsWith("/") ? item.menuUrl.substring(1) : item.menuUrl;
       var baseUrl = "";
 
-      if(this.sourceSystem==SystemEnum.DASHBOARD){//Para o dashboard marketplace é externo
-        if(item.system===SystemEnum.MARKETPLACE){ //link externo clina marketplace
-          baseUrl = this.psUrl.endsWith("/")
-          ? this.psUrl
-          : this.psUrl + "/";
+      if(this.sourceSystem==SystemEnum.DASHBOARD){
+        if(item.system===SystemEnum.MARKETPLACE){
+          baseUrl = this.psUrl.endsWith("/") ? this.psUrl : this.psUrl + "/";
         }
-
         if (currentMode === AccessModeEnum.HOST) {
           baseUrl += 'host/';
         }
       }
 
-      if(this.sourceSystem==SystemEnum.MARKETPLACE){//Para o marketplace dashboard é externo
-        if(item.system===SystemEnum.DASHBOARD){ //link externo clina marketplace
-          baseUrl = this.dashboardUrl.endsWith("/")
-          ? this.dashboardUrl
-          : this.dashboardUrl + "/";
+      if(this.sourceSystem==SystemEnum.MARKETPLACE){
+        if(item.system===SystemEnum.DASHBOARD){
+          baseUrl = this.dashboardUrl.endsWith("/") ? this.dashboardUrl : this.dashboardUrl + "/";
           if (currentMode === AccessModeEnum.HOST) {
             baseUrl += 'host/';
           }
         }
       }
-
       item.url = baseUrl + menuUrl;
-
       return item;
-
     });
-
     return items;
   }
 
@@ -280,49 +293,40 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  hideSidebar() {
-    this.sidebarService.hide();
-  }
-
   toggleAccessMode(mode: AccessModeEnum) {
-  if (mode === this.accessModeSubject.getValue()) {
-    return; // Se já estiver no modo desejado, não faz nada
-  }
+    if (mode === this.accessModeSubject.getValue()) {
+      return;
+    }
 
-  const currentUrl = this.router.url;
-  const isInDashboard = currentUrl.includes('/dashboard/');
-  const isInMarketplace = !isInDashboard;
+    const currentUrl = this.router.url;
+    const isInDashboard = currentUrl.includes('/dashboard/');
+    const isInMarketplace = !isInDashboard;
 
-  if (mode === AccessModeEnum.HOST) {
-    if (isInMarketplace) {
-      // Redireciona para dashboardUrl/host
-      window.location.href = this.dashboardUrl.endsWith('/')
-        ? `${this.dashboardUrl}host`
-        : `${this.dashboardUrl}/host`;
+    if (mode === AccessModeEnum.HOST) {
+      if (isInMarketplace) {
+        window.location.href = this.dashboardUrl.endsWith('/')
+          ? `${this.dashboardUrl}host`
+          : `${this.dashboardUrl}/host`;
+      } else {
+        let currentPath = currentUrl;
+        if (currentPath.startsWith('/host/')) {
+          currentPath = currentPath.substring(6);
+        } else if (currentPath.startsWith('/')) {
+          currentPath = currentPath.substring(1);
+        }
+        this.router.navigate([`/host/${currentPath}`]);
+      }
     } else {
-      // Mantém navegação interna no dashboard
       let currentPath = currentUrl;
       if (currentPath.startsWith('/host/')) {
-        currentPath = currentPath.substring(6); // Remove '/host/'
+        currentPath = currentPath.substring(6);
       } else if (currentPath.startsWith('/')) {
-        currentPath = currentPath.substring(1); // Remove '/'
+        currentPath = currentPath.substring(1);
       }
-      this.router.navigate([`/host/${currentPath}`]);
+      this.router.navigate([`/${currentPath}`]);
     }
-  } else {
-    // Modo HEALTH_PERSON
-    let currentPath = currentUrl;
-    if (currentPath.startsWith('/host/')) {
-      currentPath = currentPath.substring(6); // Remove '/host/'
-    } else if (currentPath.startsWith('/')) {
-      currentPath = currentPath.substring(1); // Remove '/'
-    }
-    this.router.navigate([`/${currentPath}`]);
+    this.accessModeService.load(mode);
   }
-
-  // Atualiza o modo no serviço
-  this.accessModeService.load(mode);
-}
 
   onMouseEnter() {
     this.isSidebarHovered = true;
@@ -330,12 +334,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   onMouseLeave() {
     this.isSidebarHovered = false;
-  }
-
-  ngOnDestroy(): void {
-    this.showNavbarSubscription?.unsubscribe();
-    if (PlatformUtils.isBrowser())
-      this.renderer.removeClass(document.body, "no-scroll");
   }
 
   logout() {
