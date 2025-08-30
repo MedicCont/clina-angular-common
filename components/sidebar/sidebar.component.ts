@@ -58,20 +58,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // 💡 2. Ouvimos o serviço apenas para ABRIR o sidebar
     this.serviceShowSubscription = this.sidebarService.$show.subscribe(shouldShow => {
       if (shouldShow) {
         this.isVisibleSubject.next(true);
       }
-      // Ignoramos o comando de fechar do serviço, pois faremos isso localmente
     });
 
-    if (PlatformUtils.isBrowser()) {
+
       this.isMobile =
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
           navigator.userAgent
         );
-    }
 
     this.accessModeService.$accessMode.subscribe(
       (accessMode: AccessModeEnum) => {
