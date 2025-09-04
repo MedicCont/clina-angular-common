@@ -81,7 +81,6 @@ export class NavbarSearchComponent implements OnInit {
                 label: clinicLocationCityDto.city + ' - ' + clinicLocationDto.state,
                 city: clinicLocationCityDto.city,
                 state: clinicLocationDto.state,
-                //radius: 5000,
               });
               clinicLocationCityDto.neighborhoods.forEach(neighborhood => {
                 this.neighborhoods.push({
@@ -90,7 +89,6 @@ export class NavbarSearchComponent implements OnInit {
                   neighborhood: neighborhood,
                   city: clinicLocationCityDto.city,
                   state: clinicLocationDto.state,
-                  //radius: 20000,
                 });
               });
             })
@@ -136,7 +134,6 @@ export class NavbarSearchComponent implements OnInit {
             type: PlaceTypeEnum.GOOGLE_PLACES,
             label: 'Próximo a ' + prediction.description,
             placeId: prediction.place_id,
-            radius: 20000,
           }));
         },
       });
@@ -231,7 +228,6 @@ export class NavbarSearchComponent implements OnInit {
               city: paramsList?.['city'],
               neighborhood: paramsList?.['neighborhood'],
               state: paramsList?.['state'],
-              radius: paramsList?.['radius'] ? Number(paramsList?.['radius']) : 0,
               lat: parseFloat(hasLocalization ? paramsList?.['lat'] : 0),
               lng: parseFloat(hasLocalization ? paramsList?.['lng'] : 0),
               page: Number(paramsList?.['page'] ?? 1),
@@ -254,7 +250,6 @@ export class NavbarSearchComponent implements OnInit {
               city: undefined,
               neighborhood: '',
               state: undefined,
-              radius: 0,
               lat: 0,
               lng: 0,
               page: 1,
@@ -301,7 +296,6 @@ export class NavbarSearchComponent implements OnInit {
         state: data.state,
         city: data.city,
         neighborhood: data.neighborhood,
-        radius: data.radius,
         lat: data.lat,
         lng: data.lng,
       };
@@ -311,7 +305,6 @@ export class NavbarSearchComponent implements OnInit {
         label: data.city + ' - ' + data.state,
         state: data.state,
         city: data.city,
-        radius: data.radius,
         lat: data.lat,
         lng: data.lng,
       };
@@ -319,7 +312,6 @@ export class NavbarSearchComponent implements OnInit {
       this.locationSelected = {
         type: PlaceTypeEnum.GOOGLE_PLACES,
         label: data.googlePlace,
-        radius: data.radius,
         lat: data.lat,
         lng: data.lng,
       };
@@ -376,7 +368,6 @@ export class NavbarSearchComponent implements OnInit {
         this.locationSelected?.type === PlaceTypeEnum.GOOGLE_PLACES ? this.locationSelected.label : undefined,
       lat: this.locationSelected?.lat,
       lng: this.locationSelected?.lng,
-      radius: this.locationSelected?.radius,
       plan: '-1',
       page: 1,
       take: 12,
@@ -391,7 +382,6 @@ export class NavbarSearchComponent implements OnInit {
       savedSearchInput.neighborhood = searchInput.neighborhood;
       savedSearchInput.lat = searchInput.lat;
       savedSearchInput.lng = searchInput.lng;
-      savedSearchInput.radius = searchInput.radius;
       this.updateLocalStorageFilters(savedSearchInput);
     }
 
