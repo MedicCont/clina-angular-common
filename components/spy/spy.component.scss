@@ -1,0 +1,11 @@
+.spy-container {
+  background-color: var(--bs-tertiary);
+  cursor: auto;
+}
+
+.leave-spy-mode {
+  cursor: pointer;
+  &:hover{
+    text-decoration: underline;
+  }
+}

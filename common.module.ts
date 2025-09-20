@@ -15,17 +15,21 @@ import { RoomShowcaseItemCardComponent } from "./components/room-showcase-item-c
 import { RoomShowcaseItemSuccessSharedModalComponent } from "./components/room-showcase-item-success-shared-modal/room-showcase-item-success-shared-modal.component";
 import { NavbarSearchComponent } from "./components/search/search.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
+import { NavbarSpyComponent } from "./components/spy/spy.component";
+import { AccordionComponent } from "ngx-bootstrap/accordion";
 
 
 @NgModule({
   declarations: [
     SidebarComponent,
     NavbarComponent,
+    NavbarSpyComponent,
     DatePickerComponent,
     NavbarSearchComponent,
     NavbarLocationDropdownComponent,
     FooterComponent,
     RoomShowcaseItemCardComponent,
+    NavbarSpyComponent,
     RoomShowcaseItemSuccessSharedModalComponent,
     FavoriteButtonComponent,
   ],
@@ -38,7 +42,8 @@ import { SidebarComponent } from "./components/sidebar/sidebar.component";
     DesignSystemModule,
     RouterModule,
     FontAwesomeModule,
-  ],
+    AccordionComponent
+],
   exports: [
     SidebarComponent,
     NavbarComponent,
