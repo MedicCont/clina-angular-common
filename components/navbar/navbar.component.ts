@@ -54,11 +54,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.authenticationService.$authenticated.subscribe((auth) => (this.isAuthenticated = auth));
   }
 
-  async ngOnInit(): Promise<void> {
-    // Use subscription array for better cleanup
+   ngOnInit() {
    this.accountDataGetService.handle().subscribe(a=>{
       this.user = a;
-      debugger
     })
     this.subscriptions.push(
       this.accessModeService.$accessMode.subscribe(
