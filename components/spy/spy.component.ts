@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccountDto } from 'app/modules/account/dtos/account.dto';
 import { AuthenticationService } from 'app/modules/authentication/authentication.service';
-import { HostDto } from 'app/modules/authentication/dtos/host.dto';
 import { Subscription, take } from 'rxjs';
 
 @Component({
@@ -10,13 +9,13 @@ import { Subscription, take } from 'rxjs';
   styleUrls: ['./spy.component.scss'],
 })
 export class NavbarSpyComponent implements OnInit, OnDestroy {
-  spied?: HostDto;
+  spied?: any;
   spiedSubscription?: Subscription;
 
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   ngOnInit(): void {
-    this.authenticationService.$spied.pipe(take(5)).subscribe((spied?: HostDto) => {
+    this.authenticationService.$spied.pipe(take(5)).subscribe((spied?: any) => {
       this.spied = spied;
     });
   }
