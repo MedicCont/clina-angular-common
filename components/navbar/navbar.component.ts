@@ -14,6 +14,7 @@ import { PageTitleDto } from "../../dtos/page-title.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
 import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
+import { AccountDataGetService } from "app/modules/account/services/account-data-get.service";
 
 @Component({
   selector: "clina-navbar",
@@ -29,6 +30,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   @Input() isAuthenticated: boolean = false;
 
   isSearchActive = false;
+  user:any;
 
   notificationsCount: number = 0;
   faBell = faBell;
@@ -42,6 +44,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private readonly sidebarService: SidebarService,
     private readonly authenticationService: AuthenticationService,
+    private readonly accountDataGetService: AccountDataGetService,
     private readonly router: Router,
     private readonly unleashService: UnleashService,
     private readonly notificationService: NotificationService,
@@ -51,8 +54,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.authenticationService.$authenticated.subscribe((auth) => (this.isAuthenticated = auth));
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // Use subscription array for better cleanup
+   this.accountDataGetService.handle().subscribe(a=>{
+      this.user = a;
+      debugger
+    })
     this.subscriptions.push(
       this.accessModeService.$accessMode.subscribe(
         (accessMode: AccessModeEnum) => {
