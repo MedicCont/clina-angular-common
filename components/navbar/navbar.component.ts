@@ -55,11 +55,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
    ngOnInit() {
-setTimeout(() => {
-     this.accountDataGetService.handle().subscribe(a=>{
-      this.user = a;
-    })
-}, 300);
+
     this.subscriptions.push(
       this.accessModeService.$accessMode.subscribe(
         (accessMode: AccessModeEnum) => {
@@ -74,6 +70,7 @@ setTimeout(() => {
         this.notificationsCount = notifications?.filter((r) => !r.read)?.length || 0;
       })
     );
+
   }
 
   ngOnDestroy(): void {
