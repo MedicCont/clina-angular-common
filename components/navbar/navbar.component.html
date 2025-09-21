@@ -22,7 +22,7 @@
 
   <div class="links-container d-none d-lg-flex">
     <a href="/dashboard/host/room" *ngIf="isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
-      >{{!(user.clinicsCount>0)?'Anuncie': 'Gerencie'}} seu consultório</a
+      >{{!(user?.clinicsCount>0)?'Anuncie': 'Gerencie'}} seu consultório</a
     >
     <a  href="/auth/sign-in" *ngIf="!isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
       >Anuncie seu consultório</a
