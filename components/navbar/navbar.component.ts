@@ -55,9 +55,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
    ngOnInit() {
-   this.accountDataGetService.handle().subscribe(a=>{
+setTimeout(() => {
+     this.accountDataGetService.handle().subscribe(a=>{
       this.user = a;
     })
+}, 300);
     this.subscriptions.push(
       this.accessModeService.$accessMode.subscribe(
         (accessMode: AccessModeEnum) => {
