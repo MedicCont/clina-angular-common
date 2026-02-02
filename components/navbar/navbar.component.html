@@ -24,7 +24,7 @@
     <a href="/dashboard/host/room" *ngIf="isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
       >Anuncie seu consultório</a
     >
-    <a  [href]="psUrl + '/auth/sign-in'" *ngIf="!isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
+    <a  href="/auth/sign-in" *ngIf="!isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
       >Anuncie seu consultório</a
     >
     
@@ -49,7 +49,7 @@
       </span>
     </a>
 
-    <a *ngIf="!isAuthenticated" [href]="psUrl + '/auth/sign-in'" class="link-login">
+    <a *ngIf="!isAuthenticated" routerLink="/auth/sign-in" class="link-login">
       <i class="fas fa-user"></i>
     </a>
     <div></div>
@@ -61,7 +61,7 @@
       <div></div>
       <div></div>
     </div>
-    <a *ngIf="!isAuthenticated" [href]="psUrl + '/auth/sign-in'" class="link-login-mobile">
+    <a *ngIf="!isAuthenticated" routerLink="/auth/sign-in" class="link-login-mobile">
       <i class="fas fa-user"></i>
     </a>
   </div>
