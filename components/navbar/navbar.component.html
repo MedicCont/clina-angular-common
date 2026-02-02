@@ -24,11 +24,11 @@
     <a href="/dashboard/host/room" *ngIf="isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
       >Anuncie seu consultório</a
     >
-    <a  href="psUrl + '/auth/sign-in'" *ngIf="!isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
+    <a  [href]="psUrl + '/auth/sign-in'" *ngIf="!isAuthenticated" style="background-color: #ffffff61;" class="link-search-room px-3 rounded  py-1 d-none d-lg-block"
       >Anuncie seu consultório</a
     >
     
-    <a href="psUrl + '/about'" class="link-about d-none d-xxl-block">Sobre nós</a>
+    <a [href]="psUrl + '/about'" class="link-about d-none d-xxl-block">Sobre nós</a>
     <a
       href="https://wa.me/55{{
         whatsappNumber
@@ -49,7 +49,7 @@
       </span>
     </a>
 
-    <a *ngIf="!isAuthenticated" routerLink="psUrl + '/auth/sign-in'" class="link-login">
+    <a *ngIf="!isAuthenticated" [routerLink]="psUrl + '/auth/sign-in'" class="link-login">
       <i class="fas fa-user"></i>
     </a>
     <div></div>
@@ -61,7 +61,7 @@
       <div></div>
       <div></div>
     </div>
-    <a *ngIf="!isAuthenticated" routerLink="psUrl + '/auth/sign-in'" class="link-login-mobile">
+    <a *ngIf="!isAuthenticated" [routerLink]="psUrl + '/auth/sign-in'" class="link-login-mobile">
       <i class="fas fa-user"></i>
     </a>
   </div>
