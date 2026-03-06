@@ -7,7 +7,6 @@ import {
 import { RoomFavoriteDto } from "app/modules/common/dtos/room-favorite.dto";
 import { RoomDto } from "app/modules/common/dtos/room.dto";
 import { FavoriteButtonService } from "app/modules/common/services/favorite-button.service";
-import { UnleashService } from "app/services/unleash.service";
 import { environment } from "environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { SearchInput } from "../../dtos/search-input.dto";
@@ -62,7 +61,7 @@ export class RoomShowcaseItemCardComponent implements OnInit {
 
   RoomPackageOfHoursTypeEnum = RoomPackageOfHoursTypeEnum;
 
-  isRatingEnabled = this.unleashService.isEnabled("ps-rating");
+  isRatingEnabled = environment.psRating;
 
   public get routeToRoom(): string {
     let route = [
@@ -83,7 +82,6 @@ export class RoomShowcaseItemCardComponent implements OnInit {
   constructor(
     private readonly modalService: BsModalService,
     private readonly roomCardService: RoomCardService,
-    private readonly unleashService: UnleashService,
     private readonly favoriteService: FavoriteButtonService
   ) {}
 
