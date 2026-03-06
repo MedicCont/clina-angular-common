@@ -5,7 +5,6 @@ import { NavigationEnd, Router } from "@angular/router";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
 import { AccessModeService } from "app/modules/common/services/access-mode.service";
 import { MaletaService } from "app/modules/maleta/maleta.service";
-import { UnleashService } from "app/services/unleash.service";
 import { filter, Subscription } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { AuthenticationService } from "../../../authentication/authentication.service";
@@ -34,7 +33,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   notificationsCount: number = 0;
   faBell = faBell;
-  isNotificationEnabled = this.unleashService.isEnabled("ps-notification");
+  isNotificationEnabled = environment.psNotification;
   AccessModeEnum = AccessModeEnum;
   pageTitleSubscription: Subscription | undefined=undefined;
 
@@ -46,7 +45,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private readonly authenticationService: AuthenticationService,
     private readonly accountDataGetService: AccountDataGetService,
     private readonly router: Router,
-    private readonly unleashService: UnleashService,
     private readonly notificationService: NotificationService,
     private readonly accessModeService: AccessModeService,
     private readonly maletaService:MaletaService
