@@ -143,6 +143,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
+        title: "Cobranças",
+        img: "/common-assets/images/sidebar/icon-money-solid.svg",
+        imgWhite: "/common-assets/images/sidebar/white/icon-money-solid.svg",
+        menuUrl: "/charges",
+        isActive: true,
+        mode: ItemModeEnum.PS,
+        system: SystemEnum.DASHBOARD,
+        url:""
+      },
+      {
         title: "Assinaturas",
         icon: "icon-calendar-check-2",
         menuUrl: "/subscription/management",
