@@ -147,7 +147,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         img: "/common-assets/images/sidebar/icon-money-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-money-solid.svg",
         menuUrl: "/charges",
-        isActive: false,
+        isActive: true,
         mode: ItemModeEnum.PS,
         system: SystemEnum.DASHBOARD,
         url:""
