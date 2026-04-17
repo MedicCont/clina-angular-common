@@ -12,20 +12,11 @@ export class AccessModeStateService {
 
   private getInitialMode(): AccessModeEnum {
     if (isPlatformBrowser(this.platformId)) {
-      // Primeiro tenta obter do localStorage
-      const storedMode = localStorage.getItem('accessMode');
-      if (storedMode) {
-        return storedMode as AccessModeEnum;
-      }
-      
-      // Se não houver no localStorage, verifica a URL
       const path = window.location.pathname;
       if (path.includes('/host/')) {
         return AccessModeEnum.HOST;
       }
     }
-    
-    // Valor padrão
     return AccessModeEnum.HEALTH_PERSON;
   }
 
