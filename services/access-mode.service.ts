@@ -36,7 +36,7 @@ export class AccessModeService {
         .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
         .subscribe((event) => {
           const url = event.urlAfterRedirects;
-          if (url.includes('/host/')) {
+          if (url === '/host' || url.startsWith('/host/')) {
             this.load(AccessModeEnum.HOST);
           } else if (!url.includes('/auth/') && !url.includes('/first-access/')) {
             this.load(AccessModeEnum.HEALTH_PERSON);

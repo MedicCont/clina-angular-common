@@ -13,7 +13,7 @@ export class AccessModeStateService {
   private getInitialMode(): AccessModeEnum {
     if (isPlatformBrowser(this.platformId)) {
       const path = window.location.pathname;
-      if (path.includes('/host/')) {
+      if (path === '/host' || path.startsWith('/host/')) {
         return AccessModeEnum.HOST;
       }
     }
