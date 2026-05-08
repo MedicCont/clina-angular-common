@@ -54,9 +54,8 @@ export class FavoriteButtonService {
     roomFavoriteRemoveInput: RoomFavoriteRemoveInput
   ): Observable<ApolloQueryResult<Boolean>> {
     return this.apollo
-      //.use("v2")
-      .query({
-        query: ROOMS_FAVORITE_REMOVE_MUTATION,
+      .mutate({
+        mutation: ROOMS_FAVORITE_REMOVE_MUTATION,
         variables: { roomFavoriteRemoveInput },
       })
       .pipe(map((res: any) => res.data.removeFavoriteRoom));
