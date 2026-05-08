@@ -233,17 +233,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
-        title: "Ganhe Créditos",
-        img: "/common-assets/images/sidebar/icon-indication-earns-solid.svg",
-        imgWhite:
-          "/common-assets/images/sidebar/white/icon-indication-earns-solid.svg",
-        menuUrl: "/get-member",
-        isActive: true,
-        mode: ItemModeEnum.BOTH,
-        system: SystemEnum.DASHBOARD,
-        url:""
-      },
-      {
         title: "Favoritos",
         img: "/common-assets/images/sidebar/icon-favorite-solid.svg",
         imgWhite: "/common-assets/images/sidebar/white/icon-favorite-solid.svg",
