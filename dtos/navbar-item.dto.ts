@@ -9,5 +9,6 @@ export interface NavbarItemDto {
   isActive: boolean;
   mode: 'HOST' | 'PS' | 'BOTH';
   system: SystemEnum;
-  url:string;
+  url: string;
+  requiresSaaS?: boolean;
 }
