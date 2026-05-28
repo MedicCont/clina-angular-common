@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
 import { AccessModeService } from "app/modules/common/services/access-mode.service";
 import { environment } from "environments/environment";
-import { BehaviorSubject, Observable, Subscription, map } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, map } from "rxjs";
 import { filter } from "rxjs/operators";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
@@ -52,8 +52,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private readonly renderer: Renderer2,
     private readonly accessModeService: AccessModeService
   ) {
-    this.items$ = this.accessMode$.pipe(
-      map((accessMode) => this.getItems(accessMode))
+    this.items$ = combineLatest([
+      this.accessMode$,
+      this.authenticationService.$account,
+    ]).pipe(
+      map(([accessMode, account]) => this.getItems(accessMode, !!account?.isActiveSaaS))
     );
   }
 
@@ -99,7 +102,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   // --- O RESTANTE DO CÓDIGO PERMANECE IGUAL ---
-  getItems(accessMode: AccessModeEnum): NavbarItemDto[] {
+  getItems(accessMode: AccessModeEnum, isActiveSaaS: boolean = false): NavbarItemDto[] {
     var items = [
       {
         title: "Home",
@@ -200,7 +203,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
         isActive: true,
         mode: ItemModeEnum.HOST,
         system: SystemEnum.DASHBOARD,
-        url:""
+        url: "",
+        requiresSaaS: true,
       },
       {
         title: "Agenda",
@@ -246,6 +250,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     items = items.filter((item) => {
       if (!item.isActive) return false;
+      if (item.requiresSaaS && !isActiveSaaS) return false;
       if (item.mode === ItemModeEnum.BOTH) return true;
       if (item.mode === ItemModeEnum.HOST && accessMode === AccessModeEnum.HOST) return true;
       if (item.mode === ItemModeEnum.PS && accessMode === AccessModeEnum.HEALTH_PERSON) return true;
