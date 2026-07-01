@@ -53,7 +53,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
    ngOnInit() {
-
     this.subscriptions.push(
       this.accessModeService.$accessMode.subscribe(
         (accessMode: AccessModeEnum) => {
@@ -62,29 +61,30 @@ export class NavbarComponent implements OnInit, OnDestroy {
       )
     );
 
-    // Update to use notifications$ instead of getNotifications()
     this.subscriptions.push(
       this.notificationService.notifications$.subscribe((notifications) => {
         this.notificationsCount = notifications?.filter((r) => !r.read)?.length || 0;
       })
     );
 
-  }
-
-  ngOnDestroy(): void {
-    // Cleanup all subscriptions
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-    this.subs = new Array<Subscription>();
-
-    let sub1 = this.maletaService.$schedules.subscribe(schedules=>{
-      this.schedulesCount = schedules?.length ? schedules.length : 0;
-    });
-    this.subs.push(sub1);
-
-    this.notificationService.getNotifications().subscribe((notifications) => {
-      this.notificationsCount =
-        notifications?.filter((r) => !r.read)?.length || 0;
-    });
+    // O shape do MaletaService varia por app: dashboard expõe `$cart`
+    // (CartValidatedDto.appointmentBuckets), marketplace expõe `$schedules`
+    // (ScheduleDto[]). Detecta em runtime qual está disponível.
+    const maletaService: any = this.maletaService;
+    if (maletaService.$cart) {
+      this.subscriptions.push(
+        maletaService.$cart.subscribe((cart: any) => {
+          this.schedulesCount = (cart?.appointmentBuckets || [])
+            .reduce((total: number, bucket: any) => total + bucket.appointments.length, 0);
+        })
+      );
+    } else if (maletaService.$schedules) {
+      this.subscriptions.push(
+        maletaService.$schedules.subscribe((schedules: any[]) => {
+          this.schedulesCount = schedules?.length ?? 0;
+        })
+      );
+    }
 
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -92,13 +92,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.checkRoute();
       });
 
-    // Faz a verificação inicial
     this.checkRoute();
+  }
 
-    this.pageTitleSubscription?.unsubscribe();
-    this.subs.forEach(sub=>{
-      sub.unsubscribe();
-    })
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   goToHome() {

@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CartAppointmentBucketDto } from 'app/modules/maleta/dtos/cart-appointment-bucket.dto';
-import { CartValidatedDto } from 'app/modules/maleta/dtos/cart-validated.dto';
 import { MaletaService } from 'app/modules/maleta/maleta.service';
-import { ScheduleDto } from 'app/modules/room/dtos/schedule.dto';
 
 @Component({
   selector: 'clina-navbar-cart',
@@ -10,21 +7,24 @@ import { ScheduleDto } from 'app/modules/room/dtos/schedule.dto';
   styleUrls: ['./cart.component.scss'],
 })
 export class NavbarCartComponent implements OnInit {
-  schedules: ScheduleDto[] = [];
-  cartAppointmentBuckets: CartAppointmentBucketDto[] = [];
-  cartSubscriptions: any[] = [];
-
-  public get count(): number {
-    return this.cartAppointmentBuckets.length + this.cartSubscriptions.length;
-  }
+  count = 0;
 
   constructor(private readonly maletaService: MaletaService) {}
 
+  // O shape do MaletaService varia por app: dashboard expõe `$cart`
+  // (CartValidatedDto.appointmentBuckets), marketplace expõe `$schedules`
+  // (ScheduleDto[]). Detecta em runtime qual está disponível, evitando
+  // importar DTOs que só existem em um dos dois apps.
   ngOnInit(): void {
-    this.maletaService.$cart.subscribe({
-      next: (cart: CartValidatedDto) => {
-        this.cartAppointmentBuckets = cart?.appointmentBuckets || [];
-      },
-    });
+    const maletaService: any = this.maletaService;
+    if (maletaService.$cart) {
+      maletaService.$cart.subscribe((cart: any) => {
+        this.count = (cart?.appointmentBuckets || []).length;
+      });
+    } else if (maletaService.$schedules) {
+      maletaService.$schedules.subscribe((schedules: any[]) => {
+        this.count = schedules?.length ?? 0;
+      });
+    }
   }
 }
