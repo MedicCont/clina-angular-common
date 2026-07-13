@@ -1,4 +1,4 @@
-import { RoomTypeEnum } from '../enums/room-type.enum';
+import { RoomTypeEnum, RoomTypeIcon } from '../enums/room-type.enum';
 
 export interface RoomTypeDto {
   img: [string, string];
@@ -6,4 +6,5 @@ export interface RoomTypeDto {
   description: string;
   selected: boolean;
   value: RoomTypeEnum;
+  icon: RoomTypeIcon;
 }
