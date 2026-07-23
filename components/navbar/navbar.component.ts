@@ -39,6 +39,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private subs:Subscription[]=[];
   public schedulesCount:number=0;
+  public sidebarCollapsed: boolean = false;
 
   constructor(
     private readonly sidebarService: SidebarService,
@@ -53,6 +54,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
    ngOnInit() {
+    this.subscriptions.push(
+      this.sidebarService.$collapsed.subscribe(
+        (collapsed) => (this.sidebarCollapsed = collapsed)
+      )
+    );
+
     this.subscriptions.push(
       this.accessModeService.$accessMode.subscribe(
         (accessMode: AccessModeEnum) => {

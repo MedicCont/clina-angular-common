@@ -40,7 +40,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   private routerSubscription?: Subscription;
   private serviceShowSubscription?: Subscription; // Para ouvir o serviço
+  private collapseSubscription?: Subscription;
   public isSidebarHovered = false;
+  public isCollapsed = false;
+  public account: any;
+  public tooltipLabel: string | null = null;
+  public tooltipY = 0;
   public psUrl = environment.psUrl;
   public SystemEnum = SystemEnum;
   public sourceSystem = environment.systemName;
@@ -73,6 +78,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
           navigator.userAgent
         );
 
+    this.collapseSubscription = this.sidebarService.$collapsed.subscribe(
+      (collapsed) => (this.isCollapsed = collapsed)
+    );
+
+    this.authenticationService.$account.subscribe(
+      (account) => (this.account = account)
+    );
+
     this.accessModeService.$accessMode.subscribe(
       (accessMode: AccessModeEnum) => {
         this.accessModeSubject.next(accessMode);
@@ -94,9 +107,36 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.isVisibleSubject.next(false);
   }
 
+  // Mini apenas no desktop; no mobile a sidebar é off-canvas.
+  get isMini(): boolean {
+    return !this.isMobile && this.isCollapsed;
+  }
+
+  toggleCollapse(): void {
+    this.sidebarService.toggleCollapse();
+  }
+
+  onItemEnter(item: any, event: MouseEvent): void {
+    if (!this.isMini) return;
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.tooltipLabel = item.title;
+    this.tooltipY = rect.top + rect.height / 2;
+  }
+
+  onItemLeave(): void {
+    this.tooltipLabel = null;
+  }
+
+  getInitials(name?: string): string {
+    if (!name) return '';
+    const parts = name.trim().split(/\s+/).slice(0, 2);
+    return parts.map((part) => part[0]?.toUpperCase() || '').join('');
+  }
+
   ngOnDestroy(): void {
     this.routerSubscription?.unsubscribe();
     this.serviceShowSubscription?.unsubscribe(); // Limpa a inscrição do serviço
+    this.collapseSubscription?.unsubscribe();
     if (PlatformUtils.isBrowser())
       this.renderer.removeClass(document.body, "no-scroll");
   }
@@ -320,34 +360,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const currentUrl = this.router.url;
-    const isInDashboard = currentUrl.includes('/dashboard/');
-    const isInMarketplace = !isInDashboard;
-
-    if (mode === AccessModeEnum.HOST) {
-      if (isInMarketplace) {
-        window.location.href = this.dashboardUrl.endsWith('/')
-          ? `${this.dashboardUrl}host`
-          : `${this.dashboardUrl}/host`;
-      } else {
-        let currentPath = currentUrl;
-        if (currentPath.startsWith('/host/')) {
-          currentPath = currentPath.substring(6);
-        } else if (currentPath.startsWith('/')) {
-          currentPath = currentPath.substring(1);
-        }
-        this.router.navigate([`/host/${currentPath}`]);
-      }
-    } else {
-      let currentPath = currentUrl;
-      if (currentPath.startsWith('/host/')) {
-        currentPath = currentPath.substring(6);
-      } else if (currentPath.startsWith('/')) {
-        currentPath = currentPath.substring(1);
-      }
-      this.router.navigate([`/${currentPath}`]);
-    }
     this.accessModeService.load(mode);
+
+    // Troca de plataforma: vai sempre para a home do dashboard do modo
+    // correspondente (host ou profissional da saúde), de qualquer app.
+    const base = this.dashboardUrl.endsWith('/')
+      ? this.dashboardUrl
+      : `${this.dashboardUrl}/`;
+    window.location.href =
+      mode === AccessModeEnum.HOST ? `${base}host` : `${base}ps`;
   }
 
   onMouseEnter() {

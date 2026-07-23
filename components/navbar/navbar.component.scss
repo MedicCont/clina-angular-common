@@ -3,12 +3,9 @@
 @import "/src/assets/styles/mixins/breakpoints";
 
 :host {
-  z-index: 2;
-  @include media-breakpoint-up($lg) {
-    position: fixed;
-    width: 100vw;
-    z-index: 101;
-  }
+  display: block;
+  position: relative;
+  z-index: 1000; // acima do conteúdo, abaixo da sidebar (host 1045)
 }
 
 .link-login{
@@ -44,18 +41,18 @@
 
 #navbar {
   display: flex;
-  width: 100vw;
+  width: 100%;
+  top: 0;
   @include media-breakpoint-up($lg) {
     position: sticky;
     height: 4.5rem;
   }
   @include media-breakpoint-down($lg) {
     position: fixed;
+    width: 100vw;
     height: 3rem;
   }
-  top: 0;
   box-shadow: 0px 2px 6px #0000001f;
-  display: flex;
   justify-content: flex-end;
 }
 
@@ -66,6 +63,11 @@
   @include media-breakpoint-up($lg) {
     padding: 0 0.75rem;
     width: 14rem;
+
+    // Autenticado: logo já aparece na sidebar, evita duplicar.
+    &.brand-hidden {
+      display: none;
+    }
   }
   img {
     font-size: 2rem;
@@ -155,7 +157,7 @@
   border-radius: 9px;
   background-color: #ffffff;
   color: #5043e4;
-  font: normal normal 700 11px/18px Poppins;
+  font: normal normal 700 11px/18px Inter;
   display: flex;
   align-items: center;
   justify-content: center;

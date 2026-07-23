@@ -5,7 +5,7 @@
     psMode: AccessModeEnum.HEALTH_PERSON
   }"
 >
-  <div class="brand-container" (click)="goToHome()">
+  <div class="brand-container" [class.brand-hidden]="isAuthenticated && !sidebarCollapsed" (click)="goToHome()">
     <div class="d-lg-none">
       <img src="/common-assets/images/branding/logo-single-white.png" />
     </div>
