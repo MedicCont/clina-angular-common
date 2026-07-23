@@ -6,6 +6,9 @@ $office-image-width: 22.5rem;
 
 .room-card {
   position: relative;
+  border: 1px solid $gray-300;
+  border-radius: 12px;
+  overflow: hidden;
   @include media-breakpoint-up($xl) {
     min-width: 265px;
   }
@@ -398,4 +401,13 @@ div.btn-share {
 .icon-type-room {
   aspect-ratio: 1/1;
   display: flex;
+
+  i {
+    align-items: center;
+    color: $primary;
+    display: flex;
+    font-size: 1.1rem;
+    justify-content: center;
+    width: 32px;
+  }
 }

@@ -10,6 +10,7 @@ import { FavoriteButtonService } from "app/modules/common/services/favorite-butt
 import { environment } from "environments/environment";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { SearchInput } from "../../dtos/search-input.dto";
+import { RoomTypeIcon } from "../../enums/room-type.enum";
 import { RoomCardService } from "../../services/room-card.service";
 import { RoomShowcaseItemSuccessSharedModalComponent } from "../room-showcase-item-success-shared-modal/room-showcase-item-success-shared-modal.component";
 import { RoomShowcaseDto } from "../../dtos/room-showcase.dto";
@@ -36,6 +37,7 @@ export class RoomShowcaseItemCardComponent implements OnInit {
     PHYSICAL_EXAM: "Ex. Físico",
     DIVAN: "Divã/Sofá",
     FIT: "Mesa/Cad",
+    OCCUPATIONAL_THERAPY: "Terapia Ocupacional",
     OTHERS: "Outros",
   };
 
@@ -45,8 +47,11 @@ export class RoomShowcaseItemCardComponent implements OnInit {
     PHYSICAL_EXAM: "/common-assets/images/layout-images/physical-small.svg",
     DIVAN: "/common-assets/images/layout-images/diva-small.svg",
     FIT: "/common-assets/images/layout-images/typeroom-fit-small.svg",
+    OCCUPATIONAL_THERAPY: "/common-assets/images/layout-images/typeroom-others-small.svg",
     OTHERS: "/common-assets/images/layout-images/typeroom-others-small.svg",
   };
+
+  roomTypeIcon = RoomTypeIcon;
 
   chosenPlan?: string;
   s3name = environment.s3nameFiles;

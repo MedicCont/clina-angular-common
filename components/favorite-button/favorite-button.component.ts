@@ -2,18 +2,20 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   TemplateRef,
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { AccountDto } from "app/modules/account/dtos/account.dto";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
 import { RoomFavoriteDto } from "app/modules/common/dtos/room-favorite.dto";
 import { RoomFavoriteCreateInput } from "app/modules/common/inputs/room-favorite-create.input";
 import { RoomFavoriteRemoveInput } from "app/modules/common/inputs/room-favorite-remove.input";
 import { environment } from "environments/environment";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { RoomShowcaseDto } from "../../dtos/room-showcase.dto";
 import { FavoriteButtonService } from "../../services/favorite-button.service";
@@ -23,20 +25,20 @@ import { FavoriteButtonService } from "../../services/favorite-button.service";
   templateUrl: "./favorite-button.component.html",
   styleUrls: ["./favorite-button.component.scss"],
 })
-export class FavoriteButtonComponent implements OnInit {
+export class FavoriteButtonComponent implements OnInit, OnDestroy {
   @Input() room?: RoomShowcaseDto;
   @Output() reloadAction = new EventEmitter<boolean>(false);
   @ViewChild("loginModal") loginModal?: TemplateRef<any>;
-  isAuthenticated: boolean = true;
+
+  isAuthenticated = false;
+  hasAccountData = false;
   isFavoriting = false;
+  isFavorite = false;
   roomFavoriteId?: string;
   modalRef?: BsModalRef;
-
-  isFavorite?: boolean;
-
   favoriteLoginModalNavigation?: string;
 
-  hasAccountData = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private readonly authenticationService: AuthenticationService,
@@ -46,56 +48,49 @@ export class FavoriteButtonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-     this.authenticationService.$account.subscribe(
-       (account: AccountDto | undefined) => {
-         this.hasAccountData = account ? true : false;
-       }
-     );
-    this.authenticationService.$authenticated.subscribe(
-      (isAutenticated: boolean) => {
-        this.isAuthenticated = isAutenticated;
-        if (this.isAuthenticated) {
-          this.getFavorite();
-        }
-      }
-    );
+    this.authenticationService.$account
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((account) => {
+        this.hasAccountData = !!account;
+      });
+
+    this.authenticationService.$authenticated
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isAuthenticated) => {
+        this.isAuthenticated = isAuthenticated;
+      });
+
+    this.favoriteService.favoriteList
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((favoriteList: RoomFavoriteDto[]) => {
+        const match = favoriteList.find((r) => r.roomId === this.room?.roomId);
+        this.isFavorite = !!match;
+        this.roomFavoriteId = match?.roomFavoriteId;
+      });
   }
 
-  getFavorite() {
-    this.favoriteService.favoriteList.subscribe({
-      next: (favoriteList: RoomFavoriteDto[]) => {
-        favoriteList.map((room: RoomFavoriteDto) => {
-          if (room.roomId === this.room?.roomId) {
-            this.roomFavoriteId = room.roomFavoriteId;
-            this.isFavorite = true;
-          }
-          return room;
-        });
-      },
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   favoriteRoom() {
     if (!this.room) return;
     if (this.isAuthenticated) {
       this.isFavoriting = true;
-      this.isFavorite = true;
-      const createInput: RoomFavoriteCreateInput = {
-        roomId: this.room.roomId,
-      };
-      this.favoriteService.createFavoriteRoom(createInput).subscribe({
+      this.favoriteService.createFavoriteRoom({ roomId: this.room.roomId }).subscribe({
+        next: () => {
+          this.favoriteService.updateRoomList();
+        },
         error: () => {
-          this.isFavorite = false;
-          throw new Error("It was not possible to favorite this room");
+          this.isFavoriting = false;
         },
         complete: () => {
           this.isFavoriting = false;
-          this.favoriteService.updateRoomList();
         },
       });
     } else {
-      const url = this.router.url;
-      const splitUrl = url.split(`https://${environment.psUrl}`);
+      const splitUrl = this.router.url.split(`https://${environment.psUrl}`);
       this.favoriteLoginModalNavigation = splitUrl[0];
       this.openModal(this.loginModal as TemplateRef<any>);
     }
@@ -103,15 +98,17 @@ export class FavoriteButtonComponent implements OnInit {
 
   removeFavoriteRoom() {
     if (!this.roomFavoriteId) return;
-    this.isFavorite = false;
     this.isFavoriting = true;
-    const removeInput: RoomFavoriteRemoveInput = {
-      roomFavoriteId: this.roomFavoriteId,
-    };
+    const removeInput: RoomFavoriteRemoveInput = { roomFavoriteId: this.roomFavoriteId };
     this.favoriteService.removeFavoriteRoom(removeInput).subscribe({
+      next: () => {
+        this.favoriteService.updateRoomList();
+      },
+      error: () => {
+        this.isFavoriting = false;
+      },
       complete: () => {
         this.isFavoriting = false;
-        this.favoriteService.updateRoomList();
       },
     });
   }

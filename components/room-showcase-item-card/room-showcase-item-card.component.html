@@ -148,11 +148,7 @@
                 <span class="extra-small-text">{{ roomType[type] }}</span>
               </div>
               <div class="my-auto icon-type-room">
-                <img
-                  [src]="imageRoomType[type]"
-                  [alt]="imageRoomType[type]"
-                  width="32"
-                />
+                <i [ngClass]="roomTypeIcon[type]" aria-hidden="true"></i>
               </div>
             </div>
           </div>
