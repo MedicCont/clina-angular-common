@@ -137,6 +137,12 @@
         height: 20px;
       }
 
+      .sidebar-icon {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+      }
+
       a {
         font: normal normal normal 14px/28px Poppins;
         display: flex;
@@ -360,11 +366,15 @@
     i {
       color: $primary; // Cor normal para ícones de fonte
     }
-    
+
     .clina {
       &::before {
         color: $primary;
       }
+    }
+
+    .sidebar-icon {
+      color: $primary;
     }
   }
 
@@ -373,11 +383,15 @@
     i {
       color: white; // Ícones brancos
     }
-    
+
     .clina {
       &::before {
         color: white;
       }
+    }
+
+    .sidebar-icon {
+      color: white;
     }
   }
 

@@ -47,17 +47,7 @@
         rel="noopener noreferrer"
       >
         <div class="d-flex align-items-center">
-          <ng-container *ngIf="!item.icon">
-            <img
-              [src]="
-                (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON
-                  ? item.img
-                  : item.imgWhite
-              "
-              *ngIf="item.img"
-            />
-          </ng-container>
-          <i class="clina {{ item.icon }}" *ngIf="item.icon"></i>
+          <lucide-icon [name]="item.lucideIcon" [size]="20" class="sidebar-icon"></lucide-icon>
           <span class="ms-3 item-label">{{ item.title }}</span>
         </div>
       </a>
@@ -70,17 +60,7 @@
           [routerLink]="[item.url]"
         >
           <div class="d-flex align-items-center">
-            <ng-container *ngIf="!item.icon">
-              <img
-                [src]="
-                  (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON
-                    ? item.img
-                    : item.imgWhite
-                "
-                *ngIf="item.img"
-              />
-            </ng-container>
-            <i class="clina {{ item.icon }}" *ngIf="item.icon"></i>
+            <lucide-icon [name]="item.lucideIcon" [size]="20" class="sidebar-icon"></lucide-icon>
             <span class="ms-3 item-label">{{ item.title }}</span>
           </div>
         </a>

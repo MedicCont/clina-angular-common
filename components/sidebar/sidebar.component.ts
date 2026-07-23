@@ -106,8 +106,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     var items = [
       {
         title: "Home",
-        img: "/common-assets/images/sidebar/icon-home-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
+        lucideIcon: "Home",
         menuUrl: "/ps",
         isActive: true,
         mode: ItemModeEnum.PS,
@@ -116,8 +115,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Home",
-        img: "/common-assets/images/sidebar/icon-home-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-home-solid.svg",
+        lucideIcon: "Home",
         menuUrl: "/",
         isActive: true,
         mode: ItemModeEnum.HOST,
@@ -126,8 +124,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Minha Conta",
-        img: "/common-assets/images/sidebar/icon-account-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-account-solid.svg",
+        lucideIcon: "User",
         menuUrl: "/account",
         isActive: true,
         mode: ItemModeEnum.BOTH,
@@ -136,9 +133,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Compras",
-        img: "/common-assets/images/sidebar/icon-purchases-solid.svg",
-        imgWhite:
-          "/common-assets/images/sidebar/white/icon-purchases-solid.svg",
+        lucideIcon: "ShoppingBag",
         menuUrl: "/purchase",
         isActive: true,
         mode: ItemModeEnum.PS,
@@ -147,8 +142,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Cobranças",
-        img: "/common-assets/images/sidebar/icon-money-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-money-solid.svg",
+        lucideIcon: "Receipt",
         menuUrl: "/charges",
         isActive: true,
         mode: ItemModeEnum.PS,
@@ -157,7 +151,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Assinaturas",
-        icon: "icon-calendar-check-2",
+        lucideIcon: "CalendarCheck",
         menuUrl: "/subscription/management",
         isActive: false,
         mode: ItemModeEnum.PS,
@@ -165,10 +159,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
+        title: "Consultórios Alugados",
+        lucideIcon: "Building2",
+        menuUrl: "/room-lease/management",
+        isActive: true,
+        mode: ItemModeEnum.PS,
+        system: SystemEnum.DASHBOARD,
+        url:""
+      },
+      {
         title: "Reservas",
-        img: "/common-assets/images/sidebar/icon-appointments-solid.svg",
-        imgWhite:
-          "/common-assets/images/sidebar/white/icon-appointments-solid.svg",
+        lucideIcon: "ClipboardList",
         menuUrl: "/appointment/host",
         isActive: true,
         mode: ItemModeEnum.HOST,
@@ -176,9 +177,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
+        title: "Clínicas",
+        lucideIcon: "Hospital",
+        menuUrl: "/clinic",
+        isActive: true,
+        mode: ItemModeEnum.HOST,
+        system: SystemEnum.DASHBOARD,
+        url:""
+      },
+      {
         title: "Consultórios",
-        img: "/common-assets/images/sidebar/room-icon.svg",
-        imgWhite: "/common-assets/images/sidebar/white/room-icon.svg",
+        lucideIcon: "DoorClosed",
         menuUrl: "/room",
         isActive: true,
         mode: ItemModeEnum.HOST,
@@ -186,9 +195,26 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
+        title: "Disponibilidades",
+        lucideIcon: "CalendarClock",
+        menuUrl: "/room/availability",
+        isActive: true,
+        mode: ItemModeEnum.HOST,
+        system: SystemEnum.DASHBOARD,
+        url:""
+      },
+      {
+        title: "Agendas",
+        lucideIcon: "CalendarDays",
+        menuUrl: "/room/schedule",
+        isActive: true,
+        mode: ItemModeEnum.HOST,
+        system: SystemEnum.DASHBOARD,
+        url:""
+      },
+      {
         title: "Check-In/Out",
-        img: "/common-assets/images/sidebar/icon-checkinout.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-checkinout.svg",
+        lucideIcon: "ClipboardCheck",
         menuUrl: "/check",
         isActive: true,
         mode: ItemModeEnum.HOST,
@@ -197,8 +223,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "SaaS",
-        img: "/common-assets/images/sidebar/icon-saas.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-saas.svg",
+        lucideIcon: "Layers",
         menuUrl: "/saas",
         isActive: true,
         mode: ItemModeEnum.HOST,
@@ -208,8 +233,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Agenda",
-        img: "/common-assets/images/sidebar/icon-schedule-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-schedule-solid.svg",
+        lucideIcon: "CalendarDays",
         menuUrl: "/my-schedule",
         isActive: true,
         mode: ItemModeEnum.PS,
@@ -218,8 +242,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Notificações",
-        img: "/common-assets/images/sidebar/icon-bell-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-bell-solid.svg",
+        lucideIcon: "Bell",
         menuUrl: "/notification",
         isActive: true,
         mode: ItemModeEnum.BOTH,
@@ -228,8 +251,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Extrato Financeiro",
-        img: "/common-assets/images/sidebar/icon-money-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-money-solid.svg",
+        lucideIcon: "Wallet",
         menuUrl: "/statement",
         isActive: true,
         mode: ItemModeEnum.BOTH,
@@ -238,12 +260,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
       },
       {
         title: "Favoritos",
-        img: "/common-assets/images/sidebar/icon-favorite-solid.svg",
-        imgWhite: "/common-assets/images/sidebar/white/icon-favorite-solid.svg",
+        lucideIcon: "Heart",
         menuUrl: "/room-favorite",
         isActive: true,
         mode: ItemModeEnum.PS,
-        system: SystemEnum.MARKETPLACE,
+        system: SystemEnum.DASHBOARD,
         url:""
       },
     ];

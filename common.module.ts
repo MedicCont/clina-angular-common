@@ -3,6 +3,25 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import {
+  Bell,
+  Building2,
+  CalendarCheck,
+  CalendarClock,
+  CalendarDays,
+  ClipboardCheck,
+  ClipboardList,
+  DoorClosed,
+  Heart,
+  Home,
+  Hospital,
+  Layers,
+  LucideAngularModule,
+  Receipt,
+  ShoppingBag,
+  User,
+  Wallet,
+} from "lucide-angular";
 import { CollapseModule } from "ngx-bootstrap/collapse";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { DesignSystemModule } from "../design-system/design-system.module";
@@ -42,7 +61,25 @@ import { AccordionComponent } from "ngx-bootstrap/accordion";
     DesignSystemModule,
     RouterModule,
     FontAwesomeModule,
-    AccordionComponent
+    AccordionComponent,
+    LucideAngularModule.pick({
+      Home,
+      User,
+      ShoppingBag,
+      Receipt,
+      CalendarCheck,
+      Building2,
+      ClipboardList,
+      Hospital,
+      DoorClosed,
+      CalendarClock,
+      CalendarDays,
+      ClipboardCheck,
+      Layers,
+      Bell,
+      Wallet,
+      Heart,
+    }),
 ],
   exports: [
     SidebarComponent,
