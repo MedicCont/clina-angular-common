@@ -64,24 +64,41 @@ input {
   border-radius: 10px;
 }
 
+/* O `top: 6px` fixo desalinhava conforme a altura do input (34px na navbar,
+   46px no card da home). Centralizado e com área de clique circular. */
 .clear {
   cursor: pointer;
   position: absolute;
-  right: 8px;
-  top: 6px;
-  font-size: 1.5rem;
-  font-weight: 100;
-  background-color: transparent;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  padding: 0;
   border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $gray-200;
+  }
+
   span {
-    padding-top: 0.1rem;
-    font-weight: 500;
     display: flex;
     align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1;
     color: $gray-500;
-    &:hover {
-      color: $gray-900;
-    }
+  }
+
+  &:hover span {
+    color: $gray-900;
   }
 }
 

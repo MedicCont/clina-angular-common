@@ -4,6 +4,8 @@
 
 /* Mesma escala de raio do resto da plataforma */
 $search-radius: 0.5rem;
+/* Mesmo contorno de campo do hero da home ($hero-field-outline) */
+$field-outline: #e2e8f0;
 
 :host {
   position: relative;
@@ -45,15 +47,20 @@ $search-radius: 0.5rem;
   }
   /* A barra agora é centralizada pelo próprio flex da navbar (os blocos
      laterais têm a mesma base). Os `width: 90%/80%` com `margin-right`
-     percentual existiam para simular esse centro e é o que a deslocava. */
+     percentual existiam para simular esse centro e é o que a deslocava.
+     O `ms-md-auto` do template também saiu: `margin-left: auto` vence o
+     `justify-content: center` do :host e jogava toda a sobra (bloco central
+     menos o teto de 34rem) para a esquerda, deslocando a barra à direita. */
   @include media-breakpoint-up($lg) {
     max-width: 34rem;
   }
 }
 
+/* Era `$xl`: entre 992 e 1200 a data sumia e o `A partir de:` também (esse só
+   aparece em $xxl), então o campo virava um ícone de calendário solto. */
 .date-value {
   display: none;
-  @include media-breakpoint-up($xl) {
+  @include media-breakpoint-up($lg) {
     display: block;
   }
 }
@@ -81,11 +88,19 @@ $search-radius: 0.5rem;
   border-right: solid 1px $gray-300;
 }
 
+/* Era `flex: 1` (base 0) disputando com o `.fake-local` de base `auto`: o campo
+   ficava menor que o próprio conteúdo e, como está centralizado com
+   `overflow: hidden`, cortava a data à esquerda e o ícone à direita
+   ("7/07/2026" em vez de "27/07/2026"). Agora não encolhe — quem cede espaço é
+   a localização, que tem ellipsis. */
 .button-datepicker {
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   justify-content: center;
-  span {
+  padding-inline: 0.5rem;
+  /* Só o placeholder (`A partir de:`) fica preso ao $xxl — é o texto mais
+     longo. Com data escolhida quem manda é o .date-value, visível desde $lg. */
+  span:not(.date-value) {
     margin-left: 0.2rem;
     @include media-breakpoint-down($xxl) {
       display: none;
@@ -142,8 +157,14 @@ $search-radius: 0.5rem;
   &:hover {
     background: $primary-hover;
   }
+  /* Os 2rem só a partir de $xl: em 992–1200 a barra tem ~320px e o botão
+     comia metade dela, sobrando pouco para localização + data. */
   @include media-breakpoint-up($lg) {
     margin-right: -2px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @include media-breakpoint-up($xl) {
     padding-left: 2rem;
     padding-right: 2rem;
   }
@@ -155,10 +176,6 @@ $search-radius: 0.5rem;
 .fake-container .search-button {
   height: 26px;
   margin-right: 0;
-
-  @include media-breakpoint-up($lg) {
-    margin-right: 0;
-  }
 }
 
 .search-container-backdrop {
@@ -172,8 +189,12 @@ $search-radius: 0.5rem;
   height: calc(100vh - 3rem);
   background-color: black;
   opacity: 0.7;
+  /* Escurece só a coluna de conteúdo: a sidebar fica acima deste z-index de
+     qualquer forma, então cobri-la deixava metade do menu chapado. */
   @include media-breakpoint-up($lg) {
     top: 4.5rem;
+    left: var(--content-left, 0px);
+    width: calc(100vw - var(--content-left, 0px)) !important;
   }
 }
 
@@ -188,76 +209,198 @@ $search-radius: 0.5rem;
   &:not(.visible) {
     opacity: 0;
     height: 0;
+    overflow: hidden;
     visibility: hidden;
   }
+  /* Era `height: 95px`, calcado no formulário antigo de 80px. O card agora tem
+     label + campo + padding, então quem manda é o conteúdo — senão a lista do
+     typeahead e a sombra ficam cortadas. */
   &.visible {
     visibility: visible;
     opacity: 1;
-    height: 95px;
+    height: auto;
   }
   @include media-breakpoint-up($md) {
     top: 4.5rem;
   }
-  /* `left: 5vw/7vw` era um chute que deslocava o painel (e o cortava quando a
-     sidebar ocupa a esquerda). Centralizado de fato. */
+  /* Centrado na coluna de conteúdo, não no viewport: `--content-left` vem do
+     .page-wrapper e acompanha a sidebar (0 / 4rem / 15rem), senão o painel fica
+     por baixo dela. `position: fixed` não herda o margin-left, só a variável. */
   @include media-breakpoint-up($lg) {
+    $content-w: calc(100vw - var(--content-left, 0px));
+
     top: 6rem;
-    left: 50%;
+    left: calc(var(--content-left, 0px) + #{$content-w} / 2);
     transform: translateX(-50%);
-    width: min(900px, 90vw);
+    width: min(900px, calc(#{$content-w} - 3rem));
   }
 }
 
+/* Mesmo padrão do .search-card do hero da home: label acima, caixa com ícone à
+   esquerda e botão sólido. Só os campos, não o mixin `cl-controls` inteiro —
+   ele traz chips e tabelas e estoura o budget de CSS do componente. */
 .search-content {
+  --cl-primary: #{$primary};
+  --cl-primary-rgb: #{$primary-darkest-rgb};
+  --cl-control-height: 46px;
+  --cl-transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  --text-primary: #111827;
+  --text-muted: #6b7280;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+
   position: relative;
   width: 100%;
-  height: 300px;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  background-color: #f9f9f9;
-  border: solid 1px grey;
+  padding: 1.25rem;
+  background-color: $white;
   border-radius: $search-radius;
-  flex-direction: column;
-  justify-content: space-evenly;
-  @include media-breakpoint-up($md) {
-    padding-left: 0.3rem;
-    padding-right: 0.3rem;
-    border-radius: $search-radius;
-    justify-content: space-around;
-    height: 80px;
-    flex-direction: row;
-    flex-wrap: nowrap;
-  }
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.24);
+
+  /* Sem largura fixa: quem define é o .search-container, que já acompanha a
+     sidebar. Um `width: 860px` aqui vazava do painel quando ele encolhe. */
   @include media-breakpoint-up($lg) {
-    width: 860px;
-    margin: 0 auto;
-  }
-  @media (orientation: landscape) and (max-width: calc($md - 1px)) {
-    height: 200px;
+    padding: 1.5rem;
   }
 }
 
-.search-button-container {
+.cl-field {
   display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.cl-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-muted);
+}
+
+/* Um bloco para os dois campos: o input nativo de data e o input dentro do
+   typeahead de localização. Ambos têm ícone à esquerda, daí o padding-left. */
+.cl-input,
+.search-content ::ng-deep clina-navbar-location-dropdown .input-container input {
+  width: 100%;
+  max-width: 100%;
+  padding: 8px 11px 8px 2.375rem;
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  line-height: 1.25;
+  border: 1.5px solid $field-outline;
+  border-radius: $search-radius;
+  background: $white;
+  color: var(--text-primary);
+  outline: none;
+  transition: var(--cl-transition);
+  min-height: var(--cl-control-height);
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--cl-primary);
+    box-shadow: 0 0 0 3px rgba(var(--cl-primary-rgb), 0.1);
+  }
+}
+
+.search-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+
   @include media-breakpoint-down($md) {
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.search-field {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.search-field-location {
+  flex: 1 1 60%;
+}
+
+.search-field-date {
+  flex: 1 1 40%;
+}
+
+/* Ícone dentro do campo: alinha com a caixa, não com o label acima */
+.search-field-icon {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0;
+  height: var(--cl-control-height);
+  display: flex;
+  align-items: center;
+  color: $primary;
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-search {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: var(--cl-control-height);
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: $search-radius;
+  background-color: $primary;
+  color: $white;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-hover;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @include media-breakpoint-down($md) {
     width: 100%;
   }
 }
 
-.search-content .search-button,
-.search-content clina-navbar-filter {
-  @include media-breakpoint-down($md) {
-    width: 47%;
-  }
+/* Typeahead mantém o componente (e portanto a busca no Google Places); só a
+   aparência vem do .cl-input acima. O `.search-content` na frente é obrigatório:
+   `::ng-deep` no início do seletor sai sem escopo e vaza para a home. */
+clina-navbar-location-dropdown {
+  display: block;
+  position: relative;
+  width: 100%;
 }
 
-.search-content .search-button {
-  @include media-breakpoint-between($md, $lg) {
-    margin-left: 10px;
+.search-content ::ng-deep clina-navbar-location-dropdown {
+  /* Label flutuante do componente é redundante: já existe .cl-label acima */
+  .input-container label {
+    display: none !important;
   }
-  @include media-breakpoint-up($lg) {
-    margin-left: 13px;
+
+  /* A lista tem 560px fixos, pensados para a navbar antiga, e é irmã do
+     .input-container (que detém o position: relative). */
+  .list {
+    left: 0;
+    right: 0;
+    width: auto;
+    margin: 0.25rem 0 0;
+    border: 1.5px solid $field-outline;
+    border-radius: $search-radius;
+    box-shadow: 0 8px 24px rgba(26, 28, 30, 0.12);
+    overflow: hidden auto;
   }
 }
 

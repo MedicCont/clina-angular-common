@@ -1,5 +1,5 @@
 <div
-  class="ms-md-auto d-flex align-items-center fake-container"
+  class="d-flex align-items-center fake-container"
   *ngIf="!showSearch"
   [ngClass]="{ isRunningInSaaS }">
   <span
@@ -39,30 +39,41 @@
 
 <div class="search-container" [ngClass]="{ visible: showSearch }">
   <div class="container">
-    <form autocomplete="off" class="d-flex align-items-center search-content">
-      <clina-navbar-location-dropdown
-        label="Digite cidade, bairro, cep ou local"
-        [list]="locationsList"
-        [selected]="locationSelectedToDrop"
-        [loading]="loadingGooglePlaces"
-        inputId="location"
-        (handleChange)="changeLocationKeyword($event)"
-        (handleSelect)="selectLocation($event)">
-      </clina-navbar-location-dropdown>
+    <form autocomplete="off" class="search-content">
+      <div class="search-row">
+        <div class="cl-field search-field search-field-location">
+          <label class="cl-label" for="location">Localização</label>
+          <span class="search-field-icon" aria-hidden="true"><i class="clina icon-pin"></i></span>
+          <clina-navbar-location-dropdown
+            label="Digite cidade, bairro, cep ou local"
+            [list]="locationsList"
+            [selected]="locationSelectedToDrop"
+            [loading]="loadingGooglePlaces"
+            inputId="location"
+            (handleChange)="changeLocationKeyword($event)"
+            (handleSelect)="selectLocation($event)">
+          </clina-navbar-location-dropdown>
+        </div>
 
-      <clina-ds-date-picker
-        title="A partir de"
-        [date]="date"
-        inputId="date"
-        (action)="getStartDate($event)"></clina-ds-date-picker>
+        <div class="cl-field search-field search-field-date">
+          <label class="cl-label" for="date">A partir de</label>
+          <span class="search-field-icon" aria-hidden="true"><i class="clina icon-calendar"></i></span>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            class="cl-input"
+            [ngModel]="dateInputValue"
+            (ngModelChange)="setStartDateFromInput($event)" />
+        </div>
 
-      <div class="search-button-container">
         <button
           type="button"
-          class="btn btn-primary search-button"
-          (click)="makeSearch()"
-          [disabled]="loadingCoordinates">
-          Buscar
+          class="btn-search"
+          [disabled]="loadingCoordinates"
+          (click)="makeSearch()">
+          <i class="clina icon-search" aria-hidden="true"></i>
+          <span>Buscar</span>
         </button>
       </div>
     </form>
