@@ -58,8 +58,9 @@
     height: 3rem;
   }
   box-shadow: 0px 2px 6px #0000001f;
-  /* Três blocos: marca | busca | links. Os laterais têm a mesma base flex,
-     então a busca do meio fica centralizada de fato. */
+  /* Três blocos: marca | busca | links. Centro óptico: os laterais ocupam só a
+     largura do próprio conteúdo e a busca preenche o vão entre eles. Não é o
+     centro geométrico da navbar — desloca conforme o texto dos links. */
   justify-content: space-between;
 }
 
@@ -69,14 +70,13 @@
   padding: 0 0.15rem;
   @include media-breakpoint-up($lg) {
     padding: 0 0.75rem;
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 0 auto;
 
-    // Autenticado: logo já aparece na sidebar, evita duplicar. `visibility`
-    // em vez de `display: none` para o bloco continuar ocupando espaço — sem
-    // isso o lado esquerdo colapsa e a busca sai do centro.
+    // Autenticado: logo já aparece na sidebar, evita duplicar. Com o centro
+    // óptico é `display: none` mesmo — o `visibility: hidden` de antes servia
+    // para segurar a fatia do centro geométrico e agora só deixaria vão morto.
     &.brand-hidden {
-      visibility: hidden;
+      display: none;
     }
   }
   img {
@@ -95,15 +95,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* `flex-basis: 0` + `min-width: 0`: a barra parte de zero e ocupa só o que
-     sobra dos blocos laterais, em vez de exigir a largura do conteúdo. O teto
-     de 34rem fica no .fake-container, para não esticar em telas largas. */
-  flex: 1 1 0;
+  /* `flex-basis: auto` + grow: a barra come todo o vão entre marca e links.
+     `min-width: 0` deixa encolher abaixo do min-content dos filhos, senão ela
+     invade a logo. O teto de 34rem fica no .fake-container, para não esticar em
+     telas largas. */
+  flex: 1 1 auto;
   min-width: 0;
+  /* Respiro simétrico: sem isso, na faixa 992–1200 o bloco central ocupa toda
+     a sua fatia e a barra fica colada na pílula "Anuncie seu consultório". */
+  padding-inline: 1rem;
 }
 
 .links-container {
-  flex: 1 1 0;
+  flex: 0 0 auto;
   justify-content: end;
   align-items: center;
   /* `overflow: hidden` cortava o .badge-maleta-count, que é absoluto em
