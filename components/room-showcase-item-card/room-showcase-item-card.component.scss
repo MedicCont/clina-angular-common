@@ -7,10 +7,16 @@ $office-image-width: 22.5rem;
 .room-card {
   position: relative;
   border: 1px solid $gray-300;
-  border-radius: 12px;
+  border-radius: 1rem;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
   @include media-breakpoint-up($xl) {
     min-width: 265px;
+  }
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
   }
   &.showMap {
     @include media-breakpoint-up($md) {
@@ -128,7 +134,7 @@ $office-image-width: 22.5rem;
   position: relative;
   width: 360px;
   .card-img {
-    border-radius: 12px;
+    border-radius: 1rem;
     object-fit: cover;
     object-position: center center;
   }
