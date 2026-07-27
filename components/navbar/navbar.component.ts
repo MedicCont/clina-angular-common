@@ -111,15 +111,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   toggleSidebar() {
-    const body = document.getElementById("body");
-
-    // Alterna o estado da sidebar
+    /* A trava de scroll do body agora é aplicada pela própria sidebar, que
+       observa o $show — aqui ela não era desfeita quando o menu fechava pelo
+       "×" ou pelo backdrop, e a página ficava sem scroll. */
     this.sidebarService.toggle();
-    if (this.sidebarService.isSidebarVisible()) {
-      body?.classList.add("overflow-hidden");
-    } else {
-      body?.classList.remove("overflow-hidden");
-    }
   }
 
   checkRoute() {

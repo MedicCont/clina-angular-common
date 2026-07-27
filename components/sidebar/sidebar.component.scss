@@ -2,6 +2,10 @@
 @import "/src/assets/styles/breakpoint";
 @import "/src/assets/styles/mixins/breakpoints";
 
+/* Drawer abaixo de $nav-desktop (1024px), sidebar fixa a partir dele.
+   Precisa casar com DRAWER_BREAKPOINT no .ts — quando os dois discordavam,
+   o CSS aplicava off-canvas e o TS ainda achava que era desktop. */
+
 // ── Métricas ────────────────────────────────────────────────────────────
 $sb-width: 15rem;
 $sb-mini: 4rem;
@@ -37,7 +41,7 @@ $brand-h: 4.5rem;
   }
 
   // Mobile: off-canvas com slide (igual bkf)
-  @include media-breakpoint-down($lg) {
+  @include media-breakpoint-down($nav-desktop) {
     position: fixed;
     z-index: 10;
     width: 20rem;
@@ -51,10 +55,12 @@ $brand-h: 4.5rem;
     }
   }
 
-  // Desktop: fixo, mini via toggle
-  @include media-breakpoint-up($lg) {
+  /* Desktop: fixo e sempre visível — a classe .show é só do drawer, então o
+     estado do TS não decide se a sidebar aparece. */
+  @include media-breakpoint-up($nav-desktop) {
     position: fixed;
     width: $sb-width;
+    transform: none;
     transition: width 0.22s ease;
 
     &.mini {
@@ -75,6 +81,7 @@ $brand-h: 4.5rem;
   box-shadow: 0px 2px 6px #0000001f;
   z-index: 3;
 
+  /* Espelha a altura do #navbar, que troca em $lg — não no $xl do drawer */
   @include media-breakpoint-down($lg) {
     height: 3rem;
   }
@@ -114,16 +121,14 @@ $brand-h: 4.5rem;
     }
   }
 
+  /* Visibilidade vem do *ngIf="isMobile" no template, que usa o mesmo
+     breakpoint — não duplicar a decisão aqui. */
   .close-sidebar {
-    display: none;
+    display: block;
     font-size: 2.2rem;
     line-height: 1;
     color: #fff;
     cursor: pointer;
-
-    @include media-breakpoint-down($lg) {
-      display: block;
-    }
 
     &:hover {
       color: $gray-300;
@@ -310,49 +315,54 @@ $brand-h: 4.5rem;
 }
 
 // ── Modo mini (desktop recolhido) ────────────────────────────────────────
-#sidebar.mini {
-  ._sidebar_brand {
-    justify-content: center;
-    padding: 0;
-
-    .brand-logo {
-      display: none;
-    }
-  }
-
-  .items-container {
-    padding: 0.75rem 0;
-    align-items: center;
-  }
-
-  .sb-item,
-  .access-mode-button {
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    gap: 0;
-
-    .item-label {
-      display: none;
-    }
-  }
-
-  .access-mode-button {
-    border-radius: 10px;
-  }
-
-  .access-mode-wrap {
-    display: flex;
-    justify-content: center;
-  }
-
-  .sb-footer {
-    align-items: center;
-    padding: 10px 0;
-
-    &__row {
+/* Mini só existe no desktop. No backoffice as regras de geometria também
+   vivem dentro do media query, o que impede o estado do TS de produzir
+   um layout impossível (mini + drawer ao mesmo tempo). */
+@include media-breakpoint-up($nav-desktop) {
+  #sidebar.mini {
+    ._sidebar_brand {
       justify-content: center;
+      padding: 0;
+
+      .brand-logo {
+        display: none;
+      }
+    }
+
+    .items-container {
+      padding: 0.75rem 0;
+      align-items: center;
+    }
+
+    .sb-item,
+    .access-mode-button {
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      gap: 0;
+
+      .item-label {
+        display: none;
+      }
+    }
+
+    .access-mode-button {
+      border-radius: 10px;
+    }
+
+    .access-mode-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .sb-footer {
+      align-items: center;
+      padding: 10px 0;
+
+      &__row {
+        justify-content: center;
+      }
     }
   }
 }
