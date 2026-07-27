@@ -251,6 +251,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
+        // Mesma seção na visão do anfitrião: RoomLeaseHostManagementComponent,
+        // servido como rota padrão do mount host (/host/room-lease).
+        title: "Consultórios Alugados",
+        lucideIcon: "Building2",
+        menuUrl: "/room-lease",
+        isActive: true,
+        mode: ItemModeEnum.HOST,
+        system: SystemEnum.DASHBOARD,
+        url:""
+      },
+      {
         title: "Reservas",
         lucideIcon: "ClipboardList",
         menuUrl: "/appointment/host",
