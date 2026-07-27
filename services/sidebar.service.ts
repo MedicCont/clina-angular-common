@@ -31,9 +31,16 @@ export class SidebarService {
   }
 
   toggleCollapse() {
-    const next = !this.$collapsed.getValue();
-    this.$collapsed.next(next);
-    this.writeCollapsed(next);
+    this.setCollapsed(!this.$collapsed.getValue());
+  }
+
+  /* `persist: false` permite zerar o mini ao entrar no modo drawer sem apagar
+     a preferência que o usuário escolheu no desktop. */
+  setCollapsed(value: boolean, persist: boolean = true) {
+    this.$collapsed.next(value);
+    if (persist) {
+      this.writeCollapsed(value);
+    }
   }
 
   isCollapsed(): boolean {

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
+import { Component, HostListener, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { AuthenticationService } from "app/modules/authentication/authentication.service";
 import { AccessModeService } from "app/modules/common/services/access-mode.service";
@@ -8,7 +8,6 @@ import { filter } from "rxjs/operators";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
 import { SystemEnum } from "../../enums/system.enum";
-import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
 
 // Enum
@@ -31,7 +30,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   );
   public accessMode$ = this.accessModeSubject.asObservable();
   public dashboardUrl = environment.dashboardUrl;
-  public isMobile = false;
+  /* Mobile-first: no prerender/SSR não há window, então syncIsMobile() sai
+     cedo e este default é o que vai para o HTML. Com `false` o markup saía no
+     estado desktop (classe .mini + botão "»") e chegava quebrado em telas
+     estreitas; `true` casa com o CSS, que é drawer por padrão. */
+  public isMobile = true;
   public items$: Observable<NavbarItemDto[]>;
 
   // 💡 1. Criamos um BehaviorSubject local para controlar a visibilidade
@@ -66,17 +69,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    /* Espelha o serviço nos DOIS sentidos. Antes só reagia a `true`: ao fechar
+       pelo "×", o $show continuava true, então o toggle seguinte o punha em
+       false (ignorado) e só o segundo toque reabria o menu.
+       A trava de scroll do body mora aqui, junto do estado — no navbar ela não
+       era desfeita quando o fechamento vinha do "×" ou do backdrop. */
     this.serviceShowSubscription = this.sidebarService.$show.subscribe(shouldShow => {
-      if (shouldShow) {
-        this.isVisibleSubject.next(true);
+      this.isVisibleSubject.next(shouldShow);
+
+      if (typeof document !== 'undefined') {
+        const lock = shouldShow && !this.isDesktop();
+        this.renderer[lock ? 'addClass' : 'removeClass'](document.body, 'overflow-hidden');
       }
     });
 
 
-      this.isMobile =
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        );
+    this.syncIsMobile();
 
     this.collapseSubscription = this.sidebarService.$collapsed.subscribe(
       (collapsed) => (this.isCollapsed = collapsed)
@@ -102,9 +110,42 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  // 💡 3. O método hideSidebar agora atualiza DIRETAMENTE o nosso subject local
+  /* Espelha $nav-desktop em assets/styles/_breakpoint.scss: >= 1024 é desktop
+     (sidebar fixa), abaixo é drawer. Os dois têm de andar juntos. */
+  private static readonly DRAWER_BREAKPOINT = 1024;
+
+  /* Checagem direta de `window` em vez de PlatformUtils: existem duas classes
+     PlatformUtils no projeto e o app.module só inicializa o platformId de
+     `utils/`. A de `common/services/` ficava sem platformId, então
+     isPlatformBrowser(undefined) devolvia false e isto nunca media a tela. */
+  isDesktop(): boolean {
+    return (
+      typeof window !== 'undefined' &&
+      window.innerWidth >= SidebarComponent.DRAWER_BREAKPOINT
+    );
+  }
+
+  /* Espelha o syncMenuOnResize() do LayoutService do backoffice: ao trocar de
+     modo, o estado do modo oposto é zerado. Sem isso o "drawer aberto" ficava
+     pendurado ao voltar para desktop e o "recolhido" (persistido em
+     localStorage) vazava para o mobile — origem dos estados quebrados. */
+  @HostListener("window:resize")
+  syncIsMobile(): void {
+    if (typeof window === 'undefined') return;
+
+    this.isMobile = !this.isDesktop();
+
+    if (this.isDesktop()) {
+      this.sidebarService.hide();
+    } else if (this.isCollapsed) {
+      // Sem persistir: a preferência de recolhido no desktop é preservada.
+      this.sidebarService.setCollapsed(false, false);
+    }
+  }
+
   hideSidebar() {
-    this.isVisibleSubject.next(false);
+    // Pelo serviço, para não divergir do $show que o navbar alterna.
+    this.sidebarService.hide();
   }
 
   // Mini apenas no desktop; no mobile a sidebar é off-canvas.
@@ -137,8 +178,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.routerSubscription?.unsubscribe();
     this.serviceShowSubscription?.unsubscribe(); // Limpa a inscrição do serviço
     this.collapseSubscription?.unsubscribe();
-    if (PlatformUtils.isBrowser())
-      this.renderer.removeClass(document.body, "no-scroll");
+    // Mesmo motivo do isDesktop(): PlatformUtils aqui nunca tem platformId,
+    // então esta limpeza jamais rodava.
+    if (typeof document !== 'undefined')
+      this.renderer.removeClass(document.body, "overflow-hidden");
   }
 
   // --- O RESTANTE DO CÓDIGO PERMANECE IGUAL ---
@@ -208,6 +251,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
+        // Mesma seção na visão do anfitrião: RoomLeaseHostManagementComponent,
+        // servido como rota padrão do mount host (/host/room-lease).
+        title: "Consultórios Alugados",
+        lucideIcon: "Building2",
+        menuUrl: "/room-lease",
+        isActive: true,
+        mode: ItemModeEnum.HOST,
+        system: SystemEnum.DASHBOARD,
+        url:""
+      },
+      {
         title: "Reservas",
         lucideIcon: "ClipboardList",
         menuUrl: "/appointment/host",
@@ -247,15 +301,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Agendas",
         lucideIcon: "CalendarDays",
         menuUrl: "/room/schedule",
-        isActive: true,
-        mode: ItemModeEnum.HOST,
-        system: SystemEnum.DASHBOARD,
-        url:""
-      },
-      {
-        title: "Check-In/Out",
-        lucideIcon: "ClipboardCheck",
-        menuUrl: "/check",
         isActive: true,
         mode: ItemModeEnum.HOST,
         system: SystemEnum.DASHBOARD,
@@ -316,6 +361,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
       if (item.mode === ItemModeEnum.HOST && accessMode === AccessModeEnum.HOST) return true;
       if (item.mode === ItemModeEnum.PS && accessMode === AccessModeEnum.HEALTH_PERSON) return true;
       return false;
+    });
+
+    /* Home primeiro, o resto em ordem alfabética. Ordenado aqui em vez de na
+       declaração do array para continuar valendo quando novos itens entrarem.
+       localeCompare com pt-BR para acentos não caírem no fim ("Cobranças").
+       "Sair" não participa: é um <li> próprio depois do *ngFor no template. */
+    items = items.sort((a, b) => {
+      if (a.title === 'Home') return -1;
+      if (b.title === 'Home') return 1;
+      return a.title.localeCompare(b.title, 'pt-BR');
     });
 
     const currentMode = this.accessModeSubject.getValue();

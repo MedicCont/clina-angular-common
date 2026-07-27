@@ -7,7 +7,7 @@
 <ul
   id="sidebar"
   [ngClass]="{
-    show: (isVisible$ | async) || !isMobile,
+    show: (isVisible$ | async),
     mini: isMini,
     hostMode: (accessMode$ | async) === AccessModeEnum.HOST,
     psMode: (accessMode$ | async) === AccessModeEnum.HEALTH_PERSON
@@ -17,7 +17,7 @@
   <div class="_sidebar_brand">
     <img
       class="brand-logo brand-logo--full"
-      src="/common-assets/images/branding/logo-white.png"
+      src="/common-assets/images/branding/logo-white.svg"
       alt="Clina"
       (click)="goToHome()"
     />
@@ -39,7 +39,7 @@
         [size]="18"
       ></lucide-icon>
     </button>
-    <span class="close-sidebar" (click)="hideSidebar()">&times;</span>
+    <span class="close-sidebar" *ngIf="isMobile" (click)="hideSidebar()">&times;</span>
   </div>
 
   <!-- Nav -->
