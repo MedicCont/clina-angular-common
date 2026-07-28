@@ -8,6 +8,7 @@ import { filter } from "rxjs/operators";
 import { NavbarItemDto } from "../../dtos/navbar-item.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
 import { SystemEnum } from "../../enums/system.enum";
+import { HomeNavigationService } from "../../services/home-navigation.service";
 import { SidebarService } from "../../services/sidebar.service";
 
 // Enum
@@ -58,7 +59,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly authenticationService: AuthenticationService,
     private readonly renderer: Renderer2,
-    private readonly accessModeService: AccessModeService
+    private readonly accessModeService: AccessModeService,
+    private readonly homeNavigationService: HomeNavigationService
   ) {
     this.items$ = combineLatest([
       this.accessMode$,
@@ -401,13 +403,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     return items;
   }
 
+  /** Mesmo destino do logo da navbar — ver HomeNavigationService. */
   goToHome() {
-    const currentMode = this.accessModeSubject.getValue();
-    if (currentMode === AccessModeEnum.HOST) {
-      this.router.navigate(["/host"]);
-    } else {
-      this.router.navigate(["/"]);
-    }
+    this.homeNavigationService.goHome(this.accessModeSubject.getValue(), this.isAuthenticated);
   }
 
   toggleAccessMode(mode: AccessModeEnum) {

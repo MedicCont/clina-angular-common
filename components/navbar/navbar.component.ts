@@ -11,6 +11,7 @@ import { AuthenticationService } from "../../../authentication/authentication.se
 import { NotificationService } from "../../../notification/notification.service";
 import { PageTitleDto } from "../../dtos/page-title.dto";
 import { AccessModeEnum } from "../../enums/access-mode.enum";
+import { HomeNavigationService } from "../../services/home-navigation.service";
 import { PlatformUtils } from "../../services/platform.util";
 import { SidebarService } from "../../services/sidebar.service";
 import { AccountDataGetService } from "app/modules/account/services/account-data-get.service";
@@ -46,7 +47,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly notificationService: NotificationService,
     private readonly accessModeService: AccessModeService,
-    private readonly maletaService:MaletaService
+    private readonly maletaService:MaletaService,
+    private readonly homeNavigationService: HomeNavigationService
   ) {
     /* Continua no construtor, e não no ngOnInit: a emissão inicial precisa chegar antes do
        primeiro render. Só passou a ser registrada para ser desfeita no ngOnDestroy. */
@@ -110,8 +112,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  goToHome() {
-         window.open(environment.psUrl, '_blank').focus();
+  /** Mesmo destino do logo da sidebar — ver HomeNavigationService. */
+  goToHome(): void {
+    this.homeNavigationService.goHome(this.accessMode, this.isAuthenticated);
   }
 
   toggleSidebar() {
