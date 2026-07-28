@@ -2,386 +2,488 @@
 @import "/src/assets/styles/breakpoint";
 @import "/src/assets/styles/mixins/breakpoints";
 
+/* Drawer abaixo de $nav-desktop (1024px), sidebar fixa a partir dele.
+   Precisa casar com DRAWER_BREAKPOINT no .ts — quando os dois discordavam,
+   o CSS aplicava off-canvas e o TS ainda achava que era desktop. */
+
+// ── Métricas ────────────────────────────────────────────────────────────
+$sb-width: 15rem;
+$sb-mini: 4rem;
+$brand-h: 4.5rem;
+
 :host {
   position: fixed;
-  z-index: 100;
-  transition: all 0.5s;
-
-  @include media-breakpoint-up($md) {
-    position: fixed;
-    width: 15rem;
-  }
+  z-index: 1045;
+  top: 0;
+  left: 0;
 }
 
-#sidebar-backdrop {
-  @include media-breakpoint-down($md) {
-    position: fixed;
-    width: 100vw;
-    height: 101vh;
-    background: black;
-    opacity: 0.4;
-    z-index: 4;
-    display: none;
-
-    &.show {
-      display: block;
-    }
-  }
-}
-
-.psMode{
-  .item-label:not(.access-mode-button .item-label){
-    color: $primary;
-  }
-}
-
-.exitButton{
-  color: white!important;
-}
-
+// ── Shell ───────────────────────────────────────────────────────────────
 #sidebar {
-  font-weight: 100;
-  border: 1px solid #ddd;
-  border-top: none;
-
-  .items-container {
-    padding-top: 4em !important;
-  }
-
-  .item-label {
-    transition: 0s;
-    opacity: 0;
-  }
-
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  left: 0;
   overflow: hidden;
 
-  // Para telas menores que o breakpoint 'lg'
-  @include media-breakpoint-down($md) {
-    z-index: 5;
-    width: 0; // Sidebar escondido inicialmente
-    position: fixed;
-    overflow: hidden;
-    height: 100vh; // Sidebar ocupa toda a altura da tela
-    transition: all 0.3s ease-in-out; // Transição suave
+  // Divisória menu | conteúdo (só no corpo, abaixo do brand)
+  &::after {
+    content: "";
+    position: absolute;
+    top: $brand-h;
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    background: #e5e7eb;
+  }
 
-    // Quando a sidebar estiver visível
+  // Mobile: off-canvas com slide (igual bkf)
+  @include media-breakpoint-down($nav-desktop) {
+    position: fixed;
+    z-index: 10;
+    width: 20rem;
+    max-width: 80vw;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+
     &.show {
-      width: 20rem; // Largura da sidebar expandida
-      max-width: 80vw; // Limite da largura em telas menores
-      overflow-y: auto; // Adiciona rolagem vertical se necessário
-      .item-label {
-        transition: 0.1s;
-        opacity: 1;
-      }
+      transform: translateX(0);
+      overflow-y: auto;
     }
   }
 
-  // Para telas maiores que o breakpoint 'lg'
-  @include media-breakpoint-up($md) {
-    z-index: 5;
-    width: 3.6rem; // Largura padrão do sidebar colapsado
+  /* Desktop: fixo e sempre visível — a classe .show é só do drawer, então o
+     estado do TS não decide se a sidebar aparece. */
+  @include media-breakpoint-up($nav-desktop) {
     position: fixed;
-    height: 100vh; // Sidebar ocupa toda a altura da tela
-    transition: all 0.3s ease-in-out;
+    width: $sb-width;
+    transform: none;
+    transition: width 0.22s ease;
 
-    &:hover, &.show { // Aumenta a largura no hover ou na classe 'show'
-      width: 14rem; // Largura expandida no hover ou com 'show'
-      .item-label {
-        transition: 0.3s ease-in;
-        opacity: 1;
-      }
+    &.mini {
+      width: $sb-mini;
     }
-
-    // Quando a classe 'show' é removida, o sidebar volta para a largura original
-    &:not(.show) {
-      width: 3.6rem; // Volta para a largura colapsada
-    }
-
-  }
-
-  // Estilos gerais
-  list-style: none;
-  padding: 0;
-  color: $primary-dark;
-  height: 100vh;
-  transition: all 0.1s ease-in-out;
-  left: 0;
-
-  .items-container {
-    padding-bottom: 1.5rem;
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-height: calc(100vh - 4.5rem); // Ajusta a altura disponível para a lista de itens
-
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-      border-radius: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 5px;
-    }
-
-    li {
-      white-space: nowrap;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.5s ease-in-out;
-      overflow-x: hidden;
-
-      img {
-        width: 20px;
-        height: 20px;
-      }
-
-      a {
-        font: normal normal normal 14px/28px Poppins;
-        display: flex;
-        align-items: center;
-      }
-    }
-  }
-
-  a {
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    font: normal normal 400 10px/28px Poppins;
-    color: white;
   }
 }
 
+// ── Brand ─────────────────────────────────────────────────────────────────
 ._sidebar_brand {
-  width: 100%;
-  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: $brand-h;
+  padding: 0 0.85rem;
+  flex-shrink: 0;
   box-shadow: 0px 2px 6px #0000001f;
   z-index: 3;
-  transition: all 0.5s;
 
-  @include media-breakpoint-down($md) {
+  /* Espelha a altura do #navbar, que troca em $lg — não no $xl do drawer */
+  @include media-breakpoint-down($lg) {
     height: 3rem;
   }
 
-  div {
-    width: 14rem;
-    height: 4.5rem;
-    padding: 0 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    @include media-breakpoint-down($md) {
-      width: 20rem;
-      max-width: 80vw;
-      height: 3rem;
-    }
-  }
-
-  img {
-    font-size: 2rem;
-    min-width: 3rem;
+  .brand-logo {
     height: 2.1rem;
+    max-width: 100%;
+    object-fit: contain;
     cursor: pointer;
 
-    @include media-breakpoint-down($md) {
-      height: 2rem;
+    @include media-breakpoint-down($lg) {
+      height: 1.9rem;
     }
   }
 
+  .brand-logo--icon {
+    display: none;
+    height: 1.9rem;
+  }
+
+  .sb-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.26);
+    }
+  }
+
+  /* Visibilidade vem do *ngIf="isMobile" no template, que usa o mesmo
+     breakpoint — não duplicar a decisão aqui. */
   .close-sidebar {
-    font-size: 2.6rem;
+    display: block;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: #fff;
     cursor: pointer;
 
     &:hover {
       color: $gray-300;
     }
+  }
+}
 
-    @include media-breakpoint-up($md) {
-      display: none;
+// ── Nav ─────────────────────────────────────────────────────────────────
+.items-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0.75rem 0.6rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+  }
+
+  li {
+    list-style: none;
+    white-space: nowrap;
+  }
+
+  .spy-item {
+    display: none;
+  }
+}
+
+// Item de navegação
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font: normal normal 500 14px/1.2 Inter, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  .sidebar-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  .item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// ── Tooltip (modo mini) ────────────────────────────────────────────────
+.sb-tooltip {
+  position: fixed;
+  left: calc(#{$sb-mini} + 10px);
+  transform: translateY(-50%);
+  background: #fff;
+  color: #111827;
+  font: normal normal 500 13px/1 Inter, sans-serif;
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+// ── Alternar modo / Logout ─────────────────────────────────────────────
+.access-mode-wrap {
+  flex-shrink: 0;
+}
+
+.access-mode-button,
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+
+  ._images_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .item-label {
+    font: normal normal 500 14px/1.2 Inter, sans-serif;
+  }
+}
+
+// ── Rodapé: usuário + versão ─────────────────────────────────────────────
+.sb-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px 10px;
+  border-top: 1px solid #e5e7eb;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+}
+
+.sb-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+
+  &__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
+  &__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: $gray-800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+
+  &__role {
+    font-size: 11px;
+    color: $gray-500;
+  }
+}
+
+.sb-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: $gray-500;
+  flex-shrink: 0;
+
+  &__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+}
+
+// ── Modo mini (desktop recolhido) ────────────────────────────────────────
+/* Mini só existe no desktop. No backoffice as regras de geometria também
+   vivem dentro do media query, o que impede o estado do TS de produzir
+   um layout impossível (mini + drawer ao mesmo tempo). */
+@include media-breakpoint-up($nav-desktop) {
+  #sidebar.mini {
+    ._sidebar_brand {
+      justify-content: center;
+      padding: 0;
+
+      .brand-logo {
+        display: none;
+      }
+    }
+
+    .items-container {
+      padding: 0.75rem 0;
+      align-items: center;
+    }
+
+    .sb-item,
+    .access-mode-button {
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      gap: 0;
+
+      .item-label {
+        display: none;
+      }
+    }
+
+    .access-mode-button {
+      border-radius: 10px;
+    }
+
+    .access-mode-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .sb-footer {
+      align-items: center;
+      padding: 10px 0;
+
+      &__row {
+        justify-content: center;
+      }
     }
   }
 }
 
-.access-mode-container {
-  margin-top: 3rem;
-  padding: 0 0.5rem;
-  border: none !important;
-
-  .access-mode-button {
-    color: white;
-    position: relative;
-    border-radius: 50px;
-
-    ._images_icon {
-      margin-left: 4px;
-    }
-
-    span {
-      position: absolute;
-      width: 100%;
-      margin-left: -4px;
-      text-align: center;
-      flex: 1;
-    }
-  }
-}
-
-.logout-container {
-  margin-top: 0.5rem;
-  padding: 0 0.5rem;
-  border: none !important;
-
-  .logout-button {
-    position: relative;
-    text-align: center;
-    border-radius: 50px;
-    border: solid 2px $primary-dark;
-    color:#ffffff;
-    background-color: $primary-dark;
-
-
-    ._images_icon {
-      margin-left: 6px;
-    }
-
-    span {
-      position: absolute;
-      width: 100%;
-      margin-left: -4px;
-      text-align: center;
-      flex: 1;
-    }
-  }
-}
-
+// ── Cores por modo: Profissional da saúde ────────────────────────────────
 #sidebar.psMode {
-  background-color: white;
-
-  li:not(.access-mode-container):not(.logout-container) {
-    border-left: 4px solid white;
-    margin-block: .5em;
-    &:hover,
-    &._active {
-      border-left: 4px solid $primary !important;
-      background-color: white;
-    }
-  }
-
-  i{
-    font-weight: 800;
-    font-size: 18px;
-    margin-left: 0px;
-  }
+  background-color: #fff;
 
   ._sidebar_brand {
     background: $primary;
   }
 
-  .access-mode-button {
-    border: solid 2px $secondary;
-    background-color: $secondary;
+  .sb-item {
+    color: $gray-800;
+
+    .sidebar-icon {
+      color: $primary;
+    }
 
     &:hover {
-      background-color: $secondary-dark;
-      border-color: $secondary-dark;
+      background: $primary-light;
     }
-  }
 
-  .logout-button:hover {
-    opacity: 70%;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: $primary-light;
-    box-shadow: inset 1px 1px 3px hsla(260, 100%, 60%, 0.8);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: $primary-dark;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: $primary-medium;
-  }
-}
-
-#sidebar.hostMode {
-  background-color: $secondary;
-
-  li:not(.access-mode-container):not(.logout-container) {
-    border-bottom: solid 1px $secondary-dark;
-
-    &:hover,
     &._active {
-      background-color: $secondary-dark;
-    }
-  }
+      background: $primary-light;
+      color: $primary;
+      font-weight: 600;
 
-  ._sidebar_brand {
-    background: $secondary;
-  }
-
-  .access-mode-button {
-    border: solid 2px $primary;
-    background-color: $primary;
-
-    &:hover {
-      background-color: $primary-dark;
-      border-color: $primary-dark;
-    }
-  }
-  
-  .logout-button {
-    background: $secondary-dark;
-    border: solid 2px $secondary-dark;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: $secondary-light;
-    box-shadow: inset 1px 1px 3px hsla(204, 50%, 39%, 0.8);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: $secondary-dark;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: $secondary-medium;
-  }
-}
-
-
-.psMode {
-    // Modo PS (Profissional de Saúde)
-    i {
-      color: $primary; // Cor normal para ícones de fonte
-    }
-    
-    .clina {
-      &::before {
+      .sidebar-icon {
         color: $primary;
       }
     }
   }
 
-  .hostMode {
-    // Modo Host
-    i {
-      color: white; // Ícones brancos
+  .access-mode-button {
+    background: $secondary;
+    color: #fff;
+
+    &:hover {
+      background: $secondary-dark;
     }
-    
-    .clina {
-      &::before {
-        color: white;
+  }
+
+  .logout-button {
+    background: transparent;
+    color: $gray-600;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .sb-user__avatar {
+    background: $primary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: $primary-medium;
+  }
+}
+
+// ── Cores por modo: Anfitrião ────────────────────────────────────────────
+#sidebar.hostMode {
+  background-color: #fff;
+
+  ._sidebar_brand {
+    background: $secondary;
+  }
+
+  .sb-item {
+    color: $gray-800;
+
+    .sidebar-icon {
+      color: $secondary;
+    }
+
+    &:hover {
+      background: $secondary-light;
+    }
+
+    &._active {
+      background: $secondary-light;
+      color: $secondary;
+      font-weight: 600;
+
+      .sidebar-icon {
+        color: $secondary;
       }
     }
   }
 
+  .access-mode-button {
+    background: $primary;
+    color: #fff;
 
+    &:hover {
+      background: $primary-dark;
+    }
+  }
+
+  .logout-button {
+    background: transparent;
+    color: $gray-600;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .sb-user__avatar {
+    background: $secondary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: $secondary-medium;
+  }
+}
+
+// ── Backdrop mobile ──────────────────────────────────────────────────────
+// z-index baixo: fica ATRÁS do #sidebar (ambos dentro do stacking do :host).
+// O :host (z 1045) garante que o conjunto cobre o conteúdo da página.
 .sidebar-backdrop {
   position: fixed;
   top: 0;
@@ -389,10 +491,16 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
-  z-index: 1040; /* Valor menor que o do sidebar */
+  z-index: 1;
   cursor: pointer;
+  animation: backdrop-in 0.22s ease forwards;
 }
 
-#sidebar {
-  z-index: 1045;
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

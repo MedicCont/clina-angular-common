@@ -6,33 +6,54 @@ a {
   cursor: pointer;
 }
 
-  a {
-    color: white;
+a {
+  color: white;
+  transition: opacity 0.2s ease;
+  &:hover {
+    opacity: 0.8;
   }
+}
 
 .footer {
   color: white;
-  padding: 3.5rem 0;
+  padding: 3rem 0 2rem;
   ul {
     padding: 0;
     list-style: none;
     span {
       font-weight: 600;
+      font-size: 1rem;
+    }
+    /* `.footer ul span` acima é mais específico que as classes utilitárias,
+       então o tamanho precisa ser reafirmado com o mesmo peso de seletor. */
+    span.extra-small-text {
+      font-size: 12px;
     }
     span.ul-title {
+      display: block;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      font-weight: 700;
       @include media-breakpoint-down($md) {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
       }
     }
     li {
       display: flex;
-      padding: 0.5rem 0;
+      padding: 0.4rem 0;
       a {
         cursor: pointer;
         text-decoration: none;
         font-weight: 400;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         &:hover {
-          color: white;
+          opacity: 0.9;
+        }
+        i {
+          font-size: 1.2rem;
         }
       }
     }
@@ -40,32 +61,31 @@ a {
 }
 
 .social-media {
-  border: solid 1px white;
+  border: solid 1px rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   width: 2.5rem;
   height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+  transition: all 0.3s ease;
+  color: white;
   &:hover {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: white;
   }
 }
 
 .white-separator {
-  border-bottom: solid 1px white;
-  margin: 0 auto 1rem auto;
+  border-bottom: solid 1px rgba(255, 255, 255, 0.2);
+  margin: 0 auto 1.5rem auto;
   width: 60px;
 }
 
 .footer-copyright {
   font-size: 12px;
-  filter: brightness(90%);
-  color: white;
-  padding: 0.5rem 0;
+  color: $white;
+  padding: 0.625rem 0;
   margin-bottom: 0;
 }
 
@@ -74,8 +94,8 @@ a {
   align-items: center;
   font-size: 0.875rem;
   i {
-    margin-right: 1rem;
-    font-size: 1.5rem;
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -87,25 +107,30 @@ a {
   font-weight: 500 !important;
 }
 
+/* Mesma cor da barra do header (#navbar.psMode / #navbar.hostMode) */
 .footer.psMode {
-  background-color: $primary;
+  background: $primary;
   .social-media:hover {
     i {
-      color: $primary;
+      color: white;
     }
   }
 }
 
 .footer.hostMode {
-  background-color: $secondary;
+  background: $secondary;
   .social-media:hover {
     i {
-      color: $secondary;
+      color: white;
     }
   }
 }
 
+/* Mesmo método do dashboard: a faixa herda a cor do footer e só escurece um
+   passo com brightness, em vez de pular para outro token da escala. */
 .footer-copyright {
+  filter: brightness(90%);
+
   &.psMode {
     background-color: $primary;
   }
@@ -114,12 +139,12 @@ a {
   }
 }
 
-
 table {
-  table-layout: auto; /* As colunas ajustam-se automaticamente */
-  width: 100%; /* A tabela ocupa 100% da largura do container */
+  table-layout: auto;
+  width: 100%;
 }
+
 th, td {
-  white-space: nowrap; /* Evita quebras de linha dentro das células */
-  text-align: left; /* Alinha o conteúdo das colunas à esquerda */
+  white-space: nowrap;
+  text-align: left;
 }

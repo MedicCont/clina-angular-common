@@ -14,6 +14,7 @@ import { RoomTypeIcon } from "../../enums/room-type.enum";
 import { RoomCardService } from "../../services/room-card.service";
 import { RoomShowcaseItemSuccessSharedModalComponent } from "../room-showcase-item-success-shared-modal/room-showcase-item-success-shared-modal.component";
 import { RoomShowcaseDto } from "../../dtos/room-showcase.dto";
+import { splitRoomName } from "../../utils/split-room-name.util";
 
 @Component({
   selector: "clina-room-showcase-item-card",
@@ -67,6 +68,18 @@ export class RoomShowcaseItemCardComponent implements OnInit {
   RoomPackageOfHoursTypeEnum = RoomPackageOfHoursTypeEnum;
 
   isRatingEnabled = environment.psRating;
+
+  splitRoomName = splitRoomName;
+
+  /* Mensal ativo manda no card: a sala é vendida por mês, então o preço/hora não
+     aparece nem quando existe agenda livre — mesma regra do card da vitrine. */
+  get isMonthlyOnly(): boolean {
+    return !!this.room?.monthlyLeasePrice;
+  }
+
+  get showHourlyPrice(): boolean {
+    return !this.isMonthlyOnly;
+  }
 
   public get routeToRoom(): string {
     let route = [

@@ -3,60 +3,65 @@
 @import "/src/assets/styles/mixins/breakpoints";
 
 :host {
-  z-index: 2;
-  @include media-breakpoint-up($lg) {
-    position: fixed;
-    width: 100vw;
-    z-index: 101;
-  }
+  display: block;
+  position: relative;
+  z-index: 1000; // acima do conteúdo, abaixo da sidebar (host 1045)
 }
 
-.link-login{
-  width: 3em;
-  height: 3em;
-  background-color: #9A6DF6;
+/* O #9A6DF6 não existe na paleta. O preenchimento branco translúcido casa com
+   o .link-search-room e dá 4.65:1 para o ícone branco (o roxo dava 3.56:1). */
+.link-login {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  i{
-    font-size: 1.5em;
+  transition: background-color 0.2s ease;
+  i {
+    font-size: 1rem;
   }
 }
 
-.link-login:hover{
-  opacity: 70%;
+.link-login:hover {
+  background-color: rgba(255, 255, 255, 0.26);
 }
 
-.link-login-mobile{
+.link-login-mobile {
   color: #fff;
   width: 2em;
   height: 2em;
-  background-color: #9A6DF6;
+  background-color: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  i{
+  i {
     font-size: 1em;
   }
 }
 
 #navbar {
   display: flex;
-  width: 100vw;
+  width: 100%;
+  top: 0;
   @include media-breakpoint-up($lg) {
     position: sticky;
     height: 4.5rem;
   }
   @include media-breakpoint-down($lg) {
     position: fixed;
+    width: 100vw;
     height: 3rem;
   }
-  top: 0;
   box-shadow: 0px 2px 6px #0000001f;
-  display: flex;
-  justify-content: flex-end;
+  /* Três blocos: marca | busca | links. Centro óptico: os laterais ocupam só a
+     largura do próprio conteúdo e a busca preenche o vão entre eles. Não é o
+     centro geométrico da navbar — desloca conforme o texto dos links. */
+  justify-content: space-between;
 }
 
 .brand-container {
@@ -65,7 +70,14 @@
   padding: 0 0.15rem;
   @include media-breakpoint-up($lg) {
     padding: 0 0.75rem;
-    width: 14rem;
+    flex: 0 0 auto;
+
+    // Autenticado: logo já aparece na sidebar, evita duplicar. Com o centro
+    // óptico é `display: none` mesmo — o `visibility: hidden` de antes servia
+    // para segurar a fatia do centro geométrico e agora só deixaria vão morto.
+    &.brand-hidden {
+      display: none;
+    }
   }
   img {
     font-size: 2rem;
@@ -80,36 +92,89 @@
 }
 
 .search-bar-container {
-  overflow: hidden;
-  flex: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* `flex-basis: auto` + grow: a barra come todo o vão entre marca e links.
+     `min-width: 0` deixa encolher abaixo do min-content dos filhos, senão ela
+     invade a logo. O teto de 34rem fica no .fake-container, para não esticar em
+     telas largas. */
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Respiro simétrico: sem isso, na faixa 992–1200 o bloco central ocupa toda
+     a sua fatia e a barra fica colada na pílula "Anuncie seu consultório". */
+  padding-inline: 1rem;
 }
 
 .links-container {
-  flex: 4;
+  flex: 0 0 auto;
   justify-content: end;
   align-items: center;
-  overflow: hidden;
+  /* `overflow: hidden` cortava o .badge-maleta-count, que é absoluto em
+     top:-4px/right:-6px. `gap` substitui o margin-right em cada <a>, que
+     deixava um vão morto depois do último item. */
+  gap: 1.5rem;
+  padding-right: 1rem;
+
   a {
-    margin-right: 2rem;
+    display: flex;
+    align-items: center;
     color: white;
     font-size: 14px;
+
     &:hover {
       text-decoration: underline;
     }
   }
+
+  /* Ícones vinham com width 28 e 30 no HTML, desalinhando a linha */
+  img {
+    height: 1.5rem;
+    width: auto;
+  }
 }
 
+/* Mesmo tratamento do .hero-badge: o `#ffffff61` inline dava só 2.96:1 com
+   texto branco (AA pede 4.5:1). Preenchimento mais discreto + borda passa
+   para 4.65:1 e ainda lê como botão. */
+.link-search-room {
+  padding: 0.375rem 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.16);
+  /* Ao sair do .links-container (que tinha `a { color: white }`) o link passou
+     a herdar o `a { color: $primary }` global. */
+  color: $white;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.26);
+    color: $white;
+    text-decoration: none;
+  }
+}
+
+/* Precisa acompanhar o breakpoint do drawer da sidebar ($nav-desktop): se
+   divergir, existe uma faixa em que o hambúrguer desaparece enquanto a
+   sidebar já é off-canvas, deixando o menu sem como abrir. */
 ._btn_collapse {
   display: flex;
   align-items: center;
   margin: 0 0.75rem;
   transition: all 500ms;
+  /* Altura acompanha a do #navbar ($lg) */
   @include media-breakpoint-up($lg) {
-    display: none;
     height: 4.5rem;
   }
   @include media-breakpoint-down($lg) {
     height: 3rem;
+  }
+
+  /* Visibilidade acompanha o drawer da sidebar */
+  @include media-breakpoint-up($nav-desktop) {
+    display: none;
   }
   ._hamburguer {
     cursor: pointer;
@@ -154,13 +219,13 @@
   padding: 0 4px;
   border-radius: 9px;
   background-color: #ffffff;
-  color: #7c3aed;
-  font: normal normal 700 11px/18px Poppins;
+  color: #5043e4;
+  font: normal normal 700 11px/18px Inter;
   display: flex;
   align-items: center;
   justify-content: center;
   top: -4px;
   right: -6px;
-  border: 2px solid #7c3aed;
+  border: 2px solid #5043e4;
   box-shadow: 0 1px 4px rgba(0,0,0,0.18);
 }

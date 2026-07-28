@@ -327,8 +327,21 @@ export class NavbarSearchComponent implements OnInit {
     this.date = data?.start ? new Date(data?.start) : new Date();
   }
 
-  getStartDate(event: Date) {
-    this.date = event;
+  /* `start`/`end` são obrigatórios no SearchInput e saem de `this.date`: deixar o campo
+     virar undefined faria a busca cair no `moment(undefined)` (agora) sem que o input
+     mostrasse essa data. Limpar o input volta para hoje, que é o que a busca vai usar. */
+  getStartDate(event?: Date) {
+    this.date = event ?? new Date();
+  }
+
+  /* Mesmo par do hero da home: o input nativo trabalha em YYYY-MM-DD e o resto
+     do componente continua em Date. */
+  get dateInputValue(): string {
+    return this.date ? moment(this.date).format('YYYY-MM-DD') : '';
+  }
+
+  setStartDateFromInput(value: string) {
+    this.getStartDate(value ? moment(value, 'YYYY-MM-DD').toDate() : undefined);
   }
 
   openLocalization() {
@@ -338,10 +351,15 @@ export class NavbarSearchComponent implements OnInit {
     }, 100);
   }
 
+  /* `#date` agora é um <input type="date">: `click()` não abre o calendário na
+     maioria dos browsers, quem abre é o `showPicker()` (sem suporte no Firefox,
+     onde sobra o indicador nativo do próprio input). */
   openDatepicker() {
     this.showSearch = true;
     setTimeout(() => {
-      this.renderer.selectRootElement('#date').click();
+      const input = this.renderer.selectRootElement('#date') as HTMLInputElement;
+      input.focus();
+      input.showPicker?.();
     }, 100);
   }
 

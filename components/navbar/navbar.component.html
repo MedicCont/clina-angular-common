@@ -5,12 +5,12 @@
     psMode: AccessModeEnum.HEALTH_PERSON
   }"
 >
-  <div class="brand-container" (click)="goToHome()">
+  <div class="brand-container" [class.brand-hidden]="isAuthenticated && !sidebarCollapsed" (click)="goToHome()">
     <div class="d-lg-none">
       <img src="/common-assets/images/branding/logo-single-white.png" />
     </div>
     <div class="d-none d-lg-block">
-      <img src="/common-assets/images/branding/logo-white.png" />
+      <img src="/common-assets/images/branding/logo-white.svg" />
     </div>
   </div>
 
@@ -21,10 +21,12 @@
   </div>
 
   <div class="links-container d-none d-lg-flex">
-    <a [href]="isAuthenticated ? '/dashboard/host/room' : '/auth/sign-in'" style="background-color: #ffffff61;" class="link-search-room px-3 rounded py-1 d-none d-lg-block"
+    <a
+      [href]="isAuthenticated ? '/dashboard/host/room' : '/auth/sign-in'"
+      class="link-search-room d-none d-lg-block"
       >Anuncie seu consultório</a
     >
-    
+
     <a [href]="psUrl + '/about'" class="link-about d-none d-xxl-block">Sobre nós</a>
     <a
       href="https://wa.me/55{{
