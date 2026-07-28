@@ -242,6 +242,7 @@ export class NavbarSearchComponent implements OnInit {
               equipments: paramsList?.['equipments'] ?? [],
               maxValue: Number(paramsList?.['maxValue']),
               hasDiscount: paramsList?.['hasDiscount'] === 'true',
+              leaseType: paramsList?.['leaseType'] || undefined,
             };
           } else if (savedFilters && !this.isFilterExpired()) {
             // Filtros salvos no localStorage se não houver filtros na URL
