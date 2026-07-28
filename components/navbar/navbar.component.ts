@@ -48,7 +48,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private readonly accessModeService: AccessModeService,
     private readonly maletaService:MaletaService
   ) {
-    this.authenticationService.$authenticated.subscribe((auth) => (this.isAuthenticated = auth));
+    /* Continua no construtor, e não no ngOnInit: a emissão inicial precisa chegar antes do
+       primeiro render. Só passou a ser registrada para ser desfeita no ngOnDestroy. */
+    this.subscriptions.push(
+      this.authenticationService.$authenticated.subscribe((auth) => (this.isAuthenticated = auth))
+    );
   }
 
    ngOnInit() {
@@ -91,11 +95,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       );
     }
 
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.checkRoute();
-      });
+    this.subscriptions.push(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => {
+          this.checkRoute();
+        })
+    );
 
     this.checkRoute();
   }
