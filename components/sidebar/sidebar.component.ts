@@ -307,15 +307,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
         url:""
       },
       {
-        title: "Check-In/Out",
-        lucideIcon: "ClipboardCheck",
-        menuUrl: "/check",
-        isActive: true,
-        mode: ItemModeEnum.HOST,
-        system: SystemEnum.DASHBOARD,
-        url:""
-      },
-      {
         title: "SaaS",
         lucideIcon: "Layers",
         menuUrl: "/saas",
