@@ -35,9 +35,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   faBell = faBell;
   isNotificationEnabled = environment.psNotification;
   AccessModeEnum = AccessModeEnum;
-  pageTitleSubscription: Subscription | undefined=undefined;
 
-  private subs:Subscription[]=[];
   public schedulesCount:number=0;
   public sidebarCollapsed: boolean = false;
 
