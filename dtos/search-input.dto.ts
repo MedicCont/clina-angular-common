@@ -17,6 +17,8 @@ export interface SearchInput {
   maxValue?: number;
   hasDiscount?: boolean;
   cancelAdvance?: number;
+  /** 'SINGLE' (avulso) ou 'MONTHLY' (mensal); null limpa o query param */
+  leaseType?: string | null;
 
   page?: number;
   take?: number;
