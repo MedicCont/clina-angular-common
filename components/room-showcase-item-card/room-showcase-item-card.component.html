@@ -3,7 +3,9 @@
   [ngClass]="{ showMap }"
   *ngIf="room"
 >
-  <div *ngIf="room.packagesOfHours.length > 0" class="tag-discount">
+  <!-- Selos de hora avulsa (desconto por pacote de horas e reserva de última
+       hora) não se aplicam a sala vendida só no mensal. -->
+  <div *ngIf="room.packagesOfHours.length > 0 && !isMonthlyOnly" class="tag-discount">
     <a [routerLink]="routeToRoom" [queryParams]="{ scroll: 'discount' }">
       <img src="/common-assets/images/discount/discount.svg" alt="logo clina care" />
     </a>
@@ -36,7 +38,7 @@
     </div>
   </div>
 
-  <div *ngIf="room?.advance && room.advance! <= 240" class="tag-fast-booking">
+  <div *ngIf="room?.advance && room.advance! <= 240 && !isMonthlyOnly" class="tag-fast-booking">
     <a [routerLink]="routeToRoom" [queryParams]="{ scroll: 'discount' }">
       <img
         src="/common-assets/images/discount/fast-booking.png"
@@ -90,7 +92,7 @@
         ></clina-room-favorite-button>
       </div>
     </div>
-    <a [routerLink]="routeToRoom" class="card-img-link">
+    <a [routerLink]="routeToRoom" class="card-img-link" style="position: relative; display: block;">
       <img
         [src]="s3name + 'room_photo/thumb/' + room?.images![0]"
         alt="logo clina care"
@@ -100,6 +102,26 @@
         class="card-img clickable"
         onerror="this.src='/common-assets/images/room/not-found.png'"
       />
+      <div class="room-type-badge">
+        <div *ngFor="let type of room?.types" class="room-type-badge-item">
+          <i [ngClass]="roomTypeIcon[type]" aria-hidden="true"></i>
+          <span>{{ roomType[type] }}</span>
+        </div>
+      </div>
+      <!-- Uma coluna com gap: os selos empilham sem depender de `top` fixo, que
+           encostava um no outro quando a fonte renderizava mais alta. -->
+      <div class="card-badges">
+        <div *ngIf="room?.videos?.length" class="room-video-badge">
+          <i class="fas fa-play-circle" aria-hidden="true"></i>
+          <span>Vídeo</span>
+        </div>
+        <!-- Sala com mensal ativo: o selo avisa o formato de venda antes de abrir
+             os detalhes, onde não haverá opção de hora avulsa. -->
+        <div *ngIf="isMonthlyOnly" class="room-monthly-badge">
+          <i class="far fa-calendar-alt" aria-hidden="true"></i>
+          <span>Somente mensal</span>
+        </div>
+      </div>
     </a>
     <a [routerLink]="routeToRoom" class="carousel-card-link">
       <div class="carousel-card">
@@ -109,56 +131,30 @@
             style="width: 10px"
           >
             <span class="card-title text-center text-md-start text-nowrap">{{
-              room.name
+              splitRoomName(room?.name)
             }}</span>
           </div>
           <div class="col-auto">
-            <!-- <clina-room-average-rating
-              *ngIf="isRatingEnabled"
-              [rating]="[room?.ratingScore]"
-            ></clina-room-average-rating> -->
+            <!-- Rating fica fora por enquanto: o componente
+                 clina-room-average-rating vive só no marketplace. -->
           </div>
         </div>
-        <div class="row">
-          <div
-            class="col-12 col-md-auto pr-0 text-gray-700 d-flex flex-column align-items-center justify-content-center align-itemss-md-start"
-          >
-            <div>
-              <span
-                class="small-text d-block align-self-center align-self-md-start"
-                >A partir de</span
-              >
-              <span class="card-price d-block" *ngIf="room.minPrice">
-                R$ {{ room.minPrice }} / <span>h</span>
-              </span>
-              <span class="card-price d-block" *ngIf="!room.minPrice">
-                Em definição
-              </span>
-            </div>
-          </div>
-          <div
-            class="col d-flex align-items-center justify-content-center justify-content-md-end"
-            style="height: 40px; margin-right: 30px"
-          >
-            <div
-              *ngFor="let type of room.types"
-              class="mx-1 d-flex flex-column align-items-center"
-            >
-              <div class="mx-auto mb-n2 text-gray-500">
-                <span class="extra-small-text">{{ roomType[type] }}</span>
-              </div>
-              <div class="my-auto icon-type-room">
-                <i [ngClass]="roomTypeIcon[type]" aria-hidden="true"></i>
-              </div>
-            </div>
-          </div>
+        <div class="mb-2 d-flex align-items-center gap-1">
+          <i class="far fa-map-marker-alt small-text text-gray-500"></i>
+          <span class="small-text card-address text-gray-500">{{ room?.neighborhood }}, {{ room?.city }} - {{ room?.state }}</span>
         </div>
-        <div class="row mt-3">
-          <div class="col d-flex text-center text-md-start">
-            <span class="small-text card-address text-gray-500">
-              {{ room.city }}, {{ room.neighborhood }} - {{ room.state }}
-            </span>
+        <hr class="card-divider" />
+
+        <div class="card-footer-row d-flex justify-content-between align-items-center">
+          <div class="card-price-block text-gray-700">
+            <!-- "A partir de" só vale para hora avulsa, onde o preço varia por
+                 horário; a mensalidade é valor fechado. -->
+            <span class="small-text d-block text-gray-500">{{ showHourlyPrice ? 'A partir de' : 'Aluguel mensal' }}</span>
+            <span *ngIf="showHourlyPrice && room?.minPrice" class="card-price d-block">R$ {{ room?.minPrice }} <span class="small-text">/hora</span></span>
+            <span *ngIf="showHourlyPrice && !room?.minPrice" class="card-price d-block">Em definição</span>
+            <span *ngIf="!showHourlyPrice" class="card-price d-block">R$ {{ room?.monthlyLeasePrice }} <span class="small-text">/mês</span></span>
           </div>
+          <span class="btn-ver-detalhes">Ver detalhes</span>
         </div>
       </div>
     </a>

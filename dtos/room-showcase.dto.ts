@@ -8,10 +8,14 @@ export class RoomShowcaseDto{
     name: string;
     description: string;
     images?: string[];
+    videos?: string[];
     types?: string[];
   ratingScore?: number | null;
     advance?: number;
     minPrice?:number;
+    /* Mensal ativo manda no card: a sala é vendida por mês e o preço/hora não aparece.
+       Mesma regra do card da vitrine do marketplace. */
+    monthlyLeasePrice?: number | null;
     status?: RoomStatusEnum;
     packagesOfHours:PackageOfHourDto[];
 

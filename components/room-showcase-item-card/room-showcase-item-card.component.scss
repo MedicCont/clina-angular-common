@@ -4,11 +4,17 @@
 
 $office-image-width: 22.5rem;
 
+/* Mesma escala do card da vitrine do marketplace: um raio para caixas, pill para badges */
+$card-radius: 0.5rem;
+$card-radius-pill: 999px;
+
 .room-card {
   position: relative;
   border: 1px solid $gray-300;
-  border-radius: 1rem;
+  border-radius: $card-radius;
   overflow: hidden;
+  background-color: $white;
+  padding-bottom: 0 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
   @include media-breakpoint-up($xl) {
@@ -71,7 +77,7 @@ $office-image-width: 22.5rem;
   position: absolute;
   bottom: 51px;
   left: -170px;
-  background: #fda077;
+  background: #D9541E;
   color: white;
   font-size: 10px;
   line-height: 14px;
@@ -91,7 +97,7 @@ $office-image-width: 22.5rem;
     left: 180px;
     bottom: -6px;
     z-index: -1;
-    background: #fda077;
+    background: #D9541E;
     transform: rotate(45deg);
   }
 }
@@ -104,7 +110,7 @@ $office-image-width: 22.5rem;
   position: absolute;
   top: -85px;
   left: -170px;
-  background: #fda077;
+  background: #D9541E;
   color: white;
   font-size: 10px;
   line-height: 14px;
@@ -124,7 +130,7 @@ $office-image-width: 22.5rem;
     left: 180px;
     bottom: -6px;
     z-index: -1;
-    background: #fda077;
+    background: #D9541E;
     transform: rotate(45deg);
   }
 }
@@ -132,11 +138,20 @@ $office-image-width: 22.5rem;
 .carousel-header {
   overflow: hidden;
   position: relative;
-  width: 360px;
+  /* 100% e não 360px fixos: o card acompanha a coluna da grade, como na vitrine */
+  width: 100%;
+  .card-img-link {
+    display: block;
+    overflow: hidden;
+  }
+
   .card-img {
-    border-radius: 1rem;
+    width: 100%;
+    height: 235px;
+    border-radius: 0;
     object-fit: cover;
     object-position: center center;
+    display: block;
   }
   &.showMap {
     .card-img-link {
@@ -166,7 +181,8 @@ $office-image-width: 22.5rem;
 .carousel-card {
   margin-top: -0.5rem;
   overflow: hidden;
-  padding-block: 0.85rem;
+  padding: 0.85rem 1rem 1.25rem;
+  background-color: $white;
   min-width: 265px;
   .row-title {
     display: flex;
@@ -182,13 +198,24 @@ $office-image-width: 22.5rem;
     white-space: nowrap;
   }
   .card-price {
-    color: $gray-700;
-    font-size: 16px;
-    font-weight: 600;
+    color: $primary;
+    font-size: 1.375rem;
+    font-weight: 700;
+    /* Sem isso o "/hora" caía para a linha de baixo quando o espaço aperta */
+    white-space: nowrap;
     span {
       font-weight: 400;
-      font-size: 13px;
+      color: $gray-500;
     }
+  }
+
+  .card-footer-row {
+    gap: 0.5rem;
+  }
+
+  /* O botão não encolhe (nowrap), então é o preço que cede quando aperta */
+  .card-price-block {
+    min-width: 0;
   }
 
   .card-address {
@@ -196,6 +223,95 @@ $office-image-width: 22.5rem;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+  }
+
+  /* Separa o bloco de preço/ação do conteúdo acima */
+  .card-divider {
+    margin: 0.85rem 0;
+    border: 0;
+    border-top: 1px solid #eeedf2;
+    opacity: 1;
+  }
+}
+
+.btn-ver-detalhes {
+  font-size: 12px;
+  font-weight: 500;
+  color: $primary;
+  border: 1px solid $primary;
+  border-radius: $card-radius;
+  padding: 0.375rem 0.75rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+
+  &:hover {
+    background-color: $primary;
+    color: $white;
+  }
+}
+
+.card-badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  z-index: 1;
+}
+
+.room-video-badge,
+.room-monthly-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+  border-radius: $card-radius-pill;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #fff;
+  font-weight: 500;
+
+  i {
+    font-size: 0.8rem;
+  }
+}
+
+.room-video-badge {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* Roxo para separar "modalidade de venda" de "conteúdo do anúncio" (vídeo) */
+.room-monthly-badge {
+  background: rgba($primary, 0.9);
+}
+
+.room-type-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  gap: 6px;
+
+  .room-type-badge-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    border-radius: $card-radius-pill;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: $primary;
+    font-weight: 500;
+
+    i {
+      font-size: 0.75rem;
+    }
   }
 }
 
