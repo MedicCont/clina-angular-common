@@ -6,7 +6,7 @@
   <!-- Selos de hora avulsa (desconto por pacote de horas e reserva de última
        hora) não se aplicam a sala vendida só no mensal. -->
   <div *ngIf="room.packagesOfHours.length > 0 && !isMonthlyOnly" class="tag-discount">
-    <a [routerLink]="routeToRoom" [queryParams]="{ scroll: 'discount' }">
+    <a [href]="routeToRoomDiscount">
       <img src="/common-assets/images/discount/discount.svg" alt="logo clina care" />
     </a>
     <div class="popover-discount">
@@ -39,7 +39,7 @@
   </div>
 
   <div *ngIf="room?.advance && room.advance! <= 240 && !isMonthlyOnly" class="tag-fast-booking">
-    <a [routerLink]="routeToRoom" [queryParams]="{ scroll: 'discount' }">
+    <a [href]="routeToRoomDiscount">
       <img
         src="/common-assets/images/discount/fast-booking.png"
         alt="Este consultório permite reservas de última hora"
@@ -92,7 +92,7 @@
         ></clina-room-favorite-button>
       </div>
     </div>
-    <a [routerLink]="routeToRoom" class="card-img-link" style="position: relative; display: block;">
+    <a [href]="routeToRoom" class="card-img-link" style="position: relative; display: block;">
       <img
         [src]="s3name + 'room_photo/thumb/' + room?.images![0]"
         alt="logo clina care"
@@ -123,7 +123,7 @@
         </div>
       </div>
     </a>
-    <a [routerLink]="routeToRoom" class="carousel-card-link">
+    <a [href]="routeToRoom" class="carousel-card-link">
       <div class="carousel-card">
         <div class="row gx-3 mt-1">
           <div
