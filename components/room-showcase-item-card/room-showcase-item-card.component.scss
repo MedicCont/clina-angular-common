@@ -477,6 +477,10 @@ h2 {
   position: absolute;
   right: 3.5rem;
   top: 0.3rem;
+  /* Sem z-index o coração some: `.card-img-link` também é posicionado e vem depois
+     no DOM, então pintava por cima — o botão ficava invisível e sem clique. É o
+     mesmo valor que .btn-share usa. */
+  z-index: 1;
 }
 
 div.btn-share {

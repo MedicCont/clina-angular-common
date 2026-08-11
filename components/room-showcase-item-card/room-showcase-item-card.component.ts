@@ -81,6 +81,9 @@ export class RoomShowcaseItemCardComponent implements OnInit {
     return !this.isMonthlyOnly;
   }
 
+  /* A página de detalhes da sala é do marketplace; o dashboard não tem essa rota
+     (dava NG04002 "Cannot match any routes"). Por isso o card aponta para uma URL
+     absoluta em `psUrl`, com `href`, e não com routerLink. */
   public get routeToRoom(): string {
     let route = [
       "room",
@@ -94,7 +97,11 @@ export class RoomShowcaseItemCardComponent implements OnInit {
       r = r?.replace(/\s+/g, "-").toLowerCase();
       return r;
     });
-    return "/" + route.join("/");
+    return `${environment.psUrl.replace(/\/$/, "")}/${route.join("/")}`;
+  }
+
+  public get routeToRoomDiscount(): string {
+    return `${this.routeToRoom}?scroll=discount`;
   }
 
   constructor(
