@@ -537,3 +537,17 @@ div.btn-share {
     width: 32px;
   }
 }
+
+/* Na visão de mapa o card é horizontal e mais baixo: os selos seguem na borda
+   direita, como no card vertical, só que mais no alto. */
+.room-card.showMap {
+  @include media-breakpoint-up($md) {
+    .tag-fast-booking {
+      top: 1rem;
+    }
+
+    .tag-discount {
+      top: 4rem;
+    }
+  }
+}
