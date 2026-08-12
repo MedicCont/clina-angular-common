@@ -1,11 +1,30 @@
+/* Faixa de "modo espião" na sidebar. A cor não vem mais de `--bs-tertiary`
+   (token que não existe mais no tema): o aviso precisa de contraste próprio,
+   já que sinaliza que a sessão está agindo em nome de outra conta. */
 .spy-container {
-  background-color: var(--bs-tertiary);
+  gap: 2px;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid #f59e0b;
+  border-radius: 0.5rem;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 0.75rem;
+  line-height: 1.35;
   cursor: auto;
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
 }
 
 .leave-spy-mode {
+  font-weight: 600;
+  color: #b45309;
   cursor: pointer;
-  &:hover{
+
+  &:hover {
     text-decoration: underline;
   }
 }

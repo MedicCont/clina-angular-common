@@ -161,8 +161,10 @@ $brand-h: 4.5rem;
     white-space: nowrap;
   }
 
+  // Aviso de modo espião: precisa ficar visível justamente porque o operador
+  // está agindo em nome de outra conta.
   .spy-item {
-    display: none;
+    margin-bottom: 0.75rem;
   }
 }
 
@@ -354,6 +356,31 @@ $brand-h: 4.5rem;
     .access-mode-wrap {
       display: flex;
       justify-content: center;
+    }
+
+    /* Recolhida só cabe o ícone: rótulo, nome da conta e "Sair" saem, e o
+       tooltip do selo mostra quem está sendo espionado. */
+    .spy-item {
+      width: 40px;
+      align-self: center;
+
+      ::ng-deep .spy-container {
+        width: 40px;
+        height: 40px;
+        justify-content: center;
+        padding: 0;
+
+        .spy-container__label,
+        .spy-container__name,
+        .leave-spy-mode {
+          display: none;
+        }
+
+        .spy-container__badge {
+          gap: 0;
+          font-size: 1rem;
+        }
+      }
     }
 
     .sb-footer {
