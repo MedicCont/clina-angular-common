@@ -149,10 +149,18 @@
           <div class="card-price-block text-gray-700">
             <!-- "A partir de" só vale para hora avulsa, onde o preço varia por
                  horário; a mensalidade é valor fechado. -->
-            <span class="small-text d-block text-gray-500">{{ showHourlyPrice ? 'A partir de' : 'Aluguel mensal' }}</span>
-            <span *ngIf="showHourlyPrice && room?.minPrice" class="card-price d-block">R$ {{ room?.minPrice }} <span class="small-text">/hora</span></span>
+            <span class="small-text d-block text-gray-500">
+              {{ showHourlyPrice ? 'A partir de' : 'Aluguel mensal' }}
+              <!-- Mesma tag da página de detalhes: sala mensal já contratada não
+                   está à venda, e o card precisa dizer isso. -->
+              <span *ngIf="isMonthlyOnly" class="card-monthly-tag" [class.card-monthly-tag--muted]="isMonthlyLeased">
+                {{ isMonthlyLeased ? 'Alugado' : 'Exclusivo' }}
+              </span>
+            </span>
+            <!-- Pelo pipe, e não cru: o valor tem centavos e saía como "R$ 29.7". -->
+            <span *ngIf="showHourlyPrice && room?.minPrice" class="card-price d-block">{{ room?.minPrice | currency: 'BRL':'symbol':'1.2-2' }} <span class="small-text">/hora</span></span>
             <span *ngIf="showHourlyPrice && !room?.minPrice" class="card-price d-block">Em definição</span>
-            <span *ngIf="!showHourlyPrice" class="card-price d-block">R$ {{ room?.monthlyLeasePrice }} <span class="small-text">/mês</span></span>
+            <span *ngIf="!showHourlyPrice" class="card-price d-block">{{ room?.monthlyLeasePrice | currency: 'BRL':'symbol':'1.0-0' }} <span class="small-text">/mês</span></span>
           </div>
           <span class="btn-ver-detalhes">Ver detalhes</span>
         </div>
