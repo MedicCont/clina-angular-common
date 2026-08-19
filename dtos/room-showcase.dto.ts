@@ -16,6 +16,8 @@ export class RoomShowcaseDto{
     /* Mensal ativo manda no card: a sala é vendida por mês e o preço/hora não aparece.
        Mesma regra do card da vitrine do marketplace. */
     monthlyLeasePrice?: number | null;
+    /** Falso quando já existe contrato vigente ou futuro — card mostra "Alugado". */
+    monthlyLeaseAvailable?: boolean | null;
     status?: RoomStatusEnum;
     packagesOfHours:PackageOfHourDto[];
 
