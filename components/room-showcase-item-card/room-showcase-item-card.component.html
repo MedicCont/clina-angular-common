@@ -160,7 +160,7 @@
             <!-- Pelo pipe, e não cru: o valor tem centavos e saía como "R$ 29.7". -->
             <span *ngIf="showHourlyPrice && room?.minPrice" class="card-price d-block">{{ room?.minPrice | currency: 'BRL':'symbol':'1.2-2' }} <span class="small-text">/hora</span></span>
             <span *ngIf="showHourlyPrice && !room?.minPrice" class="card-price d-block">Em definição</span>
-            <span *ngIf="!showHourlyPrice" class="card-price d-block">{{ room?.monthlyLeasePrice | currency: 'BRL':'symbol':'1.0-0' }} <span class="small-text">/mês</span></span>
+            <span *ngIf="!showHourlyPrice" class="card-price d-block">{{ room?.monthlyLeasePrice | currency: 'BRL':'symbol':'1.2-2' }} <span class="small-text">/mês</span></span>
           </div>
           <span class="btn-ver-detalhes">Ver detalhes</span>
         </div>
