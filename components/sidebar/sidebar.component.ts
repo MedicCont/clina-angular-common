@@ -247,7 +247,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Consultórios Alugados",
         lucideIcon: "Building2",
         menuUrl: "/room-lease/management",
-        isActive: true,
+        isActive: environment.monthlyLease,
         mode: ItemModeEnum.PS,
         system: SystemEnum.DASHBOARD,
         url:""
@@ -258,7 +258,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         title: "Consultórios Alugados",
         lucideIcon: "Building2",
         menuUrl: "/room-lease",
-        isActive: true,
+        isActive: environment.monthlyLease,
         mode: ItemModeEnum.HOST,
         system: SystemEnum.DASHBOARD,
         url:""

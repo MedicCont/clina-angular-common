@@ -74,7 +74,7 @@ export class RoomShowcaseItemCardComponent implements OnInit {
   /* Mensal ativo manda no card: a sala é vendida por mês, então o preço/hora não
      aparece nem quando existe agenda livre — mesma regra do card da vitrine. */
   get isMonthlyOnly(): boolean {
-    return !!this.room?.monthlyLeasePrice;
+    return environment.monthlyLease && !!this.room?.monthlyLeasePrice;
   }
 
   get showHourlyPrice(): boolean {
