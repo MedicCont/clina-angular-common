@@ -14,7 +14,9 @@ export const ROOMS_FAVORITE_QUERY = gql`
         advance
         types
         images
+        videos
         minPrice
+        monthlyLeasePrice
         clinicId
         clinicName
         zipcode

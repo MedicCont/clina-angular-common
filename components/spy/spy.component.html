@@ -1,5 +1,13 @@
 <div class="spy-container d-flex flex-column align-items-center py-2" *ngIf="spied">
-  <div><i class="clina icon-spy"></i> Modo espião</div>
-  <div class="fw-bold w-100 px-1 ellipsis text-center" [title]="spied.name">{{ spied.name }}</div>
+  <div class="spy-container__badge" [title]="'Modo espião · ' + spied.name">
+    <i class="clina icon-spy"></i>
+    <span class="spy-container__label">Modo espião</span>
+  </div>
+  <div
+    class="spy-container__name fw-bold w-100 px-1 ellipsis text-center"
+    [title]="spied.name"
+  >
+    {{ spied.name }}
+  </div>
   <span class="leave-spy-mode" (click)="turnOffSpy()">Sair</span>
 </div>

@@ -7,30 +7,51 @@
 <ul
   id="sidebar"
   [ngClass]="{
-    show: (isVisible$ | async) || (!isMobile && isSidebarHovered),
+    show: (isVisible$ | async),
+    mini: isMini,
     hostMode: (accessMode$ | async) === AccessModeEnum.HOST,
     psMode: (accessMode$ | async) === AccessModeEnum.HEALTH_PERSON
   }"
-  (mouseenter)="onMouseEnter()"
-  (mouseleave)="onMouseLeave()"
 >
+  <!-- Brand -->
   <div class="_sidebar_brand">
-    <div>
-      <img
-        src="/common-assets/images/branding/logo-white.png"
-        (click)="goToHome()"
-      />
-      <span class="close-sidebar" (click)="hideSidebar()">&times;</span>
-    </div>
+    <img
+      class="brand-logo brand-logo--full"
+      src="/common-assets/images/branding/logo-white.svg"
+      alt="Clina"
+      (click)="goToHome()"
+    />
+    <img
+      class="brand-logo brand-logo--icon"
+      src="/common-assets/images/branding/logo-single-white.png"
+      alt="Clina"
+      (click)="goToHome()"
+    />
+    <button
+      type="button"
+      class="sb-toggle"
+      *ngIf="!isMobile"
+      (click)="toggleCollapse()"
+      [attr.aria-label]="isMini ? 'Expandir menu' : 'Recolher menu'"
+    >
+      <lucide-icon
+        [name]="isMini ? 'ChevronsRight' : 'ChevronsLeft'"
+        [size]="18"
+      ></lucide-icon>
+    </button>
+    <span class="close-sidebar" *ngIf="isMobile" (click)="hideSidebar()">&times;</span>
   </div>
+
+  <!-- Nav -->
   <div class="items-container" (click)="isMobile ? hideSidebar() : null">
-    <li>
+    <li class="spy-item">
       <clina-navbar-spy></clina-navbar-spy>
     </li>
+
     <li
       *ngFor="let item of items$ | async"
-      [routerLinkActive]="item.system == SystemEnum.DASHBOARD ? '' : '_active'"
-      [routerLinkActiveOptions]="{ exact: true }"
+      (mouseenter)="onItemEnter(item, $event)"
+      (mouseleave)="onItemLeave()"
     >
       <a
         *ngIf="
@@ -40,102 +61,107 @@
               item.system == SystemEnum.DASHBOARD);
           else internalLink
         "
-        class="d-flex justify-content-between w-100 px-3 py-2"
-        style="margin-left: -3px"
+        class="sb-item"
         (click)="isMobile ? hideSidebar() : null"
         [href]="item.url"
         rel="noopener noreferrer"
       >
-        <div class="d-flex align-items-center">
-          <ng-container *ngIf="!item.icon">
-            <img
-              [src]="
-                (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON
-                  ? item.img
-                  : item.imgWhite
-              "
-              *ngIf="item.img"
-            />
-          </ng-container>
-          <i class="clina {{ item.icon }}" *ngIf="item.icon"></i>
-          <span class="ms-3 item-label">{{ item.title }}</span>
-        </div>
+        <lucide-icon
+          [name]="item.lucideIcon"
+          [size]="20"
+          class="sidebar-icon"
+        ></lucide-icon>
+        <span class="item-label">{{ item.title }}</span>
       </a>
 
       <ng-template #internalLink>
         <a
-          class="d-flex justify-content-between w-100 px-3 py-2"
-          style="margin-left: -3px"
+          class="sb-item"
           (click)="isMobile ? hideSidebar() : null"
           [routerLink]="[item.url]"
+          routerLinkActive="_active"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-          <div class="d-flex align-items-center">
-            <ng-container *ngIf="!item.icon">
-              <img
-                [src]="
-                  (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON
-                    ? item.img
-                    : item.imgWhite
-                "
-                *ngIf="item.img"
-              />
-            </ng-container>
-            <i class="clina {{ item.icon }}" *ngIf="item.icon"></i>
-            <span class="ms-3 item-label">{{ item.title }}</span>
-          </div>
+          <lucide-icon
+            [name]="item.lucideIcon"
+            [size]="20"
+            class="sidebar-icon"
+          ></lucide-icon>
+          <span class="item-label">{{ item.title }}</span>
         </a>
       </ng-template>
     </li>
 
     <li
-      class="access-mode-container"
-      *ngIf="
-        isAuthenticated && (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON
-      "
+      *ngIf="isAuthenticated"
+      (mouseenter)="onItemEnter({ title: 'Sair' }, $event)"
+      (mouseleave)="onItemLeave()"
     >
+      <a class="sb-item" (click)="logout()">
+        <lucide-icon name="LogOut" [size]="20" class="sidebar-icon"></lucide-icon>
+        <span class="item-label">Sair</span>
+      </a>
+    </li>
+  </div>
+
+  <!-- Tooltip (modo mini) -->
+  <div class="sb-tooltip" *ngIf="tooltipLabel && isMini" [style.top.px]="tooltipY">
+    {{ tooltipLabel }}
+  </div>
+
+  <!-- Rodapé: usuário + alternar modo -->
+  <div class="sb-footer" *ngIf="isAuthenticated && account">
+    <div class="sb-footer__row">
+      <div class="sb-user" *ngIf="!isMini">
+        <div class="sb-user__avatar">{{ getInitials(account.name) }}</div>
+        <div class="sb-user__info">
+          <span class="sb-user__name">{{ account.name }}</span>
+          <span class="sb-user__role">{{
+            (accessMode$ | async) === AccessModeEnum.HOST
+              ? "Anfitrião"
+              : "Profissional da saúde"
+          }}</span>
+        </div>
+      </div>
       <div
-        class="d-flex access-mode-button align-items-center p-1"
+        class="sb-user__avatar"
+        *ngIf="isMini"
+        [title]="account.name"
+      >
+        {{ getInitials(account.name) }}
+      </div>
+      <span class="sb-version" *ngIf="!isMini">
+        <span class="sb-version__dot"></span>
+        v1.0.0
+      </span>
+    </div>
+
+    <!-- Alternar modo de acesso -->
+    <div class="access-mode-wrap">
+      <div
+        class="access-mode-button"
+        *ngIf="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON"
+        (mouseenter)="onItemEnter({ title: 'Modo anfitrião' }, $event)"
+        (mouseleave)="onItemLeave()"
         (click)="toggleAccessMode(AccessModeEnum.HOST)"
       >
         <div class="_images_icon">
           <img src="/common-assets/images/sidebar/icon-toggle-mode.svg" />
         </div>
-        <span class="item-label d-flex justify-content-center"
-          >Modo anfitrião</span
-        >
+        <span class="item-label">Modo anfitrião</span>
       </div>
-    </li>
-    <li
-      class="access-mode-container"
-      *ngIf="
-        isAuthenticated && (accessMode$ | async) != AccessModeEnum.HEALTH_PERSON
-      "
-    >
       <div
-        class="d-flex access-mode-button align-items-center p-1"
+        class="access-mode-button"
+        *ngIf="(accessMode$ | async) != AccessModeEnum.HEALTH_PERSON"
+        (mouseenter)="onItemEnter({ title: 'Modo profiss. da saúde' }, $event)"
+        (mouseleave)="onItemLeave()"
         (click)="toggleAccessMode(AccessModeEnum.HEALTH_PERSON)"
       >
         <div class="_images_icon">
           <img src="/common-assets/images/sidebar/icon-toggle-mode.svg" />
         </div>
-        <span
-          class="item-label d-flex justify-content-center"
-          style="line-height: 15px"
-          >Modo profiss.<br />
-          da saúde</span
-        >
+        <span class="item-label">Modo profiss. da saúde</span>
       </div>
-    </li>
-  </div>
-
-  <li class="logout-container" *ngIf="isAuthenticated">
-    <div class="d-flex logout-button p-1" (click)="logout()">
-      <div class="_images_icon">
-        <img src="/common-assets/images/sidebar/white/icon-logout.svg" />
-      </div>
-      <span class="item-label d-flex justify-content-center exitButton"
-        >Sair</span
-      >
     </div>
-  </li>
+  </div>
 </ul>

@@ -14,6 +14,7 @@ import { RoomTypeIcon } from "../../enums/room-type.enum";
 import { RoomCardService } from "../../services/room-card.service";
 import { RoomShowcaseItemSuccessSharedModalComponent } from "../room-showcase-item-success-shared-modal/room-showcase-item-success-shared-modal.component";
 import { RoomShowcaseDto } from "../../dtos/room-showcase.dto";
+import { splitRoomName } from "../../utils/split-room-name.util";
 
 @Component({
   selector: "clina-room-showcase-item-card",
@@ -68,6 +69,32 @@ export class RoomShowcaseItemCardComponent implements OnInit {
 
   isRatingEnabled = environment.psRating;
 
+  splitRoomName = splitRoomName;
+
+  /* Mensal ativo manda no card: a sala é vendida por mês, então o preço/hora não
+     aparece nem quando existe agenda livre — mesma regra do card da vitrine. */
+  get isMonthlyOnly(): boolean {
+    return environment.monthlyLease && !!this.room?.monthlyLeasePrice;
+  }
+
+  get showHourlyPrice(): boolean {
+    return !this.isMonthlyOnly;
+  }
+
+  /* Contratável agora. Precisa ser afirmativo (`true`): no SSR o campo chega
+     indefinido e no cliente vem `false` — mesma regra do card de detalhes. */
+  get hasMonthlyLease(): boolean {
+    return this.isMonthlyOnly && this.room?.monthlyLeaseAvailable === true;
+  }
+
+  /* Mensal configurado, mas ocupado por contrato vigente ou futuro. */
+  get isMonthlyLeased(): boolean {
+    return this.isMonthlyOnly && !this.hasMonthlyLease;
+  }
+
+  /* A página de detalhes da sala é do marketplace; o dashboard não tem essa rota
+     (dava NG04002 "Cannot match any routes"). Por isso o card aponta para uma URL
+     absoluta em `psUrl`, com `href`, e não com routerLink. */
   public get routeToRoom(): string {
     let route = [
       "room",
@@ -81,7 +108,11 @@ export class RoomShowcaseItemCardComponent implements OnInit {
       r = r?.replace(/\s+/g, "-").toLowerCase();
       return r;
     });
-    return "/" + route.join("/");
+    return `${environment.psUrl.replace(/\/$/, "")}/${route.join("/")}`;
+  }
+
+  public get routeToRoomDiscount(): string {
+    return `${this.routeToRoom}?scroll=discount`;
   }
 
   constructor(

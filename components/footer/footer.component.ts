@@ -12,7 +12,6 @@ export class FooterComponent implements OnInit {
   accessMode: AccessModeEnum = AccessModeEnum.HEALTH_PERSON;
 
   psUrl = environment.psUrl;
-  dashboardUrl = environment.dashboardUrl;
   whatsappNumber = environment.whatsappNumber;
 
   AccessModeEnum = AccessModeEnum;
