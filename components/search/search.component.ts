@@ -136,7 +136,7 @@ export class NavbarSearchComponent implements OnInit {
             type: PlaceTypeEnum.GOOGLE_PLACES,
             label: 'Próximo a ' + prediction.description,
             placeId: prediction.place_id,
-            radius: 20000,
+            radius: 20, // km — backend (room-realtime.repository) trata radius como km, não metros
           }));
         },
       });
