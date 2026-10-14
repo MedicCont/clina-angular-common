@@ -142,7 +142,7 @@
         class="access-mode-button"
         *ngIf="
           (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON &&
-          (account?.clinicsCount ?? 0) > 0
+          account?.isHost
         "
         (mouseenter)="onItemEnter({ title: 'Modo anfitrião' }, $event)"
         (mouseleave)="onItemLeave()"
