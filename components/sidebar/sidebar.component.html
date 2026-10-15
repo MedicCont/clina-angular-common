@@ -140,7 +140,10 @@
     <div class="access-mode-wrap">
       <div
         class="access-mode-button"
-        *ngIf="(accessMode$ | async) == AccessModeEnum.HEALTH_PERSON"
+        *ngIf="
+          (accessMode$ | async) == AccessModeEnum.HEALTH_PERSON &&
+          account?.isHost
+        "
         (mouseenter)="onItemEnter({ title: 'Modo anfitrião' }, $event)"
         (mouseleave)="onItemLeave()"
         (click)="toggleAccessMode(AccessModeEnum.HOST)"
